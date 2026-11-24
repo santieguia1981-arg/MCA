@@ -1,0 +1,3930 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Seguridad: CSP (solo recursos propios, sin conexiones externas), sin referrer, forzar HTTPS fuera de localhost -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; font-src 'self' data: file:; media-src 'self' file:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="description" content="Calculadoras financieras interactivas para el Mercado de Capitales Argentino: tasas TNA/TEA/TEM, dólar MEP y CCL, paridad de bonos, caución bursátil y CEDEARs.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="Cálculos – MCA • Mercado de Capitales Argentino">
+    <meta property="og:description" content="Calculadoras financieras interactivas para el Mercado de Capitales Argentino: tasas TNA/TEA/TEM, dólar MEP y CCL, paridad de bonos, caución bursátil y CEDEARs.">
+    <link rel="icon" type="image/png" href="img/logo-mca.png?v=2">
+    <script src="js/ui.js" defer></script>
+    <script>if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) location.replace('https:' + location.href.substring(5));</script>
+<link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+<title>Cálculos – MCA • Mercado de Capitales Argentino</title>
+<link rel="stylesheet" href="css/mca.css">
+<style>
+  body { display: flex; flex-direction: column; }
+  .hidden { display: none !important; }
+  .calc-lead strong { color: var(--acc-2); }
+
+
+  /* Categorías superiores y selector de 20 calculadoras */
+  .calc-cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.65rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .calc-cat-btn {
+    padding: 0.42rem 0.78rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    background: rgba(12,19,34,.65);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.74rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s ease;
+  }
+  .calc-cat-btn:hover {
+    color: var(--ink);
+    border-color: rgba(16,185,129,.4);
+  }
+  .calc-cat-btn.active {
+    background: rgba(56,189,248,.14);
+    border-color: rgba(56,189,248,.5);
+    color: #38BDF8;
+  }
+  /* Selector de calculadoras (barra sticky con glassmorphism) */
+  .calc-tabs-wrap {
+    position: sticky;
+    top: calc(var(--nav-h) + 10px);
+    z-index: 20;
+    margin: 1.25rem 0 1.5rem;
+    padding: 0.75rem;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--line-2);
+    background: rgba(8,13,24,.88);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow);
+    transition: all .22s ease;
+  }
+  .calc-tabs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+    gap: 0.45rem;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 4px;
+    transition: max-height .25s ease;
+  }
+  /* Adaptación del visor según categoría activa */
+  .calc-tabs-wrap[data-active-cat="all"] .calc-tabs {
+    max-height: 360px;
+  }
+  .calc-tabs-wrap[data-active-cat="tasas-fx"] .calc-tabs,
+  .calc-tabs-wrap[data-active-cat="renta-variable"] .calc-tabs,
+  .calc-tabs-wrap[data-active-cat="analisis-fundamental"] .calc-tabs,
+  .calc-tabs-wrap[data-active-cat="proyectos-inversion"] .calc-tabs {
+    max-height: 120px;
+    overflow-y: hidden;
+  }
+  .calc-tabs-wrap[data-active-cat="renta-fija"] .calc-tabs,
+  .calc-tabs-wrap[data-active-cat="derivados-cartera"] .calc-tabs {
+    max-height: 175px;
+    overflow-y: hidden;
+  }
+  @media (max-width: 760px) {
+    .calc-tabs-wrap[data-active-cat] .calc-tabs {
+      max-height: 240px;
+      overflow-y: auto;
+    }
+  }
+  .calc-tab {
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 11px;
+    border: 1px solid var(--line-2);
+    background: rgba(12,19,34,.75);
+    color: var(--ink-2);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s ease;
+    white-space: nowrap;
+  }
+  .calc-tab:hover {
+    border-color: rgba(16,185,129,.45);
+    color: var(--ink);
+  }
+  .calc-tab.active {
+    background: rgba(16,185,129,.16);
+    border-color: rgba(16,185,129,.55);
+    color: var(--acc-2);
+    box-shadow: 0 0 0 1px rgba(16,185,129,.18);
+  }
+  .calc-tab-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: rgba(6,10,18,.8);
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .calc-tab.active .calc-tab-num {
+    color: var(--acc-2);
+    border-color: rgba(16,185,129,.4);
+  }
+
+  /* Panel de cada calculadora */
+  .calc-panel {
+    border-radius: var(--r-lg);
+    border: 1px solid var(--line-2);
+    background: linear-gradient(180deg, rgba(16,26,46,.76), rgba(10,16,29,.92));
+    padding: 1.4rem;
+    box-shadow: var(--shadow);
+  }
+  .calc-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .calc-head h2 {
+    margin: 0 0 0.3rem;
+    font-size: 1.22rem;
+    font-weight: 800;
+    letter-spacing: -.01em;
+  }
+  .calc-head p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .calc-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(16,185,129,.1);
+    color: var(--acc-2);
+    border: 1px solid rgba(16,185,129,.35);
+    white-space: nowrap;
+  }
+
+  /* Grilla de formulario y resultados */
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  .calc-inputs {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.1rem;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(6,10,18,.65);
+  }
+  .calc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .calc-field label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .calc-field label span.unit {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .calc-field input,
+  .calc-field select {
+    width: 100%;
+    padding: 0.68rem 0.85rem;
+    border-radius: 10px;
+    border: 1px solid var(--line-2);
+    background: rgba(12,19,34,.9);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    transition: border-color .2s ease;
+  }
+  .calc-field input:focus,
+  .calc-field select:focus {
+    outline: none;
+    border-color: var(--acc-2);
+  }
+  .calc-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .calc-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .calc-btn-reset {
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid var(--line-2);
+    background: rgba(148,163,184,.07);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s ease;
+  }
+  .calc-btn-reset:hover {
+    border-color: rgba(16,185,129,.45);
+    color: var(--acc-2);
+  }
+
+  /* Caja de resultados */
+  .calc-outputs {
+    display: grid;
+    gap: 0.7rem;
+  }
+  .res-card {
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgba(12,19,34,.82);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .res-card.highlight {
+    border-color: rgba(16,185,129,.45);
+    background: linear-gradient(180deg, rgba(16,185,129,.12), rgba(12,19,34,.88));
+  }
+  .res-card.info-sky {
+    border-color: rgba(56,189,248,.4);
+    background: linear-gradient(180deg, rgba(56,189,248,.1), rgba(12,19,34,.88));
+  }
+  .res-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--muted);
+  }
+  .res-val {
+    font-family: var(--mono);
+    font-size: 1.32rem;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .res-card.highlight .res-val { color: var(--acc-2); }
+  .res-card.info-sky .res-val { color: #38BDF8; }
+  .res-sub {
+    font-size: 0.78rem;
+    color: var(--ink-2);
+    line-height: 1.45;
+  }
+
+  /* Bloque de fórmulas / notas metodológicas */
+  .calc-formula {
+    margin-top: 1.2rem;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    border: 1px dashed var(--line-2);
+    background: rgba(6,10,18,.55);
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .calc-formula strong { color: var(--ink-2); }
+  .calc-formula code {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--acc-2);
+    background: rgba(16,185,129,.08);
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+
+  @media (max-width: 760px) {
+    .calc-grid { grid-template-columns: 1fr; }
+  }
+  /* Igualar el botón Quiz al resto de los enlaces de navegación */
+  .m-links a.m-cta {
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    color: var(--ink-2, inherit) !important;
+    padding: 0.45rem 0.75rem !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
+  }
+  .m-links a.m-cta:hover {
+    background: rgba(148,163,184,.08) !important;
+    border-color: var(--line, rgba(148,163,184,.18)) !important;
+    color: var(--ink, #fff) !important;
+  }
+
+  @media (max-width: 520px) {
+    .calc-row-2 { grid-template-columns: 1fr; }
+    .calc-tab { font-size: 0.75rem; padding: 0.55rem 0.7rem; }
+  }
+
+  /* ===== Rediseño: menú lateral + área de trabajo ===== */
+  .m-container--narrow { max-width: 80rem; }
+  .calc-layout {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+    margin-top: 1.25rem;
+  }
+  .calc-layout .calc-tabs-wrap {
+    position: sticky;
+    top: calc(var(--nav-h) + 12px);
+    z-index: 5;
+    margin: 0;
+    max-height: calc(100vh - var(--nav-h) - 28px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .calc-side-toggle { display: none; }
+  .calc-side-title {
+    margin: 0 0 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .calc-layout .calc-cats {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+  }
+  .calc-layout .calc-cat-btn {
+    width: 100%;
+    text-align: left;
+    border-radius: 10px;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.72rem;
+    line-height: 1.3;
+  }
+  .calc-layout .calc-tabs,
+  .calc-layout .calc-tabs-wrap[data-active-cat] .calc-tabs {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-right: 0;
+  }
+  .calc-layout .calc-tab {
+    flex: none;
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+    white-space: normal;
+    font-size: 0.78rem;
+    padding: 0.5rem 0.7rem;
+  }
+  .calc-tab.hidden { display: none !important; }
+  .calc-main { min-width: 0; }
+
+  @media (max-width: 900px) {
+    .calc-layout { grid-template-columns: 1fr; gap: 0.9rem; }
+    .calc-layout .calc-tabs-wrap {
+      position: sticky;
+      top: calc(var(--nav-h) + 6px);
+      max-height: calc(100vh - var(--nav-h) - 20px);
+      padding: 0.5rem;
+    }
+    .calc-side-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border-radius: 11px;
+      border: 1px solid rgba(16,185,129,.45);
+      background: rgba(16,185,129,.12);
+      color: var(--acc-2);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .calc-side-toggle .calc-side-current {
+      flex: 1;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .calc-tabs-wrap .calc-side-body { display: none; margin-top: 0.6rem; }
+    .calc-tabs-wrap.is-open .calc-side-body { display: block; }
+  }
+
+  /* Botón y Modal AVISO LEGAL (referencia MCA.HTML) */
+  .m-footer-brand .mt-6 { margin-top: 1.5rem; }
+  .m-footer-brand button[onclick*="openLegalModal"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background-color: rgba(15, 23, 42, 0.9);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -4px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .m-footer-brand button[onclick*="openLegalModal"]:hover {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+  }
+  #legal-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    pointer-events: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(2, 6, 23, 0.95);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  #legal-modal.hidden { display: none !important; }
+  #legal-modal.flex { display: flex !important; }
+  #legal-modal > div {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01)), #0B1120;
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    border-radius: 1rem;
+    max-width: 42rem;
+    width: 100%;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  #legal-modal > div::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(45, 212, 191, 0.1), rgba(255, 255, 255, 0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  #legal-modal > div > div:first-child {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.9);
+    background-color: rgba(2, 6, 23, 0.6);
+  }
+  #legal-modal > div > div:first-child > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  #legal-modal > div > div:first-child > div:first-child > div:first-child {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background-color: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+    flex-shrink: 0;
+  }
+  #legal-modal > div > div:first-child span {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #34d399;
+  }
+  #legal-modal-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.35;
+    margin: 0.125rem 0 0;
+  }
+  #legal-modal > div > div:nth-child(2) {
+    padding: 1.25rem 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    line-height: 1.625;
+  }
+  #legal-modal > div > div:nth-child(2) > div {
+    background-color: rgba(2, 6, 23, 0.7);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(30, 41, 59, 0.8);
+  }
+  #legal-modal > div > div:nth-child(2) h4 {
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.375rem;
+    font-size: 0.92rem;
+  }
+  #legal-modal > div > div:nth-child(2) h4 i { color: #34d399; font-size: 0.75rem; }
+  #legal-modal > div > div:nth-child(2) p { margin: 0; color: #cbd5e1; }
+  #legal-modal > div > div:last-child {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(30, 41, 59, 0.9);
+    background-color: rgba(2, 6, 23, 0.6);
+    display: flex;
+    justify-content: flex-end;
+  }
+  #legal-modal button[data-legal-accept="true"] {
+    background-color: #10b981;
+    color: #020617;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 0;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    cursor: pointer;
+  }
+  #legal-modal button[data-legal-accept="true"]:hover {
+    background-color: #34d399;
+  }
+  body.legal-locked {
+    overflow: hidden !important;
+  }
+</style>
+</head>
+<body>
+
+<header class="m-nav">
+    <div class="m-nav-inner">
+        <a class="m-brand" href="MCA.HTML" aria-label="Inicio · MCA">
+            <img class="m-brand-logo" src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+            <span class="m-brand-text"><small>Mercado de Capitales</small><strong>MCA • Finanzas y Normativa</strong></span>
+        </a>
+        <nav class="m-links" aria-label="Navegación principal">
+            <a href="MCA.HTML">Inicio</a>
+            <a href="NORMAS%20CNV%20T.O..HTML">Normas CNV T.O.</a>
+            <a href="NORMATIVA.HTML">Normativa</a>
+            <a href="EXTRAS.HTML">Extras</a>
+            <a href="CALCULOS.HTML" aria-current="page">Cálculos</a>
+            <a href="QUIZ.HTML" class="m-cta" target="_blank" rel="noopener">Quiz</a>
+        </nav>
+    </div>
+</header>
+
+<main class="m-main">
+  <div class="m-container m-container--narrow">
+
+    <section class="m-hero m-hero--left m-reveal">
+      <span class="m-eyebrow"><span class="dot"></span> Herramientas Cuantitativas</span>
+      <h1>Cálculos – <span class="grad">Matemática Financiera y Mercado</span></h1>
+      <p class="lead calc-lead">Simuladores prácticos para la operatoria bursátil argentina y la preparación del <strong>Examen de Idoneidad CNV</strong>: equivalencia de tasas, tipos de cambio implícitos, métricas de renta fija, caución y CEDEARs.</p>
+    </section>
+
+    <div class="calc-layout">
+    <!-- Selector de calculadoras -->
+    <div class="calc-tabs-wrap" role="tablist" aria-label="Calculadoras financieras">
+      <button type="button" class="calc-side-toggle" aria-expanded="false"><span><i class="fa-solid fa-list" aria-hidden="true"></i> Fórmulas</span><span class="calc-side-current">01 Conversión de Tasas</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+      <div class="calc-side-body">
+      <p class="calc-side-title">Fórmulas disponibles</p>
+      <div class="calc-cats" role="group" aria-label="Filtrar por categoría">
+        <button type="button" class="calc-cat-btn active" data-cat="all">Todas (33)</button>
+        <button type="button" class="calc-cat-btn" data-cat="tasas-fx">Tasas y FX (01–02, 05, 17, 25, 30)</button>
+        <button type="button" class="calc-cat-btn" data-cat="renta-fija">Renta Fija (03–04, 06–10, 29, 31)</button>
+        <button type="button" class="calc-cat-btn" data-cat="renta-variable">Renta Variable (11–14)</button>
+        <button type="button" class="calc-cat-btn" data-cat="derivados-cartera">Derivados y Cartera (15–20, 32–33)</button>
+        <button type="button" class="calc-cat-btn" data-cat="analisis-fundamental">Análisis Fundamental (21–23, 26–28)</button>
+        <button type="button" class="calc-cat-btn" data-cat="proyectos-inversion">Proyectos de Inversión (24)</button>
+      </div>
+      <div class="calc-tabs">
+        <button type="button" class="calc-tab active" role="tab" aria-selected="true" data-cat="tasas-fx" data-target="calc-tasas">
+          <span class="calc-tab-num">01</span> Conversión de Tasas
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="tasas-fx" data-target="calc-dolar">
+          <span class="calc-tab-num">02</span> Dólar MEP / CCL
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-bonos">
+          <span class="calc-tab-num">03</span> Paridad y Bonos
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-caucion">
+          <span class="calc-tab-num">04</span> Caución Bursátil
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="tasas-fx" data-target="calc-cedear">
+          <span class="calc-tab-num">05</span> Ratio CEDEAR
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-cero">
+          <span class="calc-tab-num">06</span> Cupón Cero / Letras
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-cer-dl">
+          <span class="calc-tab-num">07</span> Ajuste CER y Dólar Linked
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-duration">
+          <span class="calc-tab-num">08</span> Duration y Convexidad
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-corridos">
+          <span class="calc-tab-num">09</span> Intereses Corridos
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-spread">
+          <span class="calc-tab-num">10</span> Spread y Riesgo País
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-variable" data-target="calc-multiplos">
+          <span class="calc-tab-num">11</span> Múltiplos (PER / EV)
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-variable" data-target="calc-dividendos">
+          <span class="calc-tab-num">12</span> Dividend Yield y Payout
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-variable" data-target="calc-gordon-capm">
+          <span class="calc-tab-num">13</span> Gordon (DDM) y CAPM
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-variable" data-target="calc-suscripcion">
+          <span class="calc-tab-num">14</span> Suscripción y Split
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="derivados-cartera" data-target="calc-bs">
+          <span class="calc-tab-num">15</span> Black-Scholes y Griegas
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="derivados-cartera" data-target="calc-estrategias">
+          <span class="calc-tab-num">16</span> Estrategias Opciones
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="tasas-fx" data-target="calc-futuros">
+          <span class="calc-tab-num">17</span> Futuros de Dólar
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="derivados-cartera" data-target="calc-sharpe">
+          <span class="calc-tab-num">18</span> Sharpe, Sortino y Vol
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="derivados-cartera" data-target="calc-var-dd">
+          <span class="calc-tab-num">19</span> VaR y Max Drawdown
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="derivados-cartera" data-target="calc-ppp-be">
+          <span class="calc-tab-num">20</span> PPP, Caución y Breakeven
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="analisis-fundamental" data-target="calc-liquidez">
+          <span class="calc-tab-num">21</span> Liquidez, Solvencia y Deuda
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="analisis-fundamental" data-target="calc-rentabilidad">
+          <span class="calc-tab-num">22</span> ROE, ROA y Apalancamiento
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="analisis-fundamental" data-target="calc-ebitda">
+          <span class="calc-tab-num">23</span> EBITDA y Márgenes
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="proyectos-inversion" data-target="calc-van-tir">
+          <span class="calc-tab-num">24</span> VAN y TIR de Proyectos
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="tasas-fx" data-target="calc-interes-sc">
+          <span class="calc-tab-num">25</span> Interés Simple y Compuesto
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="analisis-fundamental" data-target="calc-ccc">
+          <span class="calc-tab-num">26</span> Capital Trabajo y Ciclo (CCC)
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="analisis-fundamental" data-target="calc-cobertura">
+          <span class="calc-tab-num">27</span> Cobertura y Deuda Neta/EBITDA
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="analisis-fundamental" data-target="calc-wacc">
+          <span class="calc-tab-num">28</span> Costo de Capital (WACC)
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-tir-flujos">
+          <span class="calc-tab-num">29</span> TIR Bono con Cupones
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="tasas-fx" data-target="calc-amortizacion">
+          <span class="calc-tab-num">30</span> Sistemas de Amortización
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="renta-fija" data-target="calc-on-conv">
+          <span class="calc-tab-num">31</span> ON Convertible (Paridad)
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="derivados-cartera" data-target="calc-pos-sizing">
+          <span class="calc-tab-num">32</span> Tamaño de Posición (Riesgo)
+        </button>
+        <button type="button" class="calc-tab" role="tab" aria-selected="false" data-cat="derivados-cartera" data-target="calc-beta-alpha">
+          <span class="calc-tab-num">33</span> Beta Cartera y Alpha Jensen
+        </button>
+      </div>
+      </div>
+    </div>
+
+    <div class="calc-main">
+    <!-- 01. CONVERSIÓN DE TASAS -->
+    <section id="calc-tasas" class="calc-panel" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Conversión y Equivalencia de Tasas</h2>
+          <p>Calculá la equivalencia entre Tasa Nominal Anual (TNA), Tasa Efectiva Anual (TEA), Tasa Efectiva Mensual (TEM) y Tasa Real descontando inflación.</p>
+        </div>
+        <span class="calc-badge">Renta Fija &amp; Tasas</span>
+      </div>
+
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-field">
+            <label for="t-tipo">Tasa de partida</label>
+            <select id="t-tipo">
+              <option value="tna" selected>TNA (Tasa Nominal Anual)</option>
+              <option value="tea">TEA (Tasa Efectiva Anual)</option>
+              <option value="tem">TEM (Tasa Efectiva Mensual)</option>
+            </select>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="t-valor">Valor de la tasa <span class="unit">%</span></label>
+              <input id="t-valor" type="number" step="0.01" value="36.00">
+            </div>
+            <div class="calc-field">
+              <label for="t-plazo">Período de capitalización <span class="unit">días</span></label>
+              <input id="t-plazo" type="number" min="1" max="365" step="1" value="30">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="t-base">Base anual <span class="unit">días</span></label>
+              <select id="t-base">
+                <option value="365" selected>365 días (Estándar AR)</option>
+                <option value="360">360 días (Comercial)</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label for="t-inf">Inflación anual est. <span class="unit">% (opcional)</span></label>
+              <input id="t-inf" type="number" step="0.1" value="25.0">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="tasas">Restablecer valores</button>
+          </div>
+        </div>
+
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">TEA (Tasa Efectiva Anual)</span>
+            <span class="res-val" id="out-tea">—</span>
+            <span class="res-sub" id="sub-tea">Rendimiento anual con reinversión periódica.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">TNA (Tasa Nominal Anual)</span>
+            <span class="res-val" id="out-tna">—</span>
+            <span class="res-sub" id="sub-tna">Tasa proporcional sin capitalización intra-anual.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">TEM (Tasa Efectiva Mensual · 30 días)</span>
+            <span class="res-val" id="out-tem">—</span>
+            <span class="res-sub" id="sub-tem">Tasa efectiva del subperíodo seleccionado.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Tasa Real Anual (Ecuación de Fisher)</span>
+            <span class="res-val" id="out-real">—</span>
+            <span class="res-sub" id="sub-real">Rendimiento efectivo neto de inflación estimada.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>TEA = (1 + TNA × (d / Base))^(Base / d) − 1</code> · <code>TEM = (1 + TEA)^(30 / Base) − 1</code> · <code>Tasa Real = ((1 + TEA) / (1 + π)) − 1</code>. En instrumentos capitalizables (LECAP/BONCAP) el mercado suele cotizar en TEM y anualizar sobre base 365.
+      </div>
+    </section>
+
+    <!-- 02. DÓLAR IMPLÍCITO (MEP / CCL / CANJE) -->
+    <section id="calc-dolar" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Dólar Implícito MEP, CCL y Costo de Canje</h2>
+          <p>Obtené el tipo de cambio implícito a partir de las cotizaciones de un bono o CEDEAR en pesos, especie D (local) y especie C (exterior).</p>
+        </div>
+        <span class="calc-badge">Tipos de Cambio</span>
+      </div>
+
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-field">
+            <label for="d-pesos">Cotización Especie en Pesos (ej. AL30) <span class="unit">ARS</span></label>
+            <input id="d-pesos" type="number" step="0.01" value="81500">
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="d-especie-d">Cotización Especie D (AL30D) <span class="unit">USD MEP</span></label>
+              <input id="d-especie-d" type="number" step="0.01" value="68.50">
+            </div>
+            <div class="calc-field">
+              <label for="d-especie-c">Cotización Especie C (AL30C) <span class="unit">USD Cable</span></label>
+              <input id="d-especie-c" type="number" step="0.01" value="67.20">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="d-comision">Comisión total ida y vuelta (opcional) <span class="unit">%</span></label>
+            <input id="d-comision" type="number" step="0.05" value="0.50">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="dolar">Restablecer valores</button>
+          </div>
+        </div>
+
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Dólar MEP Implícito</span>
+            <span class="res-val" id="out-mep">—</span>
+            <span class="res-sub" id="sub-mep">Cociente Especie Pesos / Especie D.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Dólar CCL (Cable) Implícito</span>
+            <span class="res-val" id="out-ccl">—</span>
+            <span class="res-sub" id="sub-ccl">Cociente Especie Pesos / Especie C.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Costo de Canje (CCL / MEP)</span>
+            <span class="res-val" id="out-canje">—</span>
+            <span class="res-sub" id="sub-canje">Diferencia porcentual para transferir divisas al exterior.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>TC MEP = Precio ARS / Precio D</code> · <code>TC CCL = Precio ARS / Precio C</code> · <code>Canje (%) = ((TC CCL / TC MEP) − 1) × 100</code>. Nota: verificá que ambas especies coticen sobre la misma lámina (ej. cada 100 VN).
+      </div>
+    </section>
+
+    <!-- 03. PARIDAD, VALOR TÉCNICO Y CURRENT YIELD DE BONOS -->
+    <section id="calc-bonos" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Paridad, Valor Técnico y Current Yield (CY)</h2>
+          <p>Evaluá si un título de deuda cotiza bajo la par, a la par o sobre la par, y calculá su rendimiento corriente anual.</p>
+        </div>
+        <span class="calc-badge">Análisis de Bonos</span>
+      </div>
+
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="b-precio">Precio de mercado (cada 100 VN) <span class="unit">$ / USD</span></label>
+              <input id="b-precio" type="number" step="0.01" value="68.50">
+            </div>
+            <div class="calc-field">
+              <label for="b-vr">Valor Residual (VR) <span class="unit">%</span></label>
+              <input id="b-vr" type="number" step="0.01" value="100.00">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="b-ic">Intereses Corridos (cada 100 VN) <span class="unit">$ / USD</span></label>
+              <input id="b-ic" type="number" step="0.01" value="1.25">
+            </div>
+            <div class="calc-field">
+              <label for="b-cupon">Tasa de Cupón Anual <span class="unit">%</span></label>
+              <input id="b-cupon" type="number" step="0.01" value="4.00">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="bonos">Restablecer valores</button>
+          </div>
+        </div>
+
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Paridad del Bono</span>
+            <span class="res-val" id="out-paridad">—</span>
+            <span class="res-sub" id="sub-paridad">Relación entre precio limpio/sucio y valor técnico.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Valor Técnico (VT)</span>
+            <span class="res-val" id="out-vt">—</span>
+            <span class="res-sub">Suma de Valor Residual + Intereses Corridos.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Current Yield (CY / Rendimiento Corriente)</span>
+            <span class="res-val" id="out-cy">—</span>
+            <span class="res-sub" id="sub-cy">Renta anual por cupón sobre el precio de mercado.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Valor Técnico = Valor Residual + Intereses Corridos</code> · <code>Paridad (%) = (Precio de Mercado / Valor Técnico) × 100</code> · <code>Current Yield (%) = ((VR × Cupón %) / Precio) × 100</code>.
+      </div>
+    </section>
+
+    <!-- 04. CAUCIÓN BURSÁTIL -->
+    <section id="calc-caucion" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Simulador de Caución Bursátil (Colocadora)</h2>
+          <p>Estimá el interés bruto, los gastos operativos estimados y el monto neto a cobrar al vencimiento de una caución en pesos o dólares.</p>
+        </div>
+        <span class="calc-badge">Corto Plazo</span>
+      </div>
+
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="c-capital">Capital a colocar <span class="unit">$ / USD</span></label>
+              <input id="c-capital" type="number" step="100" value="1000000">
+            </div>
+            <div class="calc-field">
+              <label for="c-dias">Plazo de la caución <span class="unit">días</span></label>
+              <input id="c-dias" type="number" min="1" max="120" step="1" value="7">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="c-tna">TNA de cierre / mercado <span class="unit">%</span></label>
+              <input id="c-tna" type="number" step="0.1" value="32.0">
+            </div>
+            <div class="calc-field">
+              <label for="c-arancel">Arancel + Derechos est. <span class="unit">% anual</span></label>
+              <input id="c-arancel" type="number" step="0.1" value="1.5">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="caucion">Restablecer valores</button>
+          </div>
+        </div>
+
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Monto Neto al Vencimiento</span>
+            <span class="res-val" id="out-cauc-neto">—</span>
+            <span class="res-sub" id="sub-cauc-neto">Capital inicial más interés neto de aranceles.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Interés Bruto del Período</span>
+            <span class="res-val" id="out-cauc-bruto">—</span>
+            <span class="res-sub" id="sub-cauc-bruto">Rendimiento directo antes de gastos de mercado.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">TNA Neta &amp; TEA Equivalente</span>
+            <span class="res-val" id="out-cauc-tasas">—</span>
+            <span class="res-sub">Tasa efectiva anualizada sobre base 365 días.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Interés Bruto = Capital × (TNA / 100) × (Días / 365)</code> · <code>Gastos = Capital × (Arancel % / 100) × (Días / 365)</code>. En BYMA, las cauciones se conciertan a tasa nominal anual sobre base 365 días.
+      </div>
+    </section>
+
+    <!-- 05. RATIO DE CONVERSIÓN CEDEAR -->
+    <section id="calc-cedear" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Calculadora de CEDEARs y Ratio de Conversión</h2>
+          <p>Determiná el precio teórico en pesos de un CEDEAR según la acción subyacente en EE.UU. y el dólar CCL, o calculá el CCL implícito del certificado.</p>
+        </div>
+        <span class="calc-badge">Renta Variable</span>
+      </div>
+
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ce-usa">Precio Acción Exterior (EE.UU.) <span class="unit">USD</span></label>
+              <input id="ce-usa" type="number" step="0.01" value="225.00">
+            </div>
+            <div class="calc-field">
+              <label for="ce-ratio">Ratio de Conversión (X : 1) <span class="unit">CEDEARs</span></label>
+              <input id="ce-ratio" type="number" step="0.5" min="0.1" value="10">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ce-ccl">Dólar CCL de referencia <span class="unit">ARS</span></label>
+              <input id="ce-ccl" type="number" step="0.5" value="1210.00">
+            </div>
+            <div class="calc-field">
+              <label for="ce-local">Precio CEDEAR en BYMA <span class="unit">ARS</span></label>
+              <input id="ce-local" type="number" step="1" value="27350">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="cedear">Restablecer valores</button>
+          </div>
+        </div>
+
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Precio Teórico del CEDEAR</span>
+            <span class="res-val" id="out-ce-teorico">—</span>
+            <span class="res-sub" id="sub-ce-teorico">Valuación arbitrada según CCL de referencia.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Dólar CCL Implícito en el CEDEAR</span>
+            <span class="res-val" id="out-ce-ccl">—</span>
+            <span class="res-sub" id="sub-ce-ccl">Tipo de cambio surgido de la cotización local.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Valor en USD por CEDEAR</span>
+            <span class="res-val" id="out-ce-usd">—</span>
+            <span class="res-sub">Precio de la acción subyacente dividido por el ratio.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Precio Teórico ARS = (Precio USD / Ratio) × Dólar CCL</code> · <code>CCL Implícito = (Precio CEDEAR ARS × Ratio) / Precio USD</code>.
+      </div>
+    </section>
+
+
+    <!-- 06. CUPÓN CERO / LETRAS -->
+    <section id="calc-cero" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Precio y TIR de Bono Cupón Cero (LECAP / BONCAP / Letras)</h2>
+          <p>Calculá la TIR efectiva anual (TEA), tasa mensual directa y rendimiento bruto de un instrumento a descuento o capitalizable al vencimiento.</p>
+        </div>
+        <span class="calc-badge">Renta Fija · Letras</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="z-compra">Precio de compra <span class="unit">$ / USD</span></label>
+              <input id="z-compra" type="number" step="0.01" value="1045.00">
+            </div>
+            <div class="calc-field">
+              <label for="z-pago">Monto a cobrar al vto. <span class="unit">$ / USD</span></label>
+              <input id="z-pago" type="number" step="0.01" value="1280.00">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="z-dias">Días al vencimiento <span class="unit">días</span></label>
+              <input id="z-dias" type="number" min="1" step="1" value="180">
+            </div>
+            <div class="calc-field">
+              <label for="z-base">Base anual <span class="unit">días</span></label>
+              <select id="z-base">
+                <option value="365" selected>365 días</option>
+                <option value="360">360 días</option>
+              </select>
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="cero">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">TIR Efectiva Anual (TEA)</span>
+            <span class="res-val" id="out-z-tea">—</span>
+            <span class="res-sub" id="sub-z-tea">Rendimiento anualizado compuesto.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">TEM Equivalente (30 días)</span>
+            <span class="res-val" id="out-z-tem">—</span>
+            <span class="res-sub">Tasa mensual efectiva implícita.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Ganancia Bruta del Período</span>
+            <span class="res-val" id="out-z-gan">—</span>
+            <span class="res-sub" id="sub-z-gan">Diferencia nominal y porcentual al vencimiento.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>TIR (TEA) = (Monto Vto. / Precio Compra)^(Base / Días) − 1</code> · <code>TEM = (1 + TEA)^(30 / Base) − 1</code>.
+      </div>
+    </section>
+
+    <!-- 07. AJUSTE POR CER Y DÓLAR LINKED -->
+    <section id="calc-cer-dl" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Ajuste por CER y Bono Dollar-Linked</h2>
+          <p>Estimá el factor de actualización CER y el valor técnico ajustado en pesos para bonos CER o títulos atados al tipo de cambio oficial.</p>
+        </div>
+        <span class="calc-badge">Renta Fija · Indexados</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="idx-vn">Valor Nominal (VN) <span class="unit">unidades</span></label>
+              <input id="idx-vn" type="number" step="100" value="10000">
+            </div>
+            <div class="calc-field">
+              <label for="idx-vr">Valor Residual <span class="unit">%</span></label>
+              <input id="idx-vr" type="number" step="0.01" value="100.00">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="idx-cer0">CER Inicial / Emisión <span class="unit">índice</span></label>
+              <input id="idx-cer0" type="number" step="0.0001" value="120.5000">
+            </div>
+            <div class="calc-field">
+              <label for="idx-cer1">CER Actual / Proyectado <span class="unit">índice</span></label>
+              <input id="idx-cer1" type="number" step="0.0001" value="265.1000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="idx-tc0">TC Oficial Inicial (A3500) <span class="unit">$ / USD</span></label>
+              <input id="idx-tc0" type="number" step="0.01" value="950.00">
+            </div>
+            <div class="calc-field">
+              <label for="idx-tc1">TC Oficial Actual / Vto. <span class="unit">$ / USD</span></label>
+              <input id="idx-tc1" type="number" step="0.01" value="1180.00">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="cerdl">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Capital Ajustado por CER</span>
+            <span class="res-val" id="out-idx-cer">—</span>
+            <span class="res-sub" id="sub-idx-cer">Coeficiente CER aplicado sobre VN × VR.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Valor en Pesos Dollar-Linked</span>
+            <span class="res-val" id="out-idx-dl">—</span>
+            <span class="res-sub" id="sub-idx-dl">Variación de TC oficial aplicada al capital.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Coef. CER = CER_t / CER_0</code> · <code>Capital CER = VN × (VR/100) × Coef. CER</code> · <code>Capital DL ($) = VN × (VR/100) × TC_t</code>.
+      </div>
+    </section>
+
+    <!-- 08. DURATION Y CONVEXIDAD -->
+    <section id="calc-duration" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Duration Modificada y Convexidad</h2>
+          <p>Aproximá el cambio porcentual en el precio de un bono ante un shock paralelo de tasa (ΔTIR) combinando sensibilidad lineal y convexidad.</p>
+        </div>
+        <span class="calc-badge">Riesgo de Tasa</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="dur-md">Modified Duration (MD) <span class="unit">años</span></label>
+              <input id="dur-md" type="number" step="0.01" value="4.25">
+            </div>
+            <div class="calc-field">
+              <label for="dur-conv">Convexidad (C) <span class="unit">años²</span></label>
+              <input id="dur-conv" type="number" step="0.1" value="28.5">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="dur-dy">Variación de TIR (Δy) <span class="unit">puntos porcentuales (ej. +1.0 = +100 bps)</span></label>
+            <input id="dur-dy" type="number" step="0.05" value="1.00">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="duration">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Variación Estimada de Precio (MD + Convexidad)</span>
+            <span class="res-val" id="out-dur-total">—</span>
+            <span class="res-sub" id="sub-dur-total">Efecto neto combinando pendiente y curvatura.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Solo Duration Modificada (−MD × Δy)</span>
+            <span class="res-val" id="out-dur-lineal">—</span>
+            <span class="res-sub">Aproximación lineal de primer orden.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Aporte de Convexidad (+½ × C × Δy²)</span>
+            <span class="res-val" id="out-dur-conv">—</span>
+            <span class="res-sub">Efecto favorable de segunda orden ante movimientos de tasa.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>ΔP/P ≈ −MD · Δy + 0.5 · C · (Δy)²</code> (con <code>Δy</code> expresado en decimal, ej. 1% = 0.01).
+      </div>
+    </section>
+
+    <!-- 09. INTERESES CORRIDOS -->
+    <section id="calc-corridos" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Intereses Corridos y Precio Limpio / Sucio</h2>
+          <p>Calculá los intereses devengados desde el último pago de cupón (cada 100 VN) y convertí entre precio limpio y precio sucio.</p>
+        </div>
+        <span class="calc-badge">Renta Fija · Flujos</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ic-vr">Valor Residual (VR) <span class="unit">%</span></label>
+              <input id="ic-vr" type="number" step="0.01" value="100.00">
+            </div>
+            <div class="calc-field">
+              <label for="ic-cupon">Tasa de Cupón Anual <span class="unit">%</span></label>
+              <input id="ic-cupon" type="number" step="0.01" value="6.00">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ic-dias">Días corridos desde último cupón <span class="unit">días</span></label>
+              <input id="ic-dias" type="number" min="0" step="1" value="45">
+            </div>
+            <div class="calc-field">
+              <label for="ic-base">Convención de días <span class="unit">base</span></label>
+              <select id="ic-base">
+                <option value="365" selected>Actual / 365</option>
+                <option value="360">30 / 360</option>
+              </select>
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="ic-limpio">Precio Limpio (cada 100 VN) <span class="unit">$ / USD</span></label>
+            <input id="ic-limpio" type="number" step="0.01" value="72.40">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="corridos">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Intereses Corridos (cada 100 VN)</span>
+            <span class="res-val" id="out-ic-val">—</span>
+            <span class="res-sub">Cupón devengado acumulado a la fecha de liquidación.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Precio Sucio (Full Price)</span>
+            <span class="res-val" id="out-ic-sucio">—</span>
+            <span class="res-sub">Precio Limpio + Intereses Corridos.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>IC = VR × (Cupón % / 100) × (Días Corridos / Base)</code> · <code>Precio Sucio = Precio Limpio + IC</code>.
+      </div>
+    </section>
+
+    <!-- 10. SPREAD SOBERANO Y RIESGO PAÍS -->
+    <section id="calc-spread" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Spread Soberano y Riesgo País (en Puntos Básicos)</h2>
+          <p>Calculá el diferencial de rendimiento entre un bono soberano o corporativo y un bono libre de riesgo (ej. US Treasury) de similar plazo.</p>
+        </div>
+        <span class="calc-badge">Riesgo Crédito</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="sp-bono">TIR del Bono Evaluado <span class="unit">% anual</span></label>
+              <input id="sp-bono" type="number" step="0.01" value="14.20">
+            </div>
+            <div class="calc-field">
+              <label for="sp-rf">TIR Tasa Libre de Riesgo (UST) <span class="unit">% anual</span></label>
+              <input id="sp-rf" type="number" step="0.01" value="4.35">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="spread">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Spread en Puntos Básicos (bps)</span>
+            <span class="res-val" id="out-sp-bps">—</span>
+            <span class="res-sub">1 punto porcentual = 100 puntos básicos (bps).</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Diferencial Porcentual</span>
+            <span class="res-val" id="out-sp-pct">—</span>
+            <span class="res-sub">Sobretasa exigida por sobre el benchmark de referencia.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Spread (%) = TIR_bono − TIR_benchmark</code> · <code>Spread (bps) = Spread (%) × 100</code>.
+      </div>
+    </section>
+
+    <!-- 11. MÚLTIPLOS DE VALUACIÓN (PER / EV / P/B) -->
+    <section id="calc-multiplos" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Múltiplos de Valuación: PER, EV/EBITDA y P/VC</h2>
+          <p>Analizá múltiplos fundamentales de una acción: Price/Earnings, Earnings Yield, Price/Book Value y EV/EBITDA.</p>
+        </div>
+        <span class="calc-badge">Valuación Fundamental</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="m-precio">Precio por acción <span class="unit">$ / USD</span></label>
+              <input id="m-precio" type="number" step="0.01" value="2500">
+            </div>
+            <div class="calc-field">
+              <label for="m-bpa">Ganancia por Acción (BPA / EPS) <span class="unit">$ / USD</span></label>
+              <input id="m-bpa" type="number" step="0.01" value="250">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="m-vpa">Valor Libro por Acción (VPA / BV) <span class="unit">$ / USD</span></label>
+              <input id="m-vpa" type="number" step="0.01" value="1800">
+            </div>
+            <div class="calc-field">
+              <label for="m-ev">Enterprise Value (EV) <span class="unit">MM $ / USD</span></label>
+              <input id="m-ev" type="number" step="1" value="1200">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="m-ebitda">EBITDA <span class="unit">MM $ / USD</span></label>
+            <input id="m-ebitda" type="number" step="1" value="240">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="multiplos">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">PER (Price / Earnings Ratio)</span>
+            <span class="res-val" id="out-m-per">—</span>
+            <span class="res-sub" id="sub-m-per">Años de ganancias actuales para igualar el precio.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">EV / EBITDA &amp; Price / Book (P/VC)</span>
+            <span class="res-val" id="out-m-evpb">—</span>
+            <span class="res-sub">Múltiplos operativos y patrimoniales.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Earnings Yield (1 / PER)</span>
+            <span class="res-val" id="out-m-ey">—</span>
+            <span class="res-sub">Retorno de ganancias implícito sobre el precio.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>PER = Precio / BPA</code> · <code>Earnings Yield = (BPA / Precio) × 100</code> · <code>P/VC = Precio / VPA</code> · <code>EV/EBITDA = EV / EBITDA</code>.
+      </div>
+    </section>
+
+    <!-- 12. DIVIDEND YIELD Y PAYOUT RATIO -->
+    <section id="calc-dividendos" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Dividend Yield, Payout Ratio y Precio Ex-Cupón</h2>
+          <p>Calculá el rendimiento por dividendo anual, la proporción de utilidades distribuidas y el ajuste teórico ex-dividendo.</p>
+        </div>
+        <span class="calc-badge">Renta Variable · Dividendos</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="div-precio">Precio de la acción <span class="unit">$ / USD</span></label>
+              <input id="div-precio" type="number" step="0.01" value="1500">
+            </div>
+            <div class="calc-field">
+              <label for="div-monto">Dividendo anual por acción <span class="unit">$ / USD</span></label>
+              <input id="div-monto" type="number" step="0.01" value="90">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="div-bpa">BPA (Ganancia por acción) <span class="unit">$ / USD</span></label>
+              <input id="div-bpa" type="number" step="0.01" value="225">
+            </div>
+            <div class="calc-field">
+              <label for="div-ret">Retención impositiva estimada <span class="unit">%</span></label>
+              <input id="div-ret" type="number" step="0.5" value="7.0">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="dividendos">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Dividend Yield Bruto / Neto</span>
+            <span class="res-val" id="out-div-dy">—</span>
+            <span class="res-sub" id="sub-div-dy">Rendimiento por dividendo antes y después de retención.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Payout Ratio</span>
+            <span class="res-val" id="out-div-pay">—</span>
+            <span class="res-sub">Porcentaje de la ganancia neta repartido en dividendos.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Precio Teórico Ex-Cupón</span>
+            <span class="res-val" id="out-div-ex">—</span>
+            <span class="res-sub">Precio ajustado por corte de dividendo bruto.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>DY Bruto = (Dividendo / Precio) × 100</code> · <code>Payout = (Dividendo / BPA) × 100</code> · <code>Precio Ex-Cupón = Precio − Dividendo</code>.
+      </div>
+    </section>
+
+    <!-- 13. MODELO DE GORDON-SHAPIRO (DDM) Y CAPM -->
+    <section id="calc-gordon-capm" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Modelo de Gordon-Shapiro (DDM) y Costo de Capital (CAPM)</h2>
+          <p>Estimá la tasa de retorno requerida (k_e) vía CAPM (con ajuste de riesgo país) y el valor intrínseco de una acción por dividendos crecientes.</p>
+        </div>
+        <span class="calc-badge">Valuación · Costo Capital</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="gc-rf">Tasa Libre de Riesgo (R_f) <span class="unit">%</span></label>
+              <input id="gc-rf" type="number" step="0.1" value="4.3">
+            </div>
+            <div class="calc-field">
+              <label for="gc-beta">Beta (β) <span class="unit">coeficiente</span></label>
+              <input id="gc-beta" type="number" step="0.05" value="1.15">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="gc-erp">Prima de Riesgo de Mercado (ERP) <span class="unit">%</span></label>
+              <input id="gc-erp" type="number" step="0.1" value="5.0">
+            </div>
+            <div class="calc-field">
+              <label for="gc-rp">Riesgo País / Spread adicional <span class="unit">%</span></label>
+              <input id="gc-rp" type="number" step="0.1" value="6.5">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="gc-d1">Dividendo Próximo Año (D_1) <span class="unit">$ / USD</span></label>
+              <input id="gc-d1" type="number" step="0.1" value="12.0">
+            </div>
+            <div class="calc-field">
+              <label for="gc-g">Crecimiento Perpetuo (g) <span class="unit">%</span></label>
+              <input id="gc-g" type="number" step="0.1" value="3.0">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="gordon">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Valor Intrínseco Estimado (P_0)</span>
+            <span class="res-val" id="out-gc-p0">—</span>
+            <span class="res-sub" id="sub-gc-p0">Descuento de flujos a perpetuidad con tasa k_e.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Costo de Capital Propio (k_e)</span>
+            <span class="res-val" id="out-gc-ke">—</span>
+            <span class="res-sub">Tasa de descuento requerida según parámetros CAPM.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>k_e = R_f + β · ERP + Riesgo País</code> · <code>P_0 = D_1 / (k_e − g)</code> (requiere <code>k_e &gt; g</code>).
+      </div>
+    </section>
+
+    <!-- 14. SUSCRIPCIÓN PREFERENTE Y SPLIT / DIVIDENDO EN ACCIONES -->
+    <section id="calc-suscripcion" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Suscripción Preferente (TERP) y Split / Dividendo en Acciones</h2>
+          <p>Calculá el precio teórico ex-derecho (TERP) en ampliaciones de capital o la nueva cantidad y precio teórico tras un split/dividendo en acciones.</p>
+        </div>
+        <span class="calc-badge">Eventos Corporativos</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="sub-p0">Precio actual de la acción <span class="unit">$ / USD</span></label>
+              <input id="sub-p0" type="number" step="0.01" value="1000">
+            </div>
+            <div class="calc-field">
+              <label for="sub-ps">Precio de suscripción <span class="unit">$ / USD (0 si es split)</span></label>
+              <input id="sub-ps" type="number" step="0.01" value="750">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="sub-nold">Acciones existentes requeridas <span class="unit">N_old</span></label>
+              <input id="sub-nold" type="number" min="1" step="1" value="4">
+            </div>
+            <div class="calc-field">
+              <label for="sub-nnew">Acciones nuevas emitidas <span class="unit">N_new</span></label>
+              <input id="sub-nnew" type="number" min="0.1" step="0.5" value="1">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="sub-ten">Tenencia actual del inversor <span class="unit">acciones</span></label>
+            <input id="sub-ten" type="number" min="1" step="1" value="1000">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="suscripcion">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Precio Teórico Ex-Derecho (TERP)</span>
+            <span class="res-val" id="out-sub-terp">—</span>
+            <span class="res-sub">Precio ponderado post-emisión o ajuste por split.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Derechos / Acciones Nuevas para tu Tenencia</span>
+            <span class="res-val" id="out-sub-new">—</span>
+            <span class="res-sub" id="sub-sub-new">Integración estimada y tenencia final.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>TERP = (N_old · P_0 + N_new · P_s) / (N_old + N_new)</code> · <code>Nuevas = Tenencia · (N_new / N_old)</code>.
+      </div>
+    </section>
+
+    <!-- 15. BLACK-SCHOLES-MERTON Y GRIEGAS -->
+    <section id="calc-bs" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Valuación de Opciones (Black-Scholes) y Griegas</h2>
+          <p>Calculá la prima teórica de opciones Call y Put europeas junto con Delta, Gamma, Theta y Vega.</p>
+        </div>
+        <span class="calc-badge">Derivados · Opciones</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="bs-s">Precio Spot Subyacente (S) <span class="unit">$ / USD</span></label>
+              <input id="bs-s" type="number" step="0.5" value="100">
+            </div>
+            <div class="calc-field">
+              <label for="bs-k">Precio de Ejercicio / Strike (K) <span class="unit">$ / USD</span></label>
+              <input id="bs-k" type="number" step="0.5" value="100">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="bs-t">Días hasta el vencimiento <span class="unit">días</span></label>
+              <input id="bs-t" type="number" min="1" step="1" value="30">
+            </div>
+            <div class="calc-field">
+              <label for="bs-v">Volatilidad Implícita Anual (σ) <span class="unit">%</span></label>
+              <input id="bs-v" type="number" min="1" step="1" value="45">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="bs-r">Tasa Libre de Riesgo Anual (r) <span class="unit">%</span></label>
+            <input id="bs-r" type="number" step="0.5" value="25">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="bs">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Prima Teórica CALL / PUT</span>
+            <span class="res-val" id="out-bs-primas">—</span>
+            <span class="res-sub" id="sub-bs-primas">Valor intrínseco y valor tiempo estimado.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Delta (Call / Put) &amp; Gamma</span>
+            <span class="res-val" id="out-bs-dg">—</span>
+            <span class="res-sub">Sensibilidad direccional y tasa de cambio de Delta.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Theta (diario) &amp; Vega (por +1% vol)</span>
+            <span class="res-val" id="out-bs-tv">—</span>
+            <span class="res-sub">Decaimiento temporal por día y sensibilidad a volatilidad.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> Modelo estándar de Black-Scholes-Merton (sin dividendo continuo, base 365 días, con aproximación numérica de la normal estándar <code>N(d_1)</code> y <code>N(d_2)</code>).
+      </div>
+    </section>
+
+    <!-- 16. ESTRATEGIAS CON OPCIONES -->
+    <section id="calc-estrategias" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Estrategias con Opciones: Bull Spread, Straddle y Covered Call</h2>
+          <p>Evaluá el resultado al vencimiento, ganancia/pérdida máxima y punto de equilibrio (breakeven) de estrategias combinadas.</p>
+        </div>
+        <span class="calc-badge">Derivados · Estrategias</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-field">
+            <label for="st-tipo">Estrategia</label>
+            <select id="st-tipo">
+              <option value="bull" selected>Bull Call Spread (Compra K1 + Venta K2)</option>
+              <option value="straddle">Long Straddle (Compra Call K1 + Compra Put K1)</option>
+              <option value="covered">Lanzamiento Cubierto / Covered Call (Acción S + Venta Call K2)</option>
+            </select>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="st-s">Precio Spot / Entrada Acción <span class="unit">$</span></label>
+              <input id="st-s" type="number" step="1" value="100">
+            </div>
+            <div class="calc-field">
+              <label for="st-k1">Strike K1 (Bajo / Call) <span class="unit">$</span></label>
+              <input id="st-k1" type="number" step="1" value="100">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="st-k2">Strike K2 (Alto / Lanzado) <span class="unit">$</span></label>
+              <input id="st-k2" type="number" step="1" value="115">
+            </div>
+            <div class="calc-field">
+              <label for="st-prima">Prima Neta Pagada (+) / Cobrada (−) <span class="unit">$</span></label>
+              <input id="st-prima" type="number" step="0.5" value="4.5">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="estrategias">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Ganancia Máxima / Pérdida Máxima</span>
+            <span class="res-val" id="out-st-minmax">—</span>
+            <span class="res-sub" id="sub-st-minmax">Límites teóricos al vencimiento por acción.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Punto(s) de Equilibrio (Breakeven)</span>
+            <span class="res-val" id="out-st-be">—</span>
+            <span class="res-sub">Precio del subyacente en el que el resultado neto es cero.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Notas:</strong> En <em>Bull Call Spread</em> el ancho del spread es <code>K2 − K1</code>; en <em>Long Straddle</em> se requiere un movimiento mayor a la suma de primas; en <em>Covered Call</em> la ganancia queda topada en <code>K2</code>.
+      </div>
+    </section>
+
+    <!-- 17. FUTUROS DE DÓLAR -->
+    <section id="calc-futuros" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Futuros de Dólar: Tasa Implícita y Mark-to-Market</h2>
+          <p>Calculá la TNA/TEA implícita de un contrato de futuro (ej. A3 / Matba Rofex) y el resultado por ajuste diario.</p>
+        </div>
+        <span class="calc-badge">Derivados · Futuros</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="fu-spot">Dólar Spot de referencia <span class="unit">$ / USD</span></label>
+              <input id="fu-spot" type="number" step="0.5" value="1150.00">
+            </div>
+            <div class="calc-field">
+              <label for="fu-fut">Precio Futuro pactado <span class="unit">$ / USD</span></label>
+              <input id="fu-fut" type="number" step="0.5" value="1245.00">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="fu-dias">Días al vencimiento <span class="unit">días</span></label>
+              <input id="fu-dias" type="number" min="1" step="1" value="60">
+            </div>
+            <div class="calc-field">
+              <label for="fu-cont">Cantidad de contratos (1.000 USD c/u) <span class="unit">contratos</span></label>
+              <input id="fu-cont" type="number" min="1" step="1" value="10">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="fu-ajuste">Variación de ajuste diario <span class="unit">$ por USD</span></label>
+            <input id="fu-ajuste" type="number" step="0.25" value="8.00">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="futuros">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Tasa Implícita TNA / TEA</span>
+            <span class="res-val" id="out-fu-tasas">—</span>
+            <span class="res-sub" id="sub-fu-tasas">Devaluación implícita directa del período.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Resultado Ajuste Diario (Posición Compradora)</span>
+            <span class="res-val" id="out-fu-mtm">—</span>
+            <span class="res-sub">Multiplicado por 1.000 USD por contrato.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>TNA Implícita = ((Futuro / Spot) − 1) × (365 / Días)</code> · <code>TEA = (Futuro / Spot)^(365 / Días) − 1</code>.
+      </div>
+    </section>
+
+    <!-- 18. SHARPE, SORTINO Y VOLATILIDAD -->
+    <section id="calc-sharpe" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Métricas de Cartera: Sharpe, Sortino y Volatilidad</h2>
+          <p>Evaluá el retorno ajustado por riesgo de un portafolio frente a la tasa libre de riesgo usando volatilidad total o desvío a la baja.</p>
+        </div>
+        <span class="calc-badge">Gestión de Cartera</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="sh-rp">Retorno Anual de la Cartera (R_p) <span class="unit">%</span></label>
+              <input id="sh-rp" type="number" step="0.1" value="28.0">
+            </div>
+            <div class="calc-field">
+              <label for="sh-rf">Tasa Libre de Riesgo (R_f) <span class="unit">%</span></label>
+              <input id="sh-rf" type="number" step="0.1" value="8.0">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="sh-vol">Volatilidad Anual Total (σ_p) <span class="unit">%</span></label>
+              <input id="sh-vol" type="number" min="0.1" step="0.1" value="18.0">
+            </div>
+            <div class="calc-field">
+              <label for="sh-dd">Downside Deviation (σ_d) <span class="unit">%</span></label>
+              <input id="sh-dd" type="number" min="0.1" step="0.1" value="12.0">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="sharpe">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Ratio de Sharpe</span>
+            <span class="res-val" id="out-sh-ratio">—</span>
+            <span class="res-sub" id="sub-sh-ratio">Exceso de retorno por unidad de volatilidad total.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Ratio de Sortino</span>
+            <span class="res-val" id="out-sh-sortino">—</span>
+            <span class="res-sub">Exceso de retorno por unidad de volatilidad negativa.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Sharpe = (R_p − R_f) / σ_p</code> · <code>Sortino = (R_p − R_f) / σ_d</code>.
+      </div>
+    </section>
+
+    <!-- 19. VAR PARAMÉTRICO Y MAX DRAWDOWN -->
+    <section id="calc-var-dd" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Value at Risk (VaR Paramétrico) y Maximum Drawdown</h2>
+          <p>Estimá la pérdida máxima esperada bajo cierto nivel de confianza y calculá el retroceso porcentual desde el pico de la cartera.</p>
+        </div>
+        <span class="calc-badge">Riesgo de Cartera</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="vr-cap">Valor de la Cartera <span class="unit">$ / USD</span></label>
+              <input id="vr-cap" type="number" step="1000" value="10000000">
+            </div>
+            <div class="calc-field">
+              <label for="vr-vol">Volatilidad Anualizada <span class="unit">%</span></label>
+              <input id="vr-vol" type="number" step="0.5" value="22.0">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="vr-conf">Nivel de Confianza <span class="unit">z-score</span></label>
+              <select id="vr-conf">
+                <option value="1.645" selected>95% (z = 1,645)</option>
+                <option value="2.326">99% (z = 2,326)</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label for="vr-horiz">Horizonte temporal <span class="unit">días</span></label>
+              <input id="vr-horiz" type="number" min="1" step="1" value="1">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="vr-pico">Máximo Histórico / Pico <span class="unit">$ / USD</span></label>
+              <input id="vr-pico" type="number" step="100" value="12500000">
+            </div>
+            <div class="calc-field">
+              <label for="vr-valle">Valle / Valor Actual <span class="unit">$ / USD</span></label>
+              <input id="vr-valle" type="number" step="100" value="10000000">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="vardd">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">VaR Paramétrico Estimado</span>
+            <span class="res-val" id="out-vr-val">—</span>
+            <span class="res-sub" id="sub-vr-val">Pérdida máxima estimada en el horizonte indicado.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Drawdown (Caída desde Pico)</span>
+            <span class="res-val" id="out-vr-dd">—</span>
+            <span class="res-sub" id="sub-vr-dd">Retroceso porcentual y nominal.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>VaR = Capital · (σ_anual / √252) · √Días · z</code> · <code>Drawdown (%) = ((Valle − Pico) / Pico) × 100</code>.
+      </div>
+    </section>
+
+    <!-- 20. PPP, CAUCIÓN TOMADORA Y BREAKEVEN -->
+    <section id="calc-ppp-be" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>PPP (Costo Promedio), Caución Tomadora y Breakeven</h2>
+          <p>Calculá tu precio promedio ponderado tras compras en dos tramos y el precio de venta necesario para empatar netos de comisiones y costo financiero.</p>
+        </div>
+        <span class="calc-badge">Operativa &amp; Costos</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="pp-q1">Cantidad Tramo 1 <span class="unit">unidades</span></label>
+              <input id="pp-q1" type="number" step="1" value="500">
+            </div>
+            <div class="calc-field">
+              <label for="pp-p1">Precio Tramo 1 <span class="unit">$ / USD</span></label>
+              <input id="pp-p1" type="number" step="0.01" value="1200">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="pp-q2">Cantidad Tramo 2 <span class="unit">unidades</span></label>
+              <input id="pp-q2" type="number" step="1" value="500">
+            </div>
+            <div class="calc-field">
+              <label for="pp-p2">Precio Tramo 2 <span class="unit">$ / USD</span></label>
+              <input id="pp-p2" type="number" step="0.01" value="1050">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="pp-com">Comisiones / Derechos totales <span class="unit">% ida y vuelta</span></label>
+              <input id="pp-com" type="number" step="0.05" value="0.80">
+            </div>
+            <div class="calc-field">
+              <label for="pp-cauc">Costo Caución Tomadora período <span class="unit">% (opcional)</span></label>
+              <input id="pp-cauc" type="number" step="0.1" value="1.50">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="pppbe">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Precio Promedio Ponderado (PPP)</span>
+            <span class="res-val" id="out-pp-ppp">—</span>
+            <span class="res-sub" id="sub-pp-ppp">Cantidad total y capital invertido acumulado.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Precio Breakeven Neto</span>
+            <span class="res-val" id="out-pp-be">—</span>
+            <span class="res-sub">Precio de salida mínimo para cubrir costos y caución.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>PPP = (Q_1·P_1 + Q_2·P_2) / (Q_1 + Q_2)</code> · <code>Breakeven ≈ PPP × (1 + Comisión% + Caución%)</code>.
+      </div>
+    </section>
+
+    <!-- 21. LIQUIDEZ, LIQUIDEZ ÁCIDA, SOLVENCIA Y ENDEUDAMIENTO -->
+    <section id="calc-liquidez" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Ratios de Liquidez, Solvencia y Endeudamiento</h2>
+          <p>Evaluá la capacidad de pago de corto y largo plazo de una empresa a partir de las partidas principales de su Estado de Situación Patrimonial.</p>
+        </div>
+        <span class="calc-badge">Análisis Fundamental · Estructura</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="liq-ac">Activo Corriente (AC) <span class="unit">$ / USD</span></label>
+              <input id="liq-ac" type="number" step="100" value="450000">
+            </div>
+            <div class="calc-field">
+              <label for="liq-bs">Bienes de Cambio / Inventarios <span class="unit">$ / USD</span></label>
+              <input id="liq-bs" type="number" step="100" value="150000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="liq-at">Activo Total (AT) <span class="unit">$ / USD</span></label>
+              <input id="liq-at" type="number" step="100" value="1200000">
+            </div>
+            <div class="calc-field">
+              <label for="liq-pc">Pasivo Corriente (PC) <span class="unit">$ / USD</span></label>
+              <input id="liq-pc" type="number" step="100" value="250000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="liq-pt">Pasivo Total (PT) <span class="unit">$ / USD</span></label>
+              <input id="liq-pt" type="number" step="100" value="500000">
+            </div>
+            <div class="calc-field">
+              <label for="liq-pn">Patrimonio Neto (PN) <span class="unit">$ / USD</span></label>
+              <input id="liq-pn" type="number" step="100" value="700000">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="liquidez">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Liquidez Corriente &amp; Liquidez Ácida (Prueba Ácida)</span>
+            <span class="res-val" id="out-liq-ratios">—</span>
+            <span class="res-sub" id="sub-liq-ratios">Cobertura de obligaciones de corto plazo con y sin inventarios.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Solvencia (Activo Total / Pasivo Total)</span>
+            <span class="res-val" id="out-liq-solv">—</span>
+            <span class="res-sub" id="sub-liq-solv">Respaldo patrimonial total frente a los pasivos totales.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Endeudamiento (Pasivo Total / Patrimonio Neto)</span>
+            <span class="res-val" id="out-liq-end">—</span>
+            <span class="res-sub" id="sub-liq-end">Proporción de financiamiento de terceros respecto al capital propio.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Liquidez Corriente = AC / PC</code> · <code>Liquidez Ácida = (AC − Bienes de Cambio) / PC</code> · <code>Solvencia = AT / PT</code> · <code>Endeudamiento = PT / PN</code>.
+      </div>
+    </section>
+
+    <!-- 22. ROE, ROA Y APALANCAMIENTO GENERAL -->
+    <section id="calc-rentabilidad" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Rentabilidad (ROE, ROA) y Apalancamiento General</h2>
+          <p>Medí la eficiencia operativa de los activos (ROA), el retorno sobre el capital propio (ROE) y el efecto del apalancamiento financiero general.</p>
+        </div>
+        <span class="calc-badge">Análisis Fundamental · Rentabilidad</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ren-rn">Resultado Neto (Utilidad Neta) <span class="unit">$ / USD</span></label>
+              <input id="ren-rn" type="number" step="100" value="140000">
+            </div>
+            <div class="calc-field">
+              <label for="ren-ebit">Resultado Operativo (EBIT) <span class="unit">$ / USD</span></label>
+              <input id="ren-ebit" type="number" step="100" value="210000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ren-at">Activo Total Promedio (AT) <span class="unit">$ / USD</span></label>
+              <input id="ren-at" type="number" step="100" value="1200000">
+            </div>
+            <div class="calc-field">
+              <label for="ren-pn">Patrimonio Neto Promedio (PN) <span class="unit">$ / USD</span></label>
+              <input id="ren-pn" type="number" step="100" value="700000">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="rentabilidad">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">ROE (Return on Equity)</span>
+            <span class="res-val" id="out-ren-roe">—</span>
+            <span class="res-sub" id="sub-ren-roe">Rentabilidad neta obtenida sobre el Patrimonio Neto.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">ROA (Return on Assets)</span>
+            <span class="res-val" id="out-ren-roa">—</span>
+            <span class="res-sub" id="sub-ren-roa">Rentabilidad generada sobre el Activo Total.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Apalancamiento General (ROE / ROA · Multiplicador)</span>
+            <span class="res-val" id="out-ren-apal">—</span>
+            <span class="res-sub" id="sub-ren-apal">Relación entre rentabilidad del capital propio y de los activos.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>ROE = (Resultado Neto / PN) × 100</code> · <code>ROA = (Resultado Neto / AT) × 100</code> · <code>Apalancamiento General = ROE / ROA</code> (y <code>Multiplicador de Capital = AT / PN</code>). Si <code>Apalancamiento &gt; 1</code>, el endeudamiento potencia el ROE.
+      </div>
+    </section>
+
+    <!-- 23. EBITDA Y MÁRGENES OPERATIVOS -->
+    <section id="calc-ebitda" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Cálculo de EBITDA y Margen EBITDA</h2>
+          <p>Determiná el flujo operativo bruto antes de intereses, impuestos, depreciaciones y amortizaciones a partir del Estado de Resultados.</p>
+        </div>
+        <span class="calc-badge">Análisis Fundamental · Flujo Operativo</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="eb-ventas">Ventas Netas / Ingresos <span class="unit">$ / USD</span></label>
+              <input id="eb-ventas" type="number" step="100" value="1500000">
+            </div>
+            <div class="calc-field">
+              <label for="eb-ebit">Resultado Operativo (EBIT) <span class="unit">$ / USD</span></label>
+              <input id="eb-ebit" type="number" step="100" value="210000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="eb-dep">Depreciaciones (Bienes de Uso) <span class="unit">$ / USD</span></label>
+              <input id="eb-dep" type="number" step="100" value="45000">
+            </div>
+            <div class="calc-field">
+              <label for="eb-amort">Amortizaciones (Intangibles) <span class="unit">$ / USD</span></label>
+              <input id="eb-amort" type="number" step="100" value="15000">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="ebitda">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">EBITDA</span>
+            <span class="res-val" id="out-eb-val">—</span>
+            <span class="res-sub" id="sub-eb-val">Resultado operativo antes de depreciaciones y amortizaciones.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Margen EBITDA &amp; Margen EBIT</span>
+            <span class="res-val" id="out-eb-margen">—</span>
+            <span class="res-sub">Porcentaje de las ventas convertido en caja operativa bruta.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>EBITDA = EBIT + Depreciaciones + Amortizaciones</code> · <code>Margen EBITDA (%) = (EBITDA / Ventas Netas) × 100</code>.
+      </div>
+    </section>
+
+    <!-- 24. VAN Y TIR DE PROYECTOS DE INVERSIÓN -->
+    <section id="calc-van-tir" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Evaluación de Proyectos: VAN y TIR</h2>
+          <p>Calculá el Valor Actual Neto (VAN), la Tasa Interna de Retorno (TIR) y el Índice de Rentabilidad (IR) para una inversión inicial y hasta 5 flujos de fondos periódicos.</p>
+        </div>
+        <span class="calc-badge">Proyectos de Inversión</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="vt-inv">Inversión Inicial (FF_0, positiva) <span class="unit">$ / USD</span></label>
+              <input id="vt-inv" type="number" step="100" value="100000">
+            </div>
+            <div class="calc-field">
+              <label for="vt-tasa">Tasa de Descuento / WACC (k) <span class="unit">% periódica</span></label>
+              <input id="vt-tasa" type="number" step="0.5" value="12.0">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="vt-f1">Flujo Período 1 (FF_1) <span class="unit">$ / USD</span></label>
+              <input id="vt-f1" type="number" step="100" value="30000">
+            </div>
+            <div class="calc-field">
+              <label for="vt-f2">Flujo Período 2 (FF_2) <span class="unit">$ / USD</span></label>
+              <input id="vt-f2" type="number" step="100" value="35000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="vt-f3">Flujo Período 3 (FF_3) <span class="unit">$ / USD</span></label>
+              <input id="vt-f3" type="number" step="100" value="40000">
+            </div>
+            <div class="calc-field">
+              <label for="vt-f4">Flujo Período 4 (FF_4) <span class="unit">$ / USD</span></label>
+              <input id="vt-f4" type="number" step="100" value="45000">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="vt-f5">Flujo Período 5 (FF_5, opcional = 0) <span class="unit">$ / USD</span></label>
+            <input id="vt-f5" type="number" step="100" value="0">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="vantir">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">VAN (Valor Actual Neto)</span>
+            <span class="res-val" id="out-vt-van">—</span>
+            <span class="res-sub" id="sub-vt-van">Criterio: aceptar el proyecto si VAN &gt; 0.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">TIR (Tasa Interna de Retorno)</span>
+            <span class="res-val" id="out-vt-tir">—</span>
+            <span class="res-sub" id="sub-vt-tir">Tasa que iguala el VAN a cero (aceptar si TIR &gt; k).</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Valor Actual de Flujos &amp; Índice Rentabilidad (IR)</span>
+            <span class="res-val" id="out-vt-ir">—</span>
+            <span class="res-sub">Relación VA(Flujos Futuros) / Inversión Inicial.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>VAN = −FF_0 + Σ [FF_t / (1 + k)^t]</code> · <code>TIR: r tal que VAN(r) = 0</code> · <code>IR = VA(Flujos) / FF_0</code>.
+      </div>
+    </section>
+
+    <!-- 25. INTERÉS SIMPLE E INTERÉS COMPUESTO -->
+    <section id="calc-interes-sc" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Capitalización: Interés Simple vs. Interés Compuesto</h2>
+          <p>Compará el monto final, los intereses devengados y la tasa efectiva acumulada bajo régimen de interés simple y compuesto.</p>
+        </div>
+        <span class="calc-badge">Matemática Financiera</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="isc-cap">Capital Inicial (C_0) <span class="unit">$ / USD</span></label>
+              <input id="isc-cap" type="number" step="100" value="100000">
+            </div>
+            <div class="calc-field">
+              <label for="isc-tasa">Tasa por Período (i) <span class="unit">%</span></label>
+              <input id="isc-tasa" type="number" step="0.1" value="3.0">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="isc-n">Cantidad de Períodos (n) <span class="unit">períodos</span></label>
+            <input id="isc-n" type="number" min="1" step="1" value="12">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="interessc">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Monto Final Interés Compuesto (C_n)</span>
+            <span class="res-val" id="out-isc-comp">—</span>
+            <span class="res-sub" id="sub-isc-comp">Interés compuesto ganado y rendimiento acumulado.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Monto Final Interés Simple (C_n)</span>
+            <span class="res-val" id="out-isc-simp">—</span>
+            <span class="res-sub" id="sub-isc-simp">Interés simple ganado y rendimiento directo.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Efecto Capitalización (Diferencia Compuesto − Simple)</span>
+            <span class="res-val" id="out-isc-diff">—</span>
+            <span class="res-sub">Intereses generados sobre intereses acumulados.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>C_n (Simple) = C_0 · (1 + i · n)</code> · <code>C_n (Compuesto) = C_0 · (1 + i)^n</code>.
+      </div>
+    </section>
+
+    <!-- 26. CAPITAL DE TRABAJO OPERATIVO Y CICLO DE CONVERSIÓN DE EFECTIVO (CCC) -->
+    <section id="calc-ccc" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Capital de Trabajo Operativo y Ciclo de Conversión de Efectivo (CCC)</h2>
+          <p>Calculá los días promedio de inventario (DIO), cobro (DSO), pago (DPO) y el ciclo de caja operativo de la empresa.</p>
+        </div>
+        <span class="calc-badge">Análisis Fundamental · Operaciones</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ccc-ventas">Ventas Anuales a Crédito <span class="unit">$ / USD</span></label>
+              <input id="ccc-ventas" type="number" step="100" value="1800000">
+            </div>
+            <div class="calc-field">
+              <label for="ccc-cmv">Costo Mercaderías Vendidas (CMV) <span class="unit">$ / USD</span></label>
+              <input id="ccc-cmv" type="number" step="100" value="1100000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ccc-inv">Inventarios Promedio <span class="unit">$ / USD</span></label>
+              <input id="ccc-inv" type="number" step="100" value="180000">
+            </div>
+            <div class="calc-field">
+              <label for="ccc-cxc">Cuentas por Cobrar Promedio <span class="unit">$ / USD</span></label>
+              <input id="ccc-cxc" type="number" step="100" value="220000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ccc-cxp">Cuentas por Pagar Promedio <span class="unit">$ / USD</span></label>
+              <input id="ccc-cxp" type="number" step="100" value="140000">
+            </div>
+            <div class="calc-field">
+              <label for="ccc-dias">Días del Ejercicio <span class="unit">días</span></label>
+              <select id="ccc-dias">
+                <option value="365" selected>365 días</option>
+                <option value="360">360 días</option>
+              </select>
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="ccc">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Ciclo de Conversión de Efectivo (CCC)</span>
+            <span class="res-val" id="out-ccc-dias">—</span>
+            <span class="res-sub" id="sub-ccc-dias">Tiempo neto en días que el capital permanece inmovilizado.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Desglose: DIO · DSO · DPO</span>
+            <span class="res-val" id="out-ccc-desglose">—</span>
+            <span class="res-sub">Días de inventario, cobranza y pago a proveedores.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Capital de Trabajo Operativo Neto (NOF)</span>
+            <span class="res-val" id="out-ccc-nof">—</span>
+            <span class="res-sub">Inventarios + Cuentas por Cobrar − Cuentas por Pagar.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>DIO = (Inventarios / CMV) × Días</code> · <code>DSO = (Cuentas por Cobrar / Ventas) × Días</code> · <code>DPO = (Cuentas por Pagar / CMV) × Días</code> · <code>CCC = DIO + DSO − DPO</code>.
+      </div>
+    </section>
+
+    <!-- 27. COBERTURA DE INTERESES Y DEUDA NETA / EBITDA -->
+    <section id="calc-cobertura" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Cobertura de Intereses y Ratio Deuda Neta / EBITDA</h2>
+          <p>Evaluá la holgura operativa para afrontar servicios de deuda y los años de generación operativa necesarios para cancelar el pasivo financiero neto.</p>
+        </div>
+        <span class="calc-badge">Análisis Fundamental · Crédito</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="cob-ebit">EBIT (Resultado Operativo) <span class="unit">$ / USD</span></label>
+              <input id="cob-ebit" type="number" step="100" value="210000">
+            </div>
+            <div class="calc-field">
+              <label for="cob-ebitda">EBITDA <span class="unit">$ / USD</span></label>
+              <input id="cob-ebitda" type="number" step="100" value="270000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="cob-int">Intereses Financieros Pagados <span class="unit">$ / USD</span></label>
+              <input id="cob-int" type="number" step="100" value="45000">
+            </div>
+            <div class="calc-field">
+              <label for="cob-deuda">Deuda Financiera Total <span class="unit">$ / USD</span></label>
+              <input id="cob-deuda" type="number" step="100" value="650000">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="cob-caja">Caja e Inversiones Corrientes Líquidas <span class="unit">$ / USD</span></label>
+            <input id="cob-caja" type="number" step="100" value="180000">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="cobertura">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Deuda Neta / EBITDA</span>
+            <span class="res-val" id="out-cob-dne">—</span>
+            <span class="res-sub" id="sub-cob-dne">Deuda Neta (Deuda Total − Caja) sobre EBITDA anual.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Cobertura de Intereses (EBIT / Intereses)</span>
+            <span class="res-val" id="out-cob-icr">—</span>
+            <span class="res-sub" id="sub-cob-icr">Veces que el resultado operativo cubre la carga de intereses.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Deuda Neta = Deuda Financiera Total − Caja</code> · <code>Ratio Deuda Neta / EBITDA = Deuda Neta / EBITDA</code> · <code>Cobertura = EBIT / Intereses</code>.
+      </div>
+    </section>
+
+    <!-- 28. COSTO PROMEDIO PONDERADO DE CAPITAL (WACC) -->
+    <section id="calc-wacc" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Costo Promedio Ponderado de Capital (WACC)</h2>
+          <p>Calculá la tasa mínima de rendimiento exigida a la firma ponderando el costo del patrimonio (k_e) y el costo de la deuda neto de impuestos.</p>
+        </div>
+        <span class="calc-badge">Valuación · Estructura Capital</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="wc-e">Valor de Mercado Equity (E) <span class="unit">$ / USD</span></label>
+              <input id="wc-e" type="number" step="1000" value="700000">
+            </div>
+            <div class="calc-field">
+              <label for="wc-d">Valor de Mercado Deuda (D) <span class="unit">$ / USD</span></label>
+              <input id="wc-d" type="number" step="1000" value="300000">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="wc-ke">Costo del Capital Propio (k_e) <span class="unit">%</span></label>
+              <input id="wc-ke" type="number" step="0.1" value="16.5">
+            </div>
+            <div class="calc-field">
+              <label for="wc-kd">Costo de la Deuda Antes Imp. (k_d) <span class="unit">%</span></label>
+              <input id="wc-kd" type="number" step="0.1" value="11.0">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="wc-tax">Alícuota Impuesto a las Ganancias (t) <span class="unit">%</span></label>
+            <input id="wc-tax" type="number" step="0.5" value="35.0">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="wacc">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">WACC (Costo Promedio Ponderado)</span>
+            <span class="res-val" id="out-wc-val">—</span>
+            <span class="res-sub" id="sub-wc-val">Tasa de descuento corporativa para flujos libres de la firma (FCFF).</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Ponderación (E/V vs. D/V) &amp; k_d Neto</span>
+            <span class="res-val" id="out-wc-pesos">—</span>
+            <span class="res-sub">Estructura de capital y costo de deuda después de escudo fiscal.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>WACC = [E / (E + D)] · k_e + [D / (E + D)] · k_d · (1 − t)</code>.
+      </div>
+    </section>
+
+    <!-- 29. TIR DE BONO CON CUPONES Y AMORTIZACIÓN -->
+    <section id="calc-tir-flujos" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>TIR de Bono con Cupones y Amortización</h2>
+          <p>Calculá la TIR periódica y efectiva anual (TEA) de un bono bullet o amortizable a partir de su precio de mercado y hasta 6 flujos futuros (cupón + amortización).</p>
+        </div>
+        <span class="calc-badge">Renta Fija · Cronograma</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="bf-precio">Precio Sucio de Compra <span class="unit">$ / USD</span></label>
+              <input id="bf-precio" type="number" step="0.01" value="84.50">
+            </div>
+            <div class="calc-field">
+              <label for="bf-freq">Frecuencia de Pagos por Año <span class="unit">pagos/año</span></label>
+              <select id="bf-freq">
+                <option value="2" selected>Semestral (2 al año)</option>
+                <option value="4">Trimestral (4 al año)</option>
+                <option value="1">Anual (1 al año)</option>
+                <option value="12">Mensual (12 al año)</option>
+              </select>
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="bf-f1">Flujo Período 1 (Int + Amort) <span class="unit">$ / USD</span></label>
+              <input id="bf-f1" type="number" step="0.01" value="2.00">
+            </div>
+            <div class="calc-field">
+              <label for="bf-f2">Flujo Período 2 <span class="unit">$ / USD</span></label>
+              <input id="bf-f2" type="number" step="0.01" value="2.00">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="bf-f3">Flujo Período 3 <span class="unit">$ / USD</span></label>
+              <input id="bf-f3" type="number" step="0.01" value="27.00">
+            </div>
+            <div class="calc-field">
+              <label for="bf-f4">Flujo Período 4 <span class="unit">$ / USD</span></label>
+              <input id="bf-f4" type="number" step="0.01" value="26.50">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="bf-f5">Flujo Período 5 <span class="unit">$ / USD</span></label>
+              <input id="bf-f5" type="number" step="0.01" value="26.00">
+            </div>
+            <div class="calc-field">
+              <label for="bf-f6">Flujo Período 6 <span class="unit">$ / USD</span></label>
+              <input id="bf-f6" type="number" step="0.01" value="25.50">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="tirflujos">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">TIR Efectiva Anual (TEA) &amp; TNA Equivalente</span>
+            <span class="res-val" id="out-bf-anual">—</span>
+            <span class="res-sub" id="sub-bf-anual">Rendimiento anualizado compuesto y nominal según frecuencia.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">TIR por Período de Cupón</span>
+            <span class="res-val" id="out-bf-per">—</span>
+            <span class="res-sub">Tasa interna de retorno correspondiente a cada subperíodo.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Suma Nominal de Flujos &amp; Macaulay Duration Aprox.</span>
+            <span class="res-val" id="out-bf-dur">—</span>
+            <span class="res-sub">Total a cobrar y vida media ponderada en años.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Precio = Σ [FF_t / (1 + r_per)^t]</code> · <code>TEA = (1 + r_per)^m − 1</code> · <code>TNA = r_per × m</code> (donde <code>m</code> es la frecuencia anual).
+      </div>
+    </section>
+
+    <!-- 30. SISTEMAS DE AMORTIZACIÓN (FRANCÉS, ALEMÁN, AMERICANO) -->
+    <section id="calc-amortizacion" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Sistemas de Amortización: Francés, Alemán y Americano</h2>
+          <p>Compará cuota inicial, cuota final, amortización de capital e intereses totales para préstamos, obligaciones negociables o fideicomisos.</p>
+        </div>
+        <span class="calc-badge">Matemática Financiera</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-field">
+            <label for="am-sist">Sistema de Amortización</label>
+            <select id="am-sist">
+              <option value="frances" selected>Sistema Francés (Cuota Total Constante)</option>
+              <option value="aleman">Sistema Alemán (Amortización Constante)</option>
+              <option value="americano">Sistema Americano / Bullet (Capital al Vencimiento)</option>
+            </select>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="am-cap">Capital / Valor Nominal <span class="unit">$ / USD</span></label>
+              <input id="am-cap" type="number" step="100" value="100000">
+            </div>
+            <div class="calc-field">
+              <label for="am-tasa">Tasa Periódica (i) <span class="unit">%</span></label>
+              <input id="am-tasa" type="number" step="0.1" value="2.5">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="am-n">Cantidad de Cuotas / Períodos (n) <span class="unit">períodos</span></label>
+            <input id="am-n" type="number" min="1" max="360" step="1" value="12">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="amortizacion">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Cuota 1 / Cuota Final</span>
+            <span class="res-val" id="out-am-cuotas">—</span>
+            <span class="res-sub" id="sub-am-cuotas">Detalle de composición de la primera cuota (interés + capital).</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Total Intereses Pagados</span>
+            <span class="res-val" id="out-am-int">—</span>
+            <span class="res-sub" id="sub-am-int">Monto total desembolsado (Capital + Intereses).</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <em>Francés:</em> <code>C = V · [i(1+i)^n] / [(1+i)^n − 1]</code> · <em>Alemán:</em> <code>Amort = V / n</code> · <em>Americano:</em> <code>Cuota_t = V · i</code> y en <code>t = n</code> se cancela <code>V</code>.
+      </div>
+    </section>
+
+    <!-- 31. ON CONVERTIBLE (PARIDAD Y PRIMA DE CONVERSIÓN) -->
+    <section id="calc-on-conv" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Obligación Negociable Convertible: Valor y Prima de Conversión</h2>
+          <p>Evaluá el valor de paridad en acciones de una ON convertible y la prima porcentual que pagás respecto de su valor directo de conversión.</p>
+        </div>
+        <span class="calc-badge">Renta Fija · Híbridos</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="onc-vn">Valor Nominal de la ON <span class="unit">$ / USD</span></label>
+              <input id="onc-vn" type="number" step="10" value="100">
+            </div>
+            <div class="calc-field">
+              <label for="onc-precio">Precio de Mercado de la ON <span class="unit">$ / USD</span></label>
+              <input id="onc-precio" type="number" step="0.5" value="112">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="onc-pconv">Precio de Conversión Pactado <span class="unit">$ / USD por acción</span></label>
+              <input id="onc-pconv" type="number" step="0.5" value="25">
+            </div>
+            <div class="calc-field">
+              <label for="onc-pacc">Precio Mercado de la Acción <span class="unit">$ / USD</span></label>
+              <input id="onc-pacc" type="number" step="0.5" value="24">
+            </div>
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="onconv">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Valor de Conversión (Paridad en Acciones)</span>
+            <span class="res-val" id="out-onc-val">—</span>
+            <span class="res-sub" id="sub-onc-val">Ratio de conversión en acciones multiplicado por precio spot.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Prima de Conversión (%) &amp; Precio Implícito</span>
+            <span class="res-val" id="out-onc-prima">—</span>
+            <span class="res-sub">Sobrecosto de entrar vía ON respecto de comprar acciones directas.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Ratio = VN / Precio Conversión</code> · <code>Valor Conversión = Ratio × Precio Acción</code> · <code>Prima (%) = [(Precio ON / Valor Conversión) − 1] × 100</code>.
+      </div>
+    </section>
+
+    <!-- 32. TAMAÑO DE POSICIÓN (POSITION SIZING POR RIESGO) -->
+    <section id="calc-pos-sizing" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Tamaño de Posición (Position Sizing) y Gestión de Riesgo</h2>
+          <p>Calculá la cantidad óptima de activos a comprar y el capital a asignar según tu riesgo máximo tolerable por operación y nivel de Stop Loss.</p>
+        </div>
+        <span class="calc-badge">Gestión de Cartera · Riesgo</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ps-cap">Capital Total de la Cuenta <span class="unit">$ / USD</span></label>
+              <input id="ps-cap" type="number" step="1000" value="50000">
+            </div>
+            <div class="calc-field">
+              <label for="ps-riesgo">Riesgo Máximo por Operación <span class="unit">% cuenta</span></label>
+              <input id="ps-riesgo" type="number" step="0.1" value="1.5">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ps-ent">Precio de Entrada <span class="unit">$ / USD</span></label>
+              <input id="ps-ent" type="number" step="0.1" value="120.0">
+            </div>
+            <div class="calc-field">
+              <label for="ps-sl">Precio Stop Loss <span class="unit">$ / USD</span></label>
+              <input id="ps-sl" type="number" step="0.1" value="111.0">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="ps-tp">Precio Objetivo / Take Profit (opcional) <span class="unit">$ / USD</span></label>
+            <input id="ps-tp" type="number" step="0.1" value="142.5">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="possizing">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Cantidad de Unidades / Nominales</span>
+            <span class="res-val" id="out-ps-qty">—</span>
+            <span class="res-sub" id="sub-ps-qty">Pérdida máxima monetaria asumida en el Stop Loss.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Monto Total de la Posición (% Cartera)</span>
+            <span class="res-val" id="out-ps-monto">—</span>
+            <span class="res-sub">Capital asignado a la operación según distancia al stop.</span>
+          </div>
+          <div class="res-card">
+            <span class="res-label">Ratio Riesgo / Beneficio (R:R)</span>
+            <span class="res-val" id="out-ps-rr">—</span>
+            <span class="res-sub">Relación entre ganancia potencial al objetivo y riesgo asumido.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>Riesgo ($) = Capital × Riesgo %</code> · <code>Cantidad = Riesgo ($) / |Entrada − Stop Loss|</code> · <code>R:R = |Take Profit − Entrada| / |Entrada − Stop Loss|</code>.
+      </div>
+    </section>
+
+    <!-- 33. BETA DE CARTERA Y ALPHA DE JENSEN -->
+    <section id="calc-beta-alpha" class="calc-panel hidden" role="tabpanel">
+      <div class="calc-head">
+        <div>
+          <h2>Beta Ponderada de Cartera y Alpha de Jensen</h2>
+          <p>Calculá la sensibilidad sistemática (β) de una cartera de hasta 3 activos/clases y su rendimiento excedente ajustado por riesgo frente al benchmark (Alpha).</p>
+        </div>
+        <span class="calc-badge">Gestión de Cartera · Performance</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-inputs">
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ba-w1">Peso Activo 1 <span class="unit">%</span></label>
+              <input id="ba-w1" type="number" step="1" value="50">
+            </div>
+            <div class="calc-field">
+              <label for="ba-b1">Beta Activo 1 <span class="unit">β_1</span></label>
+              <input id="ba-b1" type="number" step="0.05" value="1.25">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ba-w2">Peso Activo 2 <span class="unit">%</span></label>
+              <input id="ba-w2" type="number" step="1" value="30">
+            </div>
+            <div class="calc-field">
+              <label for="ba-b2">Beta Activo 2 <span class="unit">β_2</span></label>
+              <input id="ba-b2" type="number" step="0.05" value="0.90">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ba-w3">Peso Activo 3 <span class="unit">%</span></label>
+              <input id="ba-w3" type="number" step="1" value="20">
+            </div>
+            <div class="calc-field">
+              <label for="ba-b3">Beta Activo 3 <span class="unit">β_3</span></label>
+              <input id="ba-b3" type="number" step="0.05" value="0.15">
+            </div>
+          </div>
+          <div class="calc-row-2">
+            <div class="calc-field">
+              <label for="ba-rp">Retorno Obtenido Cartera (R_p) <span class="unit">%</span></label>
+              <input id="ba-rp" type="number" step="0.1" value="24.0">
+            </div>
+            <div class="calc-field">
+              <label for="ba-rm">Retorno Benchmark / Mercado (R_m) <span class="unit">%</span></label>
+              <input id="ba-rm" type="number" step="0.1" value="20.0">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label for="ba-rf">Tasa Libre de Riesgo (R_f) <span class="unit">%</span></label>
+            <input id="ba-rf" type="number" step="0.1" value="6.0">
+          </div>
+          <div class="calc-actions">
+            <button type="button" class="calc-btn-reset" data-reset="betaalpha">Restablecer valores</button>
+          </div>
+        </div>
+        <div class="calc-outputs">
+          <div class="res-card highlight">
+            <span class="res-label">Beta Ponderada de la Cartera (β_p)</span>
+            <span class="res-val" id="out-ba-beta">—</span>
+            <span class="res-sub" id="sub-ba-beta">Sensibilidad esperada ante movimientos del índice de referencia.</span>
+          </div>
+          <div class="res-card info-sky">
+            <span class="res-label">Alpha de Jensen (α)</span>
+            <span class="res-val" id="out-ba-alpha">—</span>
+            <span class="res-sub" id="sub-ba-alpha">Exceso de retorno sobre el esperado por CAPM.</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-formula">
+        <strong>Fórmulas aplicadas:</strong> <code>β_p = Σ (w_i · β_i)</code> · <code>α = R_p − [R_f + β_p · (R_m − R_f)]</code>.
+      </div>
+    </section>
+    </div><!-- /calc-main -->
+    </div><!-- /calc-layout -->
+
+  </div>
+</main>
+
+<footer class="m-footer">
+    <div class="m-footer-grid">
+        <div class="m-footer-brand">
+            <img src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+            <p>Plataforma educativa interactiva sobre el mercado de capitales argentino: normativa de la CNV, guía de idoneidad y práctica con simulador.</p>
+        
+                <div class="mt-6">
+                    <button type="button" onclick="openLegalModal()" class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-bold tracking-wider uppercase bg-slate-900/90 hover:bg-emerald-500/15 text-emerald-400 hover:text-emerald-300 border border-emerald-500/35 transition shadow-lg cursor-pointer">
+                        <i class="fa-solid fa-scale-balanced text-base"></i>
+                        <span>AVISO LEGAL</span>
+                    </button>
+                </div>
+        </div>
+        <div>
+            <h4>Secciones</h4>
+            <ul>
+                <li><a href="MCA.HTML">Inicio</a></li>
+                <li><a href="NORMAS%20CNV%20T.O..HTML">Normas CNV T.O.</a></li>
+                <li><a href="NORMATIVA.HTML">Normativa</a></li>
+                <li><a href="EXTRAS.HTML">Extras</a></li>
+                <li><a href="CALCULOS.HTML">Cálculos</a></li>
+                <li><a href="QUIZ.HTML">Quiz</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Referencias oficiales</h4>
+            <ul>
+                <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Comisión Nacional de Valores</a></li>
+                <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Unidad de Información Financiera</a></li>
+                <li><a href="https://www.bcra.gob.ar" target="_blank" rel="noopener noreferrer">Banco Central (BCRA)</a></li>
+                <li><a href="https://www.argentina.gob.ar/superintendencia-de-seguros" target="_blank" rel="noopener noreferrer">Superintendencia de Seguros de la Nación</a></li>
+                <li><a href="https://www.argentina.gob.ar/servicio/rendir-el-examen-de-idoneidad" target="_blank" rel="noopener noreferrer">Examen Idoneidad</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="m-footer-bottom">Contenido con fines exclusivamente educativos e informativos. No reemplaza el texto oficial publicado por la Comisión Nacional de Valores ni constituye asesoramiento profesional. Ante cualquier duda, consultar la norma oficial vigente.</div>
+</footer>
+
+    <!-- Modal Aviso Legal (Disponible desde el botón en el pie de página) -->
+    <div id="legal-modal" style="position: fixed; inset: 0; z-index: 2147483647;" class="hidden items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+        <div class="gradient-border glow-card bg-[#0B1120] border border-slate-700/80 rounded-2xl max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
+
+            <!-- Cabecera del Modal -->
+            <div class="flex items-start justify-between gap-4 p-5 sm:p-6 border-b border-slate-800/90 bg-slate-950/60">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/35 flex items-center justify-center text-emerald-400 shrink-0">
+                        <i class="fa-solid fa-file-contract text-base"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-emerald-400">Aviso Legal</span>
+                        <h3 id="legal-modal-title" class="text-base sm:text-lg font-extrabold text-white leading-snug mt-0.5">
+                            Limitación de Responsabilidad, Alcance Educativo y Origen de la Información
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuerpo con scroll interno -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-emerald-400 text-xs"></i>
+                        Carácter exclusivamente educativo
+                    </h4>
+                    <p class="text-slate-300">
+                        Todo el material, las guías, las síntesis y los recursos disponibles en este sitio web han sido elaborados únicamente con fines educativos, académicos y de divulgación general. Este portal no persigue fines de asesoramiento comercial ni constituye una oferta o invitación para operar en el mercado de capitales.
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-landmark text-emerald-400 text-xs"></i>
+                        Origen y fuentes públicas de la normativa
+                    </h4>
+                    <p class="text-slate-300">
+                        La totalidad de la información legal y reglamentaria referenciada en esta plataforma proviene exclusivamente de sitios web, boletines y registros oficiales de acceso público (tales como la Comisión Nacional de Valores [CNV], el Boletín Oficial de la República Argentina, y mercados o cámaras compensadoras autorizadas).
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-ban text-emerald-400 text-xs"></i>
+                        Ausencia de opinión profesional y juicios de valor
+                    </h4>
+                    <p class="text-slate-300">
+                        El contenido se expone de manera estrictamente objetiva y descriptiva. No incorpora juicios de valor, interpretaciones vinculantes ni constituye asesoramiento, recomendación de inversión, dictamen u opinión profesional de índole financiera, legal, contable o impositiva (en los términos de la Ley N° 26.831 y sus normas complementarias).
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-emerald-400 text-xs"></i>
+                        Vigencia normativa y responsabilidad del usuario
+                    </h4>
+                    <p class="text-slate-300">
+                        Debido a la dinámica propia de la regulación bursátil, el titular del sitio no garantiza la actualización en tiempo real ni la vigencia permanente de los textos compilados. Se recomienda a los usuarios verificar siempre la normativa directamente en los digesto y textos ordenados oficiales vigentes, así como consultar con un agente autorizado o profesional matriculado antes de tomar cualquier decisión patrimonial o jurídica.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pie del Modal -->
+            <div class="p-4 sm:px-6 border-t border-slate-800/90 bg-slate-950/60 flex justify-end">
+                <button type="button" data-legal-accept="true" onclick="closeLegalModal(true)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm px-6 py-2.5 rounded-xl transition shadow-md shadow-emerald-500/20 cursor-pointer">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+(function () {
+  const fmtPct = (v) => isFinite(v) ? v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %' : '—';
+  const fmtNum = (v, dec = 2) => isFinite(v) ? v.toLocaleString('es-AR', { minimumFractionDigits: dec, maximumFractionDigits: dec }) : '—';
+  const fmtCur = (v) => isFinite(v) ? '$ ' + v.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
+
+  // Navegación por pestañas
+  const tabs = document.querySelectorAll('.calc-tab');
+  const panels = document.querySelectorAll('.calc-panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      panels.forEach(p => p.classList.add('hidden'));
+
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      const target = document.getElementById(tab.dataset.target);
+      if (target) target.classList.remove('hidden');
+    });
+  });
+
+  // 01. Conversión de tasas
+  function calcTasas() {
+    const tipo = document.getElementById('t-tipo').value;
+    const val = parseFloat(document.getElementById('t-valor').value) / 100;
+    const dias = Math.max(1, parseFloat(document.getElementById('t-plazo').value) || 30);
+    const base = parseFloat(document.getElementById('t-base').value) || 365;
+    const inf = parseFloat(document.getElementById('t-inf').value) / 100;
+
+    if (!isFinite(val) || val <= -1) return;
+
+    let tea = 0;
+    let tna = 0;
+    let tem30 = 0;
+    let tasaPeriodo = 0;
+
+    if (tipo === 'tna') {
+      tna = val;
+      tasaPeriodo = tna * (dias / base);
+      tea = Math.pow(1 + tasaPeriodo, base / dias) - 1;
+    } else if (tipo === 'tea') {
+      tea = val;
+      tasaPeriodo = Math.pow(1 + tea, dias / base) - 1;
+      tna = tasaPeriodo * (base / dias);
+    } else if (tipo === 'tem') {
+      tem30 = val;
+      tea = Math.pow(1 + tem30, base / 30) - 1;
+      tasaPeriodo = Math.pow(1 + tea, dias / base) - 1;
+      tna = tasaPeriodo * (base / dias);
+    }
+
+    tem30 = Math.pow(1 + tea, 30 / base) - 1;
+    const tasaReal = isFinite(inf) && inf > -1 ? ((1 + tea) / (1 + inf)) - 1 : NaN;
+
+    document.getElementById('out-tea').textContent = fmtPct(tea * 100);
+    document.getElementById('out-tna').textContent = fmtPct(tna * 100);
+    document.getElementById('out-tem').textContent = fmtPct(tem30 * 100);
+    document.getElementById('sub-tem').textContent = `Tasa efectiva del subperíodo (${dias} días): ${fmtPct(tasaPeriodo * 100)}.`;
+    document.getElementById('out-real').textContent = fmtPct(tasaReal * 100);
+  }
+
+  // 02. Dólar MEP / CCL / Canje
+  function calcDolar() {
+    const ars = parseFloat(document.getElementById('d-pesos').value);
+    const usdD = parseFloat(document.getElementById('d-especie-d').value);
+    const usdC = parseFloat(document.getElementById('d-especie-c').value);
+    const com = (parseFloat(document.getElementById('d-comision').value) || 0) / 100;
+
+    const mep = (ars > 0 && usdD > 0) ? (ars / usdD) * (1 + com) : NaN;
+    const ccl = (ars > 0 && usdC > 0) ? (ars / usdC) * (1 + com) : NaN;
+    const canje = (isFinite(mep) && isFinite(ccl) && mep > 0) ? ((ccl / mep) - 1) * 100 : NaN;
+
+    document.getElementById('out-mep').textContent = isFinite(mep) ? fmtCur(mep) : '—';
+    document.getElementById('sub-mep').textContent = com > 0
+      ? `Sin comisión: ${fmtCur(ars / usdD)} · Con comisión (${fmtNum(com * 100)}%): ${fmtCur(mep)}`
+      : 'Cociente directo Especie Pesos / Especie D.';
+
+    document.getElementById('out-ccl').textContent = isFinite(ccl) ? fmtCur(ccl) : '—';
+    document.getElementById('sub-ccl').textContent = com > 0
+      ? `Sin comisión: ${fmtCur(ars / usdC)} · Con comisión (${fmtNum(com * 100)}%): ${fmtCur(ccl)}`
+      : 'Cociente directo Especie Pesos / Especie C.';
+
+    document.getElementById('out-canje').textContent = fmtPct(canje);
+  }
+
+  // 03. Paridad y Bonos
+  function calcBonos() {
+    const precio = parseFloat(document.getElementById('b-precio').value);
+    const vr = parseFloat(document.getElementById('b-vr').value);
+    const ic = parseFloat(document.getElementById('b-ic').value) || 0;
+    const cupon = parseFloat(document.getElementById('b-cupon').value) || 0;
+
+    const vt = vr + ic;
+    const paridad = (precio > 0 && vt > 0) ? (precio / vt) * 100 : NaN;
+    const cy = (precio > 0 && vr > 0) ? ((vr * (cupon / 100)) / precio) * 100 : NaN;
+
+    document.getElementById('out-vt').textContent = fmtNum(vt, 2);
+    document.getElementById('out-paridad').textContent = fmtPct(paridad);
+
+    let estado = 'Cotización a la par (100%).';
+    if (paridad < 99.95) estado = 'Cotización bajo la par (descuento sobre valor técnico).';
+    else if (paridad > 100.05) estado = 'Cotización sobre la par (prima sobre valor técnico).';
+    document.getElementById('sub-paridad').textContent = isFinite(paridad) ? estado : '—';
+
+    document.getElementById('out-cy').textContent = fmtPct(cy);
+  }
+
+  // 04. Caución Bursátil
+  function calcCaucion() {
+    const cap = parseFloat(document.getElementById('c-capital').value);
+    const dias = Math.max(1, parseFloat(document.getElementById('c-dias').value) || 1);
+    const tna = parseFloat(document.getElementById('c-tna').value) / 100;
+    const arancel = (parseFloat(document.getElementById('c-arancel').value) || 0) / 100;
+
+    if (!isFinite(cap) || cap <= 0 || !isFinite(tna)) return;
+
+    const intBruto = cap * tna * (dias / 365);
+    const gastos = cap * arancel * (dias / 365);
+    const intNeto = intBruto - gastos;
+    const montoNeto = cap + intNeto;
+    const tnaNeta = Math.max(0, tna - arancel);
+    const teaNeta = Math.pow(1 + tnaNeta * (dias / 365), 365 / dias) - 1;
+
+    document.getElementById('out-cauc-neto').textContent = fmtCur(montoNeto);
+    document.getElementById('sub-cauc-neto').textContent = `Interés neto: ${fmtCur(intNeto)} (gastos est.: ${fmtCur(gastos)}).`;
+    document.getElementById('out-cauc-bruto').textContent = fmtCur(intBruto);
+    document.getElementById('out-cauc-tasas').textContent = `TNA ${fmtNum(tnaNeta * 100)}% · TEA ${fmtNum(teaNeta * 100)}%`;
+  }
+
+  // 05. CEDEARs
+  function calcCedear() {
+    const usa = parseFloat(document.getElementById('ce-usa').value);
+    const ratio = parseFloat(document.getElementById('ce-ratio').value);
+    const cclRef = parseFloat(document.getElementById('ce-ccl').value);
+    const local = parseFloat(document.getElementById('ce-local').value);
+
+    const usdPorCedear = (usa > 0 && ratio > 0) ? usa / ratio : NaN;
+    const teoricoArs = (isFinite(usdPorCedear) && cclRef > 0) ? usdPorCedear * cclRef : NaN;
+    const cclImplicito = (local > 0 && ratio > 0 && usa > 0) ? (local * ratio) / usa : NaN;
+
+    document.getElementById('out-ce-teorico').textContent = isFinite(teoricoArs) ? fmtCur(teoricoArs) : '—';
+    if (isFinite(teoricoArs) && local > 0) {
+      const diff = ((local / teoricoArs) - 1) * 100;
+      const signo = diff >= 0 ? '+' : '';
+      document.getElementById('sub-ce-teorico').textContent = `Brecha vs. cotización local: ${signo}${fmtNum(diff)}%`;
+    }
+    document.getElementById('out-ce-ccl').textContent = isFinite(cclImplicito) ? fmtCur(cclImplicito) : '—';
+    document.getElementById('out-ce-usd').textContent = isFinite(usdPorCedear) ? 'USD ' + fmtNum(usdPorCedear, 2) : '—';
+  }
+
+  // Listeners
+  ['t-tipo', 't-valor', 't-plazo', 't-base', 't-inf'].forEach(id =>
+    document.getElementById(id).addEventListener('input', calcTasas)
+  );
+  ['d-pesos', 'd-especie-d', 'd-especie-c', 'd-comision'].forEach(id =>
+    document.getElementById(id).addEventListener('input', calcDolar)
+  );
+  ['b-precio', 'b-vr', 'b-ic', 'b-cupon'].forEach(id =>
+    document.getElementById(id).addEventListener('input', calcBonos)
+  );
+  ['c-capital', 'c-dias', 'c-tna', 'c-arancel'].forEach(id =>
+    document.getElementById(id).addEventListener('input', calcCaucion)
+  );
+  ['ce-usa', 'ce-ratio', 'ce-ccl', 'ce-local'].forEach(id =>
+    document.getElementById(id).addEventListener('input', calcCedear)
+  );
+
+  // Botones de restablecimiento
+  const DEFAULTS = {
+    tasas:   { 't-tipo': 'tna', 't-valor': '36.00', 't-plazo': '30', 't-base': '365', 't-inf': '25.0' },
+    dolar:   { 'd-pesos': '81500', 'd-especie-d': '68.50', 'd-especie-c': '67.20', 'd-comision': '0.50' },
+    bonos:   { 'b-precio': '68.50', 'b-vr': '100.00', 'b-ic': '1.25', 'b-cupon': '4.00' },
+    caucion: { 'c-capital': '1000000', 'c-dias': '7', 'c-tna': '32.0', 'c-arancel': '1.5' },
+    cedear:  { 'ce-usa': '225.00', 'ce-ratio': '10', 'ce-ccl': '1210.00', 'ce-local': '27350' }
+  };
+
+  document.querySelectorAll('.calc-btn-reset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.reset;
+      const vals = DEFAULTS[key];
+      if (!vals) return;
+      Object.entries(vals).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      });
+      calcTasas(); calcDolar(); calcBonos(); calcCaucion(); calcCedear();
+    });
+  });
+
+
+  // Filtro por categoría con adaptación de altura del visor
+  const catBtns = document.querySelectorAll('.calc-cat-btn');
+  const tabsWrap = document.querySelector('.calc-tabs-wrap');
+  const tabsGrid = document.querySelector('.calc-tabs');
+  if (tabsWrap) tabsWrap.dataset.activeCat = 'all';
+
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      catBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      if (tabsWrap) tabsWrap.dataset.activeCat = cat;
+
+      let firstVisible = null;
+      tabs.forEach(t => {
+        const match = (cat === 'all' || t.dataset.cat === cat);
+        t.classList.toggle('hidden', !match);
+        if (match && !firstVisible) firstVisible = t;
+      });
+
+      if (tabsGrid) {
+        tabsGrid.scrollTop = 0;
+        if (cat === 'all') {
+          tabsGrid.style.maxHeight = '360px';
+          tabsGrid.style.overflowY = 'auto';
+        } else {
+          tabsGrid.style.maxHeight = 'none';
+          tabsGrid.style.overflowY = 'hidden';
+          requestAnimationFrame(() => {
+            const needed = tabsGrid.scrollHeight + 6;
+            tabsGrid.style.maxHeight = needed + 'px';
+          });
+        }
+      }
+
+      if (firstVisible) firstVisible.click();
+    });
+  });
+
+  // Rediseño: menú lateral (en celular se pliega en un botón "Fórmulas")
+  (function () {
+    const wrap = document.querySelector('.calc-tabs-wrap');
+    const toggle = document.querySelector('.calc-side-toggle');
+    const cur = document.querySelector('.calc-side-current');
+    const main = document.querySelector('.calc-main');
+    if (!wrap || !toggle) return;
+    const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+    toggle.addEventListener('click', () => {
+      const open = wrap.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    document.querySelectorAll('.calc-tab').forEach(t => {
+      t.addEventListener('click', () => {
+        if (cur) cur.textContent = t.textContent.replace(/\s+/g, ' ').trim();
+        if (isMobile()) {
+          wrap.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+        if (main) {
+          const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
+          const top = main.getBoundingClientRect().top + window.scrollY - navH - (isMobile() ? 70 : 12);
+          if (window.scrollY > top) window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        }
+      });
+    });
+  })();
+
+  // 06. Cupón Cero / Letras
+  function calcCero() {
+    const compra = parseFloat(document.getElementById('z-compra').value);
+    const pago = parseFloat(document.getElementById('z-pago').value);
+    const dias = Math.max(1, parseFloat(document.getElementById('z-dias').value) || 1);
+    const base = parseFloat(document.getElementById('z-base').value) || 365;
+    if (!(compra > 0) || !(pago > 0)) return;
+    const mult = pago / compra;
+    const tea = Math.pow(mult, base / dias) - 1;
+    const tem = Math.pow(1 + tea, 30 / base) - 1;
+    const gan = pago - compra;
+    const pct = (mult - 1) * 100;
+    document.getElementById('out-z-tea').textContent = fmtPct(tea * 100);
+    document.getElementById('out-z-tem').textContent = fmtPct(tem * 100);
+    document.getElementById('out-z-gan').textContent = fmtCur(gan);
+    document.getElementById('sub-z-gan').textContent = `Variación directa en ${dias} días: ${fmtPct(pct)}.`;
+  }
+
+  // 07. Ajuste CER y Dollar-Linked
+  function calcCerDl() {
+    const vn = parseFloat(document.getElementById('idx-vn').value) || 0;
+    const vr = (parseFloat(document.getElementById('idx-vr').value) || 0) / 100;
+    const cer0 = parseFloat(document.getElementById('idx-cer0').value);
+    const cer1 = parseFloat(document.getElementById('idx-cer1').value);
+    const tc0 = parseFloat(document.getElementById('idx-tc0').value);
+    const tc1 = parseFloat(document.getElementById('idx-tc1').value);
+
+    const capBase = vn * vr;
+    const coefCer = (cer0 > 0 && cer1 > 0) ? (cer1 / cer0) : NaN;
+    const capCer = isFinite(coefCer) ? capBase * coefCer : NaN;
+    const capDl = (tc1 > 0) ? capBase * tc1 : NaN;
+
+    document.getElementById('out-idx-cer').textContent = isFinite(capCer) ? fmtCur(capCer) : '—';
+    document.getElementById('sub-idx-cer').textContent = isFinite(coefCer) ? `Coeficiente CER aplicado: ${fmtNum(coefCer, 4)} (VR: ${fmtNum(capBase, 2)} VN).` : '—';
+    document.getElementById('out-idx-dl').textContent = isFinite(capDl) ? fmtCur(capDl) : '—';
+    if (tc0 > 0 && tc1 > 0) {
+      const varTc = ((tc1 / tc0) - 1) * 100;
+      document.getElementById('sub-idx-dl').textContent = `Variación TC oficial vs. inicial: ${fmtPct(varTc)}.`;
+    }
+  }
+
+  // 08. Duration y Convexidad
+  function calcDuration() {
+    const md = parseFloat(document.getElementById('dur-md').value) || 0;
+    const conv = parseFloat(document.getElementById('dur-conv').value) || 0;
+    const dy = (parseFloat(document.getElementById('dur-dy').value) || 0) / 100;
+
+    const lineal = -md * dy * 100;
+    const aporteConv = 0.5 * conv * Math.pow(dy, 2) * 100;
+    const total = lineal + aporteConv;
+
+    document.getElementById('out-dur-total').textContent = fmtPct(total);
+    document.getElementById('out-dur-lineal').textContent = fmtPct(lineal);
+    document.getElementById('out-dur-conv').textContent = '+' + fmtPct(aporteConv);
+  }
+
+  // 09. Intereses Corridos
+  function calcCorridos() {
+    const vr = parseFloat(document.getElementById('ic-vr').value) || 0;
+    const cupon = (parseFloat(document.getElementById('ic-cupon').value) || 0) / 100;
+    const dias = Math.max(0, parseFloat(document.getElementById('ic-dias').value) || 0);
+    const base = parseFloat(document.getElementById('ic-base').value) || 365;
+    const limpio = parseFloat(document.getElementById('ic-limpio').value) || 0;
+
+    const ic = vr * cupon * (dias / base);
+    const sucio = limpio + ic;
+
+    document.getElementById('out-ic-val').textContent = fmtNum(ic, 2);
+    document.getElementById('out-ic-sucio').textContent = fmtNum(sucio, 2);
+  }
+
+  // 10. Spread Soberano
+  function calcSpread() {
+    const bono = parseFloat(document.getElementById('sp-bono').value);
+    const rf = parseFloat(document.getElementById('sp-rf').value);
+    if (!isFinite(bono) || !isFinite(rf)) return;
+    const diffPct = bono - rf;
+    const bps = diffPct * 100;
+    document.getElementById('out-sp-bps').textContent = fmtNum(bps, 0) + ' bps';
+    document.getElementById('out-sp-pct').textContent = fmtPct(diffPct);
+  }
+
+  // 11. Múltiplos
+  function calcMultiplos() {
+    const precio = parseFloat(document.getElementById('m-precio').value);
+    const bpa = parseFloat(document.getElementById('m-bpa').value);
+    const vpa = parseFloat(document.getElementById('m-vpa').value);
+    const ev = parseFloat(document.getElementById('m-ev').value);
+    const ebitda = parseFloat(document.getElementById('m-ebitda').value);
+
+    const per = (precio > 0 && bpa > 0) ? precio / bpa : NaN;
+    const ey = (precio > 0 && isFinite(bpa)) ? (bpa / precio) * 100 : NaN;
+    const pvc = (precio > 0 && vpa > 0) ? precio / vpa : NaN;
+    const eveb = (ev > 0 && ebitda > 0) ? ev / ebitda : NaN;
+
+    document.getElementById('out-m-per').textContent = isFinite(per) ? fmtNum(per, 2) + 'x' : '—';
+    document.getElementById('out-m-evpb').textContent = `EV/EBITDA ${isFinite(eveb) ? fmtNum(eveb, 2) + 'x' : '—'} · P/VC ${isFinite(pvc) ? fmtNum(pvc, 2) + 'x' : '—'}`;
+    document.getElementById('out-m-ey').textContent = fmtPct(ey);
+  }
+
+  // 12. Dividendos
+  function calcDividendos() {
+    const precio = parseFloat(document.getElementById('div-precio').value);
+    const div = parseFloat(document.getElementById('div-monto').value) || 0;
+    const bpa = parseFloat(document.getElementById('div-bpa').value);
+    const ret = (parseFloat(document.getElementById('div-ret').value) || 0) / 100;
+
+    const dyBruto = (precio > 0) ? (div / precio) * 100 : NaN;
+    const dyNeto = isFinite(dyBruto) ? dyBruto * (1 - ret) : NaN;
+    const payout = (bpa > 0) ? (div / bpa) * 100 : NaN;
+    const exCup = (precio > 0) ? precio - div : NaN;
+
+    document.getElementById('out-div-dy').textContent = isFinite(dyBruto) ? `${fmtNum(dyBruto)}% / ${fmtNum(dyNeto)}%` : '—';
+    document.getElementById('out-div-pay').textContent = fmtPct(payout);
+    document.getElementById('out-div-ex').textContent = isFinite(exCup) ? fmtCur(exCup) : '—';
+  }
+
+  // 13. Gordon & CAPM
+  function calcGordonCapm() {
+    const rf = (parseFloat(document.getElementById('gc-rf').value) || 0) / 100;
+    const beta = parseFloat(document.getElementById('gc-beta').value) || 0;
+    const erp = (parseFloat(document.getElementById('gc-erp').value) || 0) / 100;
+    const rp = (parseFloat(document.getElementById('gc-rp').value) || 0) / 100;
+    const d1 = parseFloat(document.getElementById('gc-d1').value) || 0;
+    const g = (parseFloat(document.getElementById('gc-g').value) || 0) / 100;
+
+    const ke = rf + beta * erp + rp;
+    document.getElementById('out-gc-ke').textContent = fmtPct(ke * 100);
+    if (ke > g && d1 > 0) {
+      const p0 = d1 / (ke - g);
+      document.getElementById('out-gc-p0').textContent = fmtCur(p0);
+      document.getElementById('sub-gc-p0').textContent = `Spread de descuento (k_e − g): ${fmtPct((ke - g) * 100)}.`;
+    } else {
+      document.getElementById('out-gc-p0').textContent = 'k_e ≤ g';
+      document.getElementById('sub-gc-p0').textContent = 'Ajustá k_e por encima de g para obtener un valor finito.';
+    }
+  }
+
+  // 14. Suscripción / Split
+  function calcSuscripcion() {
+    const p0 = parseFloat(document.getElementById('sub-p0').value) || 0;
+    const ps = parseFloat(document.getElementById('sub-ps').value) || 0;
+    const nOld = Math.max(0.1, parseFloat(document.getElementById('sub-nold').value) || 1);
+    const nNew = Math.max(0, parseFloat(document.getElementById('sub-nnew').value) || 0);
+    const ten = Math.max(0, parseFloat(document.getElementById('sub-ten').value) || 0);
+
+    const terp = ((nOld * p0) + (nNew * ps)) / (nOld + nNew);
+    const nuevas = ten * (nNew / nOld);
+    const costoIntegracion = nuevas * ps;
+
+    document.getElementById('out-sub-terp').textContent = fmtCur(terp);
+    document.getElementById('out-sub-new').textContent = `${fmtNum(nuevas, 0)} acciones nuevas`;
+    document.getElementById('sub-sub-new').textContent = `Integración: ${fmtCur(costoIntegracion)} · Tenencia total: ${fmtNum(ten + nuevas, 0)} acc.`;
+  }
+
+  // Normal estándar PDF y CDF
+  function normPdf(x) {
+    return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+  }
+  function normCdf(x) {
+    const t = 1 / (1 + 0.2316419 * Math.abs(x));
+    const d = 0.3989423 * Math.exp(-x * x / 2);
+    let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+    return x >= 0 ? 1 - p : p;
+  }
+
+  // 15. Black-Scholes y Griegas
+  function calcBs() {
+    const s = parseFloat(document.getElementById('bs-s').value);
+    const k = parseFloat(document.getElementById('bs-k').value);
+    const dias = Math.max(1, parseFloat(document.getElementById('bs-t').value) || 1);
+    const v = Math.max(0.01, (parseFloat(document.getElementById('bs-v').value) || 1) / 100);
+    const r = (parseFloat(document.getElementById('bs-r').value) || 0) / 100;
+    if (!(s > 0) || !(k > 0)) return;
+
+    const t = dias / 365;
+    const sqrtT = Math.sqrt(t);
+    const d1 = (Math.log(s / k) + (r + 0.5 * v * v) * t) / (v * sqrtT);
+    const d2 = d1 - v * sqrtT;
+    const disc = Math.exp(-r * t);
+
+    const call = s * normCdf(d1) - k * disc * normCdf(d2);
+    const put = k * disc * normCdf(-d2) - s * normCdf(-d1);
+    const deltaCall = normCdf(d1);
+    const deltaPut = deltaCall - 1;
+    const gamma = normPdf(d1) / (s * v * sqrtT);
+    const vega = (s * normPdf(d1) * sqrtT) / 100;
+    const thetaCall = (-(s * normPdf(d1) * v) / (2 * sqrtT) - r * k * disc * normCdf(d2)) / 365;
+
+    document.getElementById('out-bs-primas').textContent = `Call ${fmtNum(call, 2)} · Put ${fmtNum(put, 2)}`;
+    document.getElementById('sub-bs-primas').textContent = `Valor intrínseco Call: ${fmtNum(Math.max(0, s - k), 2)} · Put: ${fmtNum(Math.max(0, k - s), 2)}.`;
+    document.getElementById('out-bs-dg').textContent = `ΔC ${fmtNum(deltaCall, 2)} / ΔP ${fmtNum(deltaPut, 2)} · Γ ${fmtNum(gamma, 4)}`;
+    document.getElementById('out-bs-tv').textContent = `Θ ${fmtNum(thetaCall, 3)}/día · Vega ${fmtNum(vega, 3)}`;
+  }
+
+  // 16. Estrategias
+  function calcEstrategias() {
+    const tipo = document.getElementById('st-tipo').value;
+    const s = parseFloat(document.getElementById('st-s').value) || 0;
+    const k1 = parseFloat(document.getElementById('st-k1').value) || 0;
+    const k2 = parseFloat(document.getElementById('st-k2').value) || 0;
+    const prima = parseFloat(document.getElementById('st-prima').value) || 0;
+
+    if (tipo === 'bull') {
+      const ancho = Math.max(0, k2 - k1);
+      const maxGain = ancho - prima;
+      const maxLoss = -prima;
+      const be = k1 + prima;
+      document.getElementById('out-st-minmax').textContent = `Max Gain ${fmtNum(maxGain, 2)} / Max Loss ${fmtNum(maxLoss, 2)}`;
+      document.getElementById('out-st-be').textContent = fmtCur(be);
+    } else if (tipo === 'straddle') {
+      document.getElementById('out-st-minmax').textContent = `Max Gain Ilimitada / Max Loss ${fmtNum(-prima, 2)}`;
+      document.getElementById('out-st-be').textContent = `${fmtCur(k1 - prima)} y ${fmtCur(k1 + prima)}`;
+    } else {
+      const maxGain = (k2 - s) + prima;
+      const be = s - prima;
+      document.getElementById('out-st-minmax').textContent = `Max Gain ${fmtNum(maxGain, 2)} / Riesgo a la baja en acción`;
+      document.getElementById('out-st-be').textContent = fmtCur(be);
+    }
+  }
+
+  // 17. Futuros
+  function calcFuturos() {
+    const spot = parseFloat(document.getElementById('fu-spot').value);
+    const fut = parseFloat(document.getElementById('fu-fut').value);
+    const dias = Math.max(1, parseFloat(document.getElementById('fu-dias').value) || 1);
+    const cont = Math.max(1, parseFloat(document.getElementById('fu-cont').value) || 1);
+    const aj = parseFloat(document.getElementById('fu-ajuste').value) || 0;
+    if (!(spot > 0) || !(fut > 0)) return;
+
+    const mult = fut / spot;
+    const tna = (mult - 1) * (365 / dias);
+    const tea = Math.pow(mult, 365 / dias) - 1;
+    const mtm = aj * 1000 * cont;
+
+    document.getElementById('out-fu-tasas').textContent = `TNA ${fmtPct(tna * 100)} · TEA ${fmtPct(tea * 100)}`;
+    document.getElementById('sub-fu-tasas').textContent = `Devaluación implícita directa: ${fmtPct((mult - 1) * 100)} en ${dias} días.`;
+    document.getElementById('out-fu-mtm').textContent = fmtCur(mtm);
+  }
+
+  // 18. Sharpe y Sortino
+  function calcSharpe() {
+    const rp = (parseFloat(document.getElementById('sh-rp').value) || 0) / 100;
+    const rf = (parseFloat(document.getElementById('sh-rf').value) || 0) / 100;
+    const vol = Math.max(0.0001, (parseFloat(document.getElementById('sh-vol').value) || 0.1) / 100);
+    const dd = Math.max(0.0001, (parseFloat(document.getElementById('sh-dd').value) || 0.1) / 100);
+
+    const sharpe = (rp - rf) / vol;
+    const sortino = (rp - rf) / dd;
+    document.getElementById('out-sh-ratio').textContent = fmtNum(sharpe, 2);
+    document.getElementById('out-sh-sortino').textContent = fmtNum(sortino, 2);
+  }
+
+  // 19. VaR y Drawdown
+  function calcVarDd() {
+    const cap = parseFloat(document.getElementById('vr-cap').value) || 0;
+    const vol = (parseFloat(document.getElementById('vr-vol').value) || 0) / 100;
+    const z = parseFloat(document.getElementById('vr-conf').value) || 1.645;
+    const dias = Math.max(1, parseFloat(document.getElementById('vr-horiz').value) || 1);
+    const pico = parseFloat(document.getElementById('vr-pico').value) || 0;
+    const valle = parseFloat(document.getElementById('vr-valle').value) || 0;
+
+    const varVal = cap * (vol / Math.sqrt(252)) * Math.sqrt(dias) * z;
+    const ddNom = valle - pico;
+    const ddPct = pico > 0 ? (ddNom / pico) * 100 : NaN;
+
+    document.getElementById('out-vr-val').textContent = fmtCur(varVal);
+    document.getElementById('sub-vr-val').textContent = `Horizonte de ${dias} día(s) al nivel z = ${z}.`;
+    document.getElementById('out-vr-dd').textContent = fmtPct(ddPct);
+    document.getElementById('sub-vr-dd').textContent = `Diferencia vs. máximo: ${fmtCur(ddNom)}.`;
+  }
+
+  // 20. PPP y Breakeven
+  function calcPppBe() {
+    const q1 = parseFloat(document.getElementById('pp-q1').value) || 0;
+    const p1 = parseFloat(document.getElementById('pp-p1').value) || 0;
+    const q2 = parseFloat(document.getElementById('pp-q2').value) || 0;
+    const p2 = parseFloat(document.getElementById('pp-p2').value) || 0;
+    const com = (parseFloat(document.getElementById('pp-com').value) || 0) / 100;
+    const cauc = (parseFloat(document.getElementById('pp-cauc').value) || 0) / 100;
+
+    const qTot = q1 + q2;
+    const capTot = (q1 * p1) + (q2 * p2);
+    const ppp = qTot > 0 ? capTot / qTot : NaN;
+    const be = isFinite(ppp) ? ppp * (1 + com + cauc) : NaN;
+
+    document.getElementById('out-pp-ppp').textContent = isFinite(ppp) ? fmtCur(ppp) : '—';
+    document.getElementById('sub-pp-ppp').textContent = `Cantidad total: ${fmtNum(qTot, 0)} · Capital total: ${fmtCur(capTot)}.`;
+    document.getElementById('out-pp-be').textContent = isFinite(be) ? fmtCur(be) : '—';
+  }
+
+  // 21. Liquidez, Solvencia y Endeudamiento
+  function calcLiquidez() {
+    const ac = parseFloat(document.getElementById('liq-ac').value) || 0;
+    const bs = parseFloat(document.getElementById('liq-bs').value) || 0;
+    const at = parseFloat(document.getElementById('liq-at').value) || 0;
+    const pc = parseFloat(document.getElementById('liq-pc').value);
+    const pt = parseFloat(document.getElementById('liq-pt').value);
+    const pn = parseFloat(document.getElementById('liq-pn').value);
+
+    const liqCorr = pc > 0 ? ac / pc : NaN;
+    const liqAcida = pc > 0 ? (ac - bs) / pc : NaN;
+    const solv = pt > 0 ? at / pt : NaN;
+    const end = pn > 0 ? pt / pn : NaN;
+
+    document.getElementById('out-liq-ratios').textContent = (isFinite(liqCorr) && isFinite(liqAcida))
+      ? `Corr. ${fmtNum(liqCorr, 2)}x · Ácida ${fmtNum(liqAcida, 2)}x`
+      : '—';
+    document.getElementById('sub-liq-ratios').textContent = isFinite(liqCorr)
+      ? `Capital de trabajo neto (AC − PC): ${fmtCur(ac - pc)}.`
+      : '—';
+    document.getElementById('out-liq-solv').textContent = isFinite(solv) ? fmtNum(solv, 2) + 'x' : '—';
+    document.getElementById('out-liq-end').textContent = isFinite(end) ? `${fmtNum(end, 2)}x (${fmtPct(end * 100)})` : '—';
+  }
+
+  // 22. ROE, ROA y Apalancamiento General
+  function calcRentabilidad() {
+    const rn = parseFloat(document.getElementById('ren-rn').value) || 0;
+    const ebit = parseFloat(document.getElementById('ren-ebit').value) || 0;
+    const at = parseFloat(document.getElementById('ren-at').value);
+    const pn = parseFloat(document.getElementById('ren-pn').value);
+
+    const roe = pn > 0 ? (rn / pn) * 100 : NaN;
+    const roa = at > 0 ? (rn / at) * 100 : NaN;
+    const roaOp = at > 0 ? (ebit / at) * 100 : NaN;
+    const apal = (isFinite(roe) && isFinite(roa) && Math.abs(roa) > 1e-9) ? roe / roa : NaN;
+    const multCap = (at > 0 && pn > 0) ? at / pn : NaN;
+
+    document.getElementById('out-ren-roe').textContent = fmtPct(roe);
+    document.getElementById('out-ren-roa').textContent = fmtPct(roa);
+    document.getElementById('sub-ren-roa').textContent = isFinite(roaOp)
+      ? `ROA Operativo (EBIT / AT): ${fmtPct(roaOp)}.`
+      : 'Rentabilidad generada sobre el Activo Total.';
+    document.getElementById('out-ren-apal').textContent = isFinite(apal)
+      ? `${fmtNum(apal, 2)}x (AT/PN: ${fmtNum(multCap, 2)}x)`
+      : '—';
+    if (isFinite(apal)) {
+      document.getElementById('sub-ren-apal').textContent = apal > 1
+        ? 'Apalancamiento positivo: el uso de deuda amplifica el ROE.'
+        : (apal < 1 ? 'Apalancamiento negativo: el costo de deuda reduce el ROE.' : 'Apalancamiento neutro.');
+    }
+  }
+
+  // 23. EBITDA y Márgenes
+  function calcEbitda() {
+    const ventas = parseFloat(document.getElementById('eb-ventas').value);
+    const ebit = parseFloat(document.getElementById('eb-ebit').value) || 0;
+    const dep = parseFloat(document.getElementById('eb-dep').value) || 0;
+    const amort = parseFloat(document.getElementById('eb-amort').value) || 0;
+
+    const ebitda = ebit + dep + amort;
+    const mEbitda = ventas > 0 ? (ebitda / ventas) * 100 : NaN;
+    const mEbit = ventas > 0 ? (ebit / ventas) * 100 : NaN;
+
+    document.getElementById('out-eb-val').textContent = fmtCur(ebitda);
+    document.getElementById('sub-eb-val').textContent = `D&A totales sumadas al EBIT: ${fmtCur(dep + amort)}.`;
+    document.getElementById('out-eb-margen').textContent = (isFinite(mEbitda) && isFinite(mEbit))
+      ? `EBITDA ${fmtPct(mEbitda)} · EBIT ${fmtPct(mEbit)}`
+      : '—';
+  }
+
+  // 24. VAN y TIR
+  function calcVanTir() {
+    const inv = parseFloat(document.getElementById('vt-inv').value) || 0;
+    const k = (parseFloat(document.getElementById('vt-tasa').value) || 0) / 100;
+    const flujos = [
+      parseFloat(document.getElementById('vt-f1').value) || 0,
+      parseFloat(document.getElementById('vt-f2').value) || 0,
+      parseFloat(document.getElementById('vt-f3').value) || 0,
+      parseFloat(document.getElementById('vt-f4').value) || 0,
+      parseFloat(document.getElementById('vt-f5').value) || 0
+    ];
+
+    const npvAt = (rate) => {
+      let pv = 0;
+      for (let t = 0; t < flujos.length; t++) {
+        pv += flujos[t] / Math.pow(1 + rate, t + 1);
+      }
+      return -inv + pv;
+    };
+
+    const van = (1 + k) > 0 ? npvAt(k) : NaN;
+    const vaFlujos = isFinite(van) ? van + inv : NaN;
+    const ir = (inv > 0 && isFinite(vaFlujos)) ? vaFlujos / inv : NaN;
+
+    // Bisección + Newton-Raphson para TIR
+    let irr = NaN;
+    if (inv > 0 && flujos.some(f => f > 0)) {
+      let low = -0.95, high = 5.0;
+      let fLow = npvAt(low), fHigh = npvAt(high);
+      while (fLow * fHigh > 0 && high < 100) {
+        high *= 2;
+        fHigh = npvAt(high);
+      }
+      if (fLow * fHigh <= 0) {
+        for (let i = 0; i < 80; i++) {
+          const mid = (low + high) / 2;
+          const fMid = npvAt(mid);
+          if (Math.abs(fMid) < 1e-7) { low = high = mid; break; }
+          if (fLow * fMid <= 0) { high = mid; fHigh = fMid; }
+          else { low = mid; fLow = fMid; }
+        }
+        irr = (low + high) / 2;
+      }
+    }
+
+    document.getElementById('out-vt-van').textContent = isFinite(van) ? fmtCur(van) : '—';
+    document.getElementById('sub-vt-van').textContent = isFinite(van)
+      ? (van > 0 ? 'VAN positivo: el proyecto crea valor por encima de la tasa de corte.' : (van < 0 ? 'VAN negativo: el proyecto destruye valor a esa tasa.' : 'VAN neutro: rinde exactamente la tasa de corte.'))
+      : '—';
+    document.getElementById('out-vt-tir').textContent = isFinite(irr) ? fmtPct(irr * 100) : 'Sin solución real';
+    document.getElementById('out-vt-ir').textContent = (isFinite(vaFlujos) && isFinite(ir))
+      ? `${fmtCur(vaFlujos)} · IR ${fmtNum(ir, 2)}x`
+      : '—';
+  }
+
+  // 25. Interés Simple y Compuesto
+  function calcInteresSC() {
+    const cap = parseFloat(document.getElementById('isc-cap').value) || 0;
+    const i = (parseFloat(document.getElementById('isc-tasa').value) || 0) / 100;
+    const n = Math.max(0, parseFloat(document.getElementById('isc-n').value) || 0);
+
+    const montoSimp = cap * (1 + i * n);
+    const intSimp = montoSimp - cap;
+    const pctSimp = i * n * 100;
+
+    const montoComp = cap * Math.pow(1 + i, n);
+    const intComp = montoComp - cap;
+    const pctComp = (Math.pow(1 + i, n) - 1) * 100;
+
+    const diff = montoComp - montoSimp;
+
+    document.getElementById('out-isc-comp').textContent = fmtCur(montoComp);
+    document.getElementById('sub-isc-comp').textContent = `Interés ganado: ${fmtCur(intComp)} (${fmtPct(pctComp)} acumulado).`;
+    document.getElementById('out-isc-simp').textContent = fmtCur(montoSimp);
+    document.getElementById('sub-isc-simp').textContent = `Interés ganado: ${fmtCur(intSimp)} (${fmtPct(pctSimp)} directo).`;
+    document.getElementById('out-isc-diff').textContent = fmtCur(diff);
+  }
+
+  // 26. Capital de Trabajo y Ciclo de Conversión de Efectivo (CCC)
+  function calcCcc() {
+    const ventas = parseFloat(document.getElementById('ccc-ventas').value);
+    const cmv = parseFloat(document.getElementById('ccc-cmv').value);
+    const inv = parseFloat(document.getElementById('ccc-inv').value) || 0;
+    const cxc = parseFloat(document.getElementById('ccc-cxc').value) || 0;
+    const cxp = parseFloat(document.getElementById('ccc-cxp').value) || 0;
+    const dias = parseFloat(document.getElementById('ccc-dias').value) || 365;
+
+    const dio = cmv > 0 ? (inv / cmv) * dias : NaN;
+    const dso = ventas > 0 ? (cxc / ventas) * dias : NaN;
+    const dpo = cmv > 0 ? (cxp / cmv) * dias : NaN;
+    const ccc = (isFinite(dio) && isFinite(dso) && isFinite(dpo)) ? (dio + dso - dpo) : NaN;
+    const nof = inv + cxc - cxp;
+
+    document.getElementById('out-ccc-dias').textContent = isFinite(ccc) ? `${fmtNum(ccc, 1)} días` : '—';
+    document.getElementById('out-ccc-desglose').textContent = (isFinite(dio) && isFinite(dso) && isFinite(dpo))
+      ? `DIO ${fmtNum(dio, 0)}d · DSO ${fmtNum(dso, 0)}d · DPO ${fmtNum(dpo, 0)}d`
+      : '—';
+    document.getElementById('out-ccc-nof').textContent = fmtCur(nof);
+  }
+
+  // 27. Cobertura de Intereses y Deuda Neta / EBITDA
+  function calcCobertura() {
+    const ebit = parseFloat(document.getElementById('cob-ebit').value) || 0;
+    const ebitda = parseFloat(document.getElementById('cob-ebitda').value);
+    const interes = parseFloat(document.getElementById('cob-int').value);
+    const deuda = parseFloat(document.getElementById('cob-deuda').value) || 0;
+    const caja = parseFloat(document.getElementById('cob-caja').value) || 0;
+
+    const deudaNeta = deuda - caja;
+    const dne = (ebitda > 0) ? deudaNeta / ebitda : NaN;
+    const icr = (interes > 0) ? ebit / interes : NaN;
+
+    document.getElementById('out-cob-dne').textContent = isFinite(dne) ? `${fmtNum(dne, 2)}x` : '—';
+    document.getElementById('sub-cob-dne').textContent = `Deuda Neta: ${fmtCur(deudaNeta)} (Deuda ${fmtCur(deuda)} − Caja ${fmtCur(caja)}).`;
+    document.getElementById('out-cob-icr').textContent = isFinite(icr) ? `${fmtNum(icr, 2)}x` : '—';
+  }
+
+  // 28. WACC
+  function calcWacc() {
+    const e = parseFloat(document.getElementById('wc-e').value) || 0;
+    const d = parseFloat(document.getElementById('wc-d').value) || 0;
+    const ke = (parseFloat(document.getElementById('wc-ke').value) || 0) / 100;
+    const kd = (parseFloat(document.getElementById('wc-kd').value) || 0) / 100;
+    const tax = (parseFloat(document.getElementById('wc-tax').value) || 0) / 100;
+
+    const v = e + d;
+    if (!(v > 0)) return;
+    const we = e / v;
+    const wd = d / v;
+    const kdNeto = kd * (1 - tax);
+    const wacc = (we * ke) + (wd * kdNeto);
+
+    document.getElementById('out-wc-val').textContent = fmtPct(wacc * 100);
+    document.getElementById('out-wc-pesos').textContent = `E ${fmtNum(we * 100, 1)}% / D ${fmtNum(wd * 100, 1)}% · k_d neto ${fmtPct(kdNeto * 100)}`;
+  }
+
+  // 29. TIR Bono con Cupones
+  function calcTirFlujos() {
+    const precio = parseFloat(document.getElementById('bf-precio').value) || 0;
+    const freq = Math.max(1, parseFloat(document.getElementById('bf-freq').value) || 2);
+    const flujos = [
+      parseFloat(document.getElementById('bf-f1').value) || 0,
+      parseFloat(document.getElementById('bf-f2').value) || 0,
+      parseFloat(document.getElementById('bf-f3').value) || 0,
+      parseFloat(document.getElementById('bf-f4').value) || 0,
+      parseFloat(document.getElementById('bf-f5').value) || 0,
+      parseFloat(document.getElementById('bf-f6').value) || 0
+    ];
+
+    const npvPer = (r) => {
+      let pv = 0;
+      for (let t = 0; t < flujos.length; t++) {
+        pv += flujos[t] / Math.pow(1 + r, t + 1);
+      }
+      return -precio + pv;
+    };
+
+    let rPer = NaN;
+    if (precio > 0 && flujos.some(f => f > 0)) {
+      let low = -0.90, high = 3.0;
+      let fLow = npvPer(low), fHigh = npvPer(high);
+      while (fLow * fHigh > 0 && high < 50) {
+        high *= 2;
+        fHigh = npvPer(high);
+      }
+      if (fLow * fHigh <= 0) {
+        for (let i = 0; i < 80; i++) {
+          const mid = (low + high) / 2;
+          const fMid = npvPer(mid);
+          if (Math.abs(fMid) < 1e-7) { low = high = mid; break; }
+          if (fLow * fMid <= 0) { high = mid; fHigh = fMid; }
+          else { low = mid; fLow = fMid; }
+        }
+        rPer = (low + high) / 2;
+      }
+    }
+
+    const sumaNom = flujos.reduce((a, b) => a + b, 0);
+    if (isFinite(rPer)) {
+      const tea = Math.pow(1 + rPer, freq) - 1;
+      const tna = rPer * freq;
+      let weightedPv = 0;
+      for (let t = 0; t < flujos.length; t++) {
+        const pv = flujos[t] / Math.pow(1 + rPer, t + 1);
+        weightedPv += ((t + 1) / freq) * pv;
+      }
+      const macDur = precio > 0 ? weightedPv / precio : NaN;
+
+      document.getElementById('out-bf-anual').textContent = `TEA ${fmtPct(tea * 100)} · TNA ${fmtPct(tna * 100)}`;
+      document.getElementById('out-bf-per').textContent = fmtPct(rPer * 100);
+      document.getElementById('out-bf-dur').textContent = `${fmtNum(sumaNom, 2)} · Dur. ${fmtNum(macDur, 2)} años`;
+    } else {
+      document.getElementById('out-bf-anual').textContent = '—';
+      document.getElementById('out-bf-per').textContent = '—';
+      document.getElementById('out-bf-dur').textContent = fmtNum(sumaNom, 2);
+    }
+  }
+
+  // 30. Sistemas de Amortización
+  function calcAmortizacion() {
+    const sist = document.getElementById('am-sist').value;
+    const v = parseFloat(document.getElementById('am-cap').value) || 0;
+    const i = (parseFloat(document.getElementById('am-tasa').value) || 0) / 100;
+    const n = Math.max(1, Math.round(parseFloat(document.getElementById('am-n').value) || 1));
+
+    let c1 = 0, cn = 0, totInt = 0, subTxt = '';
+
+    if (sist === 'frances') {
+      const cuota = i > 0 ? v * (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1) : v / n;
+      c1 = cn = cuota;
+      totInt = (cuota * n) - v;
+      const int1 = v * i;
+      const amort1 = cuota - int1;
+      subTxt = `Cuota 1: Interés ${fmtCur(int1)} + Amortización ${fmtCur(amort1)}.`;
+    } else if (sist === 'aleman') {
+      const amort = v / n;
+      const int1 = v * i;
+      const intN = amort * i;
+      c1 = amort + int1;
+      cn = amort + intN;
+      totInt = i * v * (n + 1) / 2;
+      subTxt = `Amortización constante: ${fmtCur(amort)} por período (Int. 1: ${fmtCur(int1)}).`;
+    } else {
+      const intPer = v * i;
+      c1 = intPer;
+      cn = v + intPer;
+      totInt = intPer * n;
+      subTxt = `Solo intereses (${fmtCur(intPer)}) hasta el vencimiento, donde cancela ${fmtCur(v)}.`;
+    }
+
+    document.getElementById('out-am-cuotas').textContent = `${fmtCur(c1)} / ${fmtCur(cn)}`;
+    document.getElementById('sub-am-cuotas').textContent = subTxt;
+    document.getElementById('out-am-int').textContent = fmtCur(totInt);
+    document.getElementById('sub-am-int').textContent = `Total pagado (Capital + Intereses): ${fmtCur(v + totInt)}.`;
+  }
+
+  // 31. ON Convertible
+  function calcOnConv() {
+    const vn = parseFloat(document.getElementById('onc-vn').value) || 0;
+    const precioOn = parseFloat(document.getElementById('onc-precio').value) || 0;
+    const pConv = parseFloat(document.getElementById('onc-pconv').value);
+    const pAcc = parseFloat(document.getElementById('onc-pacc').value) || 0;
+
+    const ratio = pConv > 0 ? vn / pConv : NaN;
+    const valConv = isFinite(ratio) ? ratio * pAcc : NaN;
+    const prima = (valConv > 0) ? ((precioOn / valConv) - 1) * 100 : NaN;
+    const pImp = (ratio > 0) ? precioOn / ratio : NaN;
+
+    document.getElementById('out-onc-val').textContent = isFinite(valConv) ? fmtCur(valConv) : '—';
+    document.getElementById('sub-onc-val').textContent = isFinite(ratio) ? `Ratio de conversión: ${fmtNum(ratio, 2)} acciones por cada ${fmtNum(vn, 0)} VN.` : '—';
+    document.getElementById('out-onc-prima').textContent = isFinite(prima) ? `${fmtPct(prima)} (${fmtCur(pImp)}/acc.)` : '—';
+  }
+
+  // 32. Tamaño de Posición
+  function calcPosSizing() {
+    const cap = parseFloat(document.getElementById('ps-cap').value) || 0;
+    const rPct = (parseFloat(document.getElementById('ps-riesgo').value) || 0) / 100;
+    const ent = parseFloat(document.getElementById('ps-ent').value) || 0;
+    const sl = parseFloat(document.getElementById('ps-sl').value) || 0;
+    const tp = parseFloat(document.getElementById('ps-tp').value) || 0;
+
+    const riesgoMon = cap * rPct;
+    const distSl = Math.abs(ent - sl);
+    const qty = distSl > 0 ? riesgoMon / distSl : NaN;
+    const montoPos = isFinite(qty) ? qty * ent : NaN;
+    const pctCartera = (cap > 0 && isFinite(montoPos)) ? (montoPos / cap) * 100 : NaN;
+    const distTp = Math.abs(tp - ent);
+    const rr = (distSl > 0 && tp > 0) ? distTp / distSl : NaN;
+
+    document.getElementById('out-ps-qty').textContent = isFinite(qty) ? `${fmtNum(qty, 2)} unid.` : '—';
+    document.getElementById('sub-ps-qty').textContent = `Riesgo máximo asumido: ${fmtCur(riesgoMon)} (distancia SL: ${fmtCur(distSl)}).`;
+    document.getElementById('out-ps-monto').textContent = isFinite(montoPos) ? `${fmtCur(montoPos)} (${fmtNum(pctCartera, 1)}%)` : '—';
+    document.getElementById('out-ps-rr').textContent = isFinite(rr) ? `1 : ${fmtNum(rr, 2)}` : '—';
+  }
+
+  // 33. Beta de Cartera y Alpha de Jensen
+  function calcBetaAlpha() {
+    const w1 = (parseFloat(document.getElementById('ba-w1').value) || 0) / 100;
+    const b1 = parseFloat(document.getElementById('ba-b1').value) || 0;
+    const w2 = (parseFloat(document.getElementById('ba-w2').value) || 0) / 100;
+    const b2 = parseFloat(document.getElementById('ba-b2').value) || 0;
+    const w3 = (parseFloat(document.getElementById('ba-w3').value) || 0) / 100;
+    const b3 = parseFloat(document.getElementById('ba-b3').value) || 0;
+
+    const rp = (parseFloat(document.getElementById('ba-rp').value) || 0) / 100;
+    const rm = (parseFloat(document.getElementById('ba-rm').value) || 0) / 100;
+    const rf = (parseFloat(document.getElementById('ba-rf').value) || 0) / 100;
+
+    const betaP = (w1 * b1) + (w2 * b2) + (w3 * b3);
+    const capmExp = rf + betaP * (rm - rf);
+    const alpha = rp - capmExp;
+    const sumW = (w1 + w2 + w3) * 100;
+
+    document.getElementById('out-ba-beta').textContent = fmtNum(betaP, 2);
+    document.getElementById('sub-ba-beta').textContent = `Suma de ponderaciones: ${fmtNum(sumW, 1)}% · Retorno esperado CAPM: ${fmtPct(capmExp * 100)}.`;
+    document.getElementById('out-ba-alpha').textContent = (alpha >= 0 ? '+' : '') + fmtPct(alpha * 100);
+  }
+
+  const extraIds = [
+    'z-compra','z-pago','z-dias','z-base',
+    'idx-vn','idx-vr','idx-cer0','idx-cer1','idx-tc0','idx-tc1',
+    'dur-md','dur-conv','dur-dy',
+    'ic-vr','ic-cupon','ic-dias','ic-base','ic-limpio',
+    'sp-bono','sp-rf',
+    'm-precio','m-bpa','m-vpa','m-ev','m-ebitda',
+    'div-precio','div-monto','div-bpa','div-ret',
+    'gc-rf','gc-beta','gc-erp','gc-rp','gc-d1','gc-g',
+    'sub-p0','sub-ps','sub-nold','sub-nnew','sub-ten',
+    'bs-s','bs-k','bs-t','bs-v','bs-r',
+    'st-tipo','st-s','st-k1','st-k2','st-prima',
+    'fu-spot','fu-fut','fu-dias','fu-cont','fu-ajuste',
+    'sh-rp','sh-rf','sh-vol','sh-dd',
+    'vr-cap','vr-vol','vr-conf','vr-horiz','vr-pico','vr-valle',
+    'pp-q1','pp-p1','pp-q2','pp-p2','pp-com','pp-cauc',
+    'liq-ac','liq-bs','liq-at','liq-pc','liq-pt','liq-pn',
+    'ren-rn','ren-ebit','ren-at','ren-pn',
+    'eb-ventas','eb-ebit','eb-dep','eb-amort',
+    'vt-inv','vt-tasa','vt-f1','vt-f2','vt-f3','vt-f4','vt-f5',
+    'isc-cap','isc-tasa','isc-n',
+    'ccc-ventas','ccc-cmv','ccc-inv','ccc-cxc','ccc-cxp','ccc-dias',
+    'cob-ebit','cob-ebitda','cob-int','cob-deuda','cob-caja',
+    'wc-e','wc-d','wc-ke','wc-kd','wc-tax',
+    'bf-precio','bf-freq','bf-f1','bf-f2','bf-f3','bf-f4','bf-f5','bf-f6',
+    'am-sist','am-cap','am-tasa','am-n',
+    'onc-vn','onc-precio','onc-pconv','onc-pacc',
+    'ps-cap','ps-riesgo','ps-ent','ps-sl','ps-tp',
+    'ba-w1','ba-b1','ba-w2','ba-b2','ba-w3','ba-b3','ba-rp','ba-rm','ba-rf'
+  ];
+
+  function calcAllExtra() {
+    calcCero(); calcCerDl(); calcDuration(); calcCorridos(); calcSpread();
+    calcMultiplos(); calcDividendos(); calcGordonCapm(); calcSuscripcion();
+    calcBs(); calcEstrategias(); calcFuturos(); calcSharpe(); calcVarDd(); calcPppBe();
+    calcLiquidez(); calcRentabilidad(); calcEbitda(); calcVanTir(); calcInteresSC();
+    calcCcc(); calcCobertura(); calcWacc(); calcTirFlujos(); calcAmortizacion();
+    calcOnConv(); calcPosSizing(); calcBetaAlpha();
+  }
+
+  extraIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', calcAllExtra);
+  });
+
+  Object.assign(DEFAULTS, {
+    cero: { 'z-compra': '1045.00', 'z-pago': '1280.00', 'z-dias': '180', 'z-base': '365' },
+    cerdl: { 'idx-vn': '10000', 'idx-vr': '100.00', 'idx-cer0': '120.5000', 'idx-cer1': '265.1000', 'idx-tc0': '950.00', 'idx-tc1': '1180.00' },
+    duration: { 'dur-md': '4.25', 'dur-conv': '28.5', 'dur-dy': '1.00' },
+    corridos: { 'ic-vr': '100.00', 'ic-cupon': '6.00', 'ic-dias': '45', 'ic-base': '365', 'ic-limpio': '72.40' },
+    spread: { 'sp-bono': '14.20', 'sp-rf': '4.35' },
+    multiplos: { 'm-precio': '2500', 'm-bpa': '250', 'm-vpa': '1800', 'm-ev': '1200', 'm-ebitda': '240' },
+    dividendos: { 'div-precio': '1500', 'div-monto': '90', 'div-bpa': '225', 'div-ret': '7.0' },
+    gordon: { 'gc-rf': '4.3', 'gc-beta': '1.15', 'gc-erp': '5.0', 'gc-rp': '6.5', 'gc-d1': '12.0', 'gc-g': '3.0' },
+    suscripcion: { 'sub-p0': '1000', 'sub-ps': '750', 'sub-nold': '4', 'sub-nnew': '1', 'sub-ten': '1000' },
+    bs: { 'bs-s': '100', 'bs-k': '100', 'bs-t': '30', 'bs-v': '45', 'bs-r': '25' },
+    estrategias: { 'st-tipo': 'bull', 'st-s': '100', 'st-k1': '100', 'st-k2': '115', 'st-prima': '4.5' },
+    futuros: { 'fu-spot': '1150.00', 'fu-fut': '1245.00', 'fu-dias': '60', 'fu-cont': '10', 'fu-ajuste': '8.00' },
+    sharpe: { 'sh-rp': '28.0', 'sh-rf': '8.0', 'sh-vol': '18.0', 'sh-dd': '12.0' },
+    vardd: { 'vr-cap': '10000000', 'vr-vol': '22.0', 'vr-conf': '1.645', 'vr-horiz': '1', 'vr-pico': '12500000', 'vr-valle': '10000000' },
+    pppbe: { 'pp-q1': '500', 'pp-p1': '1200', 'pp-q2': '500', 'pp-p2': '1050', 'pp-com': '0.80', 'pp-cauc': '1.50' },
+    liquidez: { 'liq-ac': '450000', 'liq-bs': '150000', 'liq-at': '1200000', 'liq-pc': '250000', 'liq-pt': '500000', 'liq-pn': '700000' },
+    rentabilidad: { 'ren-rn': '140000', 'ren-ebit': '210000', 'ren-at': '1200000', 'ren-pn': '700000' },
+    ebitda: { 'eb-ventas': '1500000', 'eb-ebit': '210000', 'eb-dep': '45000', 'eb-amort': '15000' },
+    vantir: { 'vt-inv': '100000', 'vt-tasa': '12.0', 'vt-f1': '30000', 'vt-f2': '35000', 'vt-f3': '40000', 'vt-f4': '45000', 'vt-f5': '0' },
+    interessc: { 'isc-cap': '100000', 'isc-tasa': '3.0', 'isc-n': '12' },
+    ccc: { 'ccc-ventas': '1800000', 'ccc-cmv': '1100000', 'ccc-inv': '180000', 'ccc-cxc': '220000', 'ccc-cxp': '140000', 'ccc-dias': '365' },
+    cobertura: { 'cob-ebit': '210000', 'cob-ebitda': '270000', 'cob-int': '45000', 'cob-deuda': '650000', 'cob-caja': '180000' },
+    wacc: { 'wc-e': '700000', 'wc-d': '300000', 'wc-ke': '16.5', 'wc-kd': '11.0', 'wc-tax': '35.0' },
+    tirflujos: { 'bf-precio': '84.50', 'bf-freq': '2', 'bf-f1': '2.00', 'bf-f2': '2.00', 'bf-f3': '27.00', 'bf-f4': '26.50', 'bf-f5': '26.00', 'bf-f6': '25.50' },
+    amortizacion: { 'am-sist': 'frances', 'am-cap': '100000', 'am-tasa': '2.5', 'am-n': '12' },
+    onconv: { 'onc-vn': '100', 'onc-precio': '112', 'onc-pconv': '25', 'onc-pacc': '24' },
+    possizing: { 'ps-cap': '50000', 'ps-riesgo': '1.5', 'ps-ent': '120.0', 'ps-sl': '111.0', 'ps-tp': '142.5' },
+    betaalpha: { 'ba-w1': '50', 'ba-b1': '1.25', 'ba-w2': '30', 'ba-b2': '0.90', 'ba-w3': '20', 'ba-b3': '0.15', 'ba-rp': '24.0', 'ba-rm': '20.0', 'ba-rf': '6.0' }
+  });
+
+  document.querySelectorAll('.calc-btn-reset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      calcAllExtra();
+    });
+  });
+
+  calcAllExtra();
+
+
+    // Cálculo inicial
+  calcTasas();
+  calcDolar();
+  calcBonos();
+  calcCaucion();
+  calcCedear();
+})();
+
+        let isLegalModalOpen = false;
+
+function openLegalModal() {
+            const modal = document.getElementById('legal-modal');
+            if (!modal) return;
+            isLegalModalOpen = true;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('legal-locked');
+        }
+
+function closeLegalModal(confirmedByButton = false) {
+            if (confirmedByButton !== true) return;
+            const modal = document.getElementById('legal-modal');
+            if (!modal) return;
+            isLegalModalOpen = false;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('legal-locked');
+        }
+
+</script>
+</body>
+</html>

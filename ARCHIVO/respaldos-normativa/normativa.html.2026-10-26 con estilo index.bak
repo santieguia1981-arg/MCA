@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<title>Normas CNV – Texto Ordenado 2013</title>
+<style>
+  /* Estilo tomado de index.html: fuente Inter, fondo #0B132B, paneles #1C2541, texto #F8FAFC */
+  :root {
+    --bg: #0B132B; --panel: #1C2541; --ink: #F8FAFC; --muted: #9CA3AF; --line: rgba(255,255,255,.10);
+    --accent: #10B981; --neon: #00FF9D; --title-bg: rgba(16,185,129,.10); --blue: #3A86FF; --amber: #fbbf24; --hl: rgba(0,255,157,.15);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
+  header.hero { background: rgba(28,37,65,.85); backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: 16px; padding: 22px; margin-bottom: 16px; }
+  .eyebrow { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { margin: 6px 0 8px; font-size: 26px; line-height: 1.2; }
+  .lead { margin: 0 0 6px; color: var(--muted); font-size: 14px; }
+  .lead strong { color: var(--neon); }
+  #norm-stats { margin: 0 0 14px; font-size: 12.5px; color: var(--muted); }
+  .tools { display: flex; gap: 10px; flex-wrap: wrap; }
+  .tools input { flex: 1 1 280px; min-width: 0; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 14px; }
+  .tools input:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+  .tools button { padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .tools button:hover { border-color: var(--neon); color: var(--neon); }
+  .hidden { display: none; }
+
+  #norm-results { max-height: 360px; overflow-y: auto; margin-top: 12px; }
+  .norm-res { display: block; width: 100%; text-align: left; padding: 10px 12px; margin-bottom: 6px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); color: inherit; font: inherit; cursor: pointer; }
+  .norm-res:hover { border-color: var(--accent); }
+  .norm-res-trail { display: block; font-size: 11px; color: var(--accent); margin-bottom: 2px; }
+  .norm-res-name { display: block; font-size: 13px; font-weight: 700; }
+  .norm-res-snip { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .norm-res-count, .norm-res-empty { font-size: 12px; color: var(--muted); margin: 4px 2px 8px; }
+
+  /* ---- desplegable de 4 niveles ---- */
+  #norm-tree details.norm { margin: 6px 0; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); }
+  #norm-tree details.norm > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; }
+  #norm-tree details.norm > summary::-webkit-details-marker { display: none; }
+  #norm-tree details.norm > summary:hover { background: var(--title-bg); }
+  #norm-tree details.norm > summary:focus-visible { outline: 2px solid var(--accent); }
+  #norm-tree .n-tag { flex: none; font-size: 11px; font-weight: 800; letter-spacing: .04em; padding: 3px 8px; border-radius: 6px; white-space: nowrap; background: var(--bg); }
+  #norm-tree .n-name { flex: 1; font-size: 14px; font-weight: 600; line-height: 1.35; }
+  #norm-tree .n-badge { flex: none; font-size: 11px; color: var(--muted); border: 1px solid var(--line); padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  #norm-tree .n-chev { flex: none; color: var(--muted); font-size: 13px; transition: transform .2s; }
+  #norm-tree details[open] > summary .n-chev { transform: rotate(180deg); }
+  #norm-tree .n-body { padding: 2px 12px 12px; }
+  #norm-tree .norm-title { border-color: var(--accent); background: var(--panel); }
+  #norm-tree .norm-title > summary .n-tag { background: var(--title-bg); color: var(--neon); }
+  #norm-tree .norm-title > summary .n-name { font-size: 15px; font-weight: 800; }
+  #norm-tree .norm-chapter > summary .n-tag { color: var(--blue); }
+  #norm-tree .norm-section > summary .n-tag { color: var(--accent); }
+  #norm-tree .norm-anexo > summary .n-tag { color: var(--amber); }
+  #norm-tree .norm-article { background: var(--bg); }
+  #norm-tree .norm-article > summary .n-name { font-size: 13px; font-weight: 600; color: var(--muted); }
+  #norm-tree .norm-article > .n-body { border-top: 1px dashed var(--line); }
+  #norm-tree .n-text { font-size: 13.5px; line-height: 1.7; padding: 8px 4px 6px; }
+  #norm-tree .n-text p { margin: 0 0 9px; }
+  #norm-tree .n-fuente { margin: 4px 4px 2px; font-size: 12px; font-style: italic; color: var(--muted); }
+  #norm-tree details.norm-flash > summary { background: var(--hl); }
+  footer.note { margin-top: 24px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  @media (max-width: 640px) { #norm-tree .n-badge { display: none; } h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Comisión Nacional de Valores</span>
+    <h1>Normas CNV – Texto Ordenado 2013</h1>
+    <p class="lead">Texto vigente al <strong id="norm-date"></strong> (última actualización incorporada: <span id="norm-upd"></span>). Despliega cada Título, Capítulo y Sección hasta la lectura completa de cada artículo.</p>
+    <p id="norm-stats"></p>
+    <div class="tools">
+      <input id="norm-search" type="search" autocomplete="off" placeholder="Buscar por palabra o texto (ej.: idoneidad, fondo de garantía, ALyC)…" aria-label="Buscar en la normativa">
+      <button type="button" id="norm-open-chapters">Abrir todos los Capítulos</button>
+      <button type="button" id="norm-collapse">Contraer todo</button>
+    </div>
+    <div id="norm-results" class="hidden"></div>
+  </header>
+
+  <main id="norm-tree"></main>
+
+  <footer class="note">
+    Contenido con fines exclusivamente educativos e informativos. No reemplaza el texto oficial publicado por la Comisión Nacional de Valores
+    ni constituye asesoramiento profesional. Ante cualquier duda, consultar la norma oficial vigente.
+  </footer>
+</div>
+<script src="data/normativa.js"></script>
+<script src="js/normativa-view.js"></script>
+</body>
+</html>

@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Examen Idoneidad CNV</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de iconos FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #070B14;
+            color: #F8FAFC;
+        }
+        .glow-border {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.15);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B1120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+
+    <!-- MARQUESINA SUPERIOR (REQUERIMIENTO 1: SIN BOTÓN DE VOLVER A INICIO) -->
+    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold text-lg shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid font-bold">CNV</i>
+                </div>
+                <div>
+                    <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold block">Mercado de Capitales</span>
+                    <h1 class="text-sm font-semibold text-slate-200">Simulador Examen de Idoneidad CNV</h1>
+                </div>
+            </div>
+            <!-- Botón de inicio removido según especificación -->
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <!-- PANTALLA 1: CONFIGURACIÓN Y BIENVENIDA -->
+        <section id="config-screen" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm glow-border">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">Configura tu Examen de Simulación</h2>
+                <p class="text-slate-400 text-sm">Selecciona los módulos normativos, la cantidad de preguntas únicas a responder y el tiempo máximo límite para realizar el examen.</p>
+            </div>
+
+            <form id="quiz-config-form" class="space-y-6 max-w-3xl mx-auto">
+                <!-- Selector de Módulos -->
+                <div>
+                    <label class="block text-sm font-bold text-emerald-400 uppercase tracking-wider mb-3">
+                        <i class="fa-solid fa-layer-group mr-2"></i>Módulos Normativos a Evaluar:
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="flex items-center p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-emerald-500/50 cursor-pointer transition-all">
+                            <input type="checkbox" name="module" value="MOD1" checked class="w-4 h-4 accent-emerald-500 rounded">
+                            <span class="ml-3 text-sm text-slate-200 font-medium">Módulo I: Marco Normativo, Emisoras y Régimen Sancionatorio</span>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-emerald-500/50 cursor-pointer transition-all">
+                            <input type="checkbox" name="module" value="MOD2" checked class="w-4 h-4 accent-emerald-500 rounded">
+                            <span class="ml-3 text-sm text-slate-200 font-medium">Módulo II: Prevención del Lavado de Activos y FT</span>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-emerald-500/50 cursor-pointer transition-all">
+                            <input type="checkbox" name="module" value="MOD3" checked class="w-4 h-4 accent-emerald-500 rounded">
+                            <span class="ml-3 text-sm text-slate-200 font-medium">Módulo III: Transparencia, Gobierno Corporativo y Atención al Inversor</span>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-emerald-500/50 cursor-pointer transition-all">
+                            <input type="checkbox" name="module" value="MOD4" checked class="w-4 h-4 accent-emerald-500 rounded">
+                            <span class="ml-3 text-sm text-slate-200 font-medium">Módulo IV: Análisis de Inversiones, Contabilidad y NIIF</span>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-emerald-500/50 cursor-pointer transition-all">
+                            <input type="checkbox" name="module" value="MOD5" checked class="w-4 h-4 accent-emerald-500 rounded">
+                            <span class="ml-3 text-sm text-slate-200 font-medium">Módulo V: Agentes, Instrumentos, Liquidación y Compensación</span>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-emerald-500/50 cursor-pointer transition-all">
+                            <input type="checkbox" name="module" value="MOD6" checked class="w-4 h-4 accent-emerald-500 rounded">
+                            <span class="ml-3 text-sm text-slate-200 font-medium">Módulo VI: Productos de Inversión Colectiva (FCI y Fideicomisos)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                    <!-- Selector de Cantidad de Preguntas -->
+                    <div>
+                        <label for="question-count" class="block text-sm font-bold text-emerald-400 uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-list-check mr-2"></i>Cantidad de Preguntas:
+                        </label>
+                        <select id="question-count" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 font-medium">
+                            <option value="10" selected>10 Preguntas</option>
+                            <option value="20">20 Preguntas</option>
+                            <option value="30">30 Preguntas</option>
+                            <option value="40">40 Preguntas</option>
+                            <option value="50">50 Preguntas</option>
+                            <option value="60">60 Preguntas</option>
+                        </select>
+                    </div>
+
+                    <!-- Selector de Tiempo -->
+                    <div>
+                        <label for="time-limit" class="block text-sm font-bold text-emerald-400 uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-clock mr-2"></i>Tiempo Límite de Examen:
+                        </label>
+                        <select id="time-limit" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 font-medium">
+                            <option value="10">10 Minutos</option>
+                            <option value="20">20 Minutos</option>
+                            <option value="30" selected>30 Minutos</option>
+                            <option value="45">45 Minutos</option>
+                            <option value="60">60 Minutos</option>
+                            <option value="90">90 Minutos</option>
+                            <option value="120">120 Minutos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <p id="availability-note" class="text-xs text-slate-400 text-center"></p>
+
+                <div class="pt-4 text-center">
+                    <button type="button" onclick="startQuiz()" class="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-lg rounded-xl shadow-lg shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-play mr-2"></i>Comenzar Examen de Idoneidad
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- PANTALLA 2: INTERFAZ DEL QUIZ -->
+        <section id="quiz-screen" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- PANEL IZQUIERDO (REQUERIMIENTO 2: GRÁFICO DE VELAS JAPONESAS) -->
+                <div class="lg:col-span-4 bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col items-center justify-between text-center glow-border min-h-[420px]">
+                    
+                    <div class="w-full flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-candlestick"></i> Rendimiento de Examen
+                        </span>
+                        <span class="text-[10px] bg-slate-800 text-slate-300 font-mono px-2 py-0.5 rounded">Velas Japonesas</span>
+                    </div>
+
+                    <!-- Canvas del Gráfico de Velas -->
+                    <div class="relative w-full flex-grow my-3 flex items-center justify-center bg-slate-950/60 border border-slate-800/80 rounded-xl overflow-hidden p-2">
+                        <canvas id="candlestick-canvas" width="300" height="200" class="w-full h-full object-contain"></canvas>
+                    </div>
+
+                    <!-- Métricas Rápidas del Gráfico -->
+                    <div class="w-full grid grid-cols-2 gap-2 text-xs mb-3">
+                        <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-2 flex items-center justify-between">
+                            <span class="text-emerald-400 font-medium">Correctas:</span>
+                            <span id="candle-correct-count" class="font-bold text-emerald-400 font-mono text-sm">0</span>
+                        </div>
+                        <div class="bg-rose-500/10 border border-rose-500/30 rounded-lg p-2 flex items-center justify-between">
+                            <span class="text-rose-400 font-medium">Incorrectas:</span>
+                            <span id="candle-incorrect-count" class="font-bold text-rose-400 font-mono text-sm">0</span>
+                        </div>
+                    </div>
+
+                    <!-- CONTADOR DIGITAL DE TIEMPO REGRESIVO -->
+                    <div class="w-full pt-3 border-t border-slate-800 flex justify-between items-center">
+                        <span class="text-xs uppercase tracking-widest text-slate-400 font-bold">Tiempo:</span>
+                        <div id="digital-timer" class="text-2xl font-extrabold font-mono text-emerald-400 tracking-wider">
+                            00:00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL DERECHO: CUESTIONARIO Y OPCIONES -->
+                <div class="lg:col-span-8 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 flex flex-col justify-between glow-border">
+                    <div>
+                        <!-- Encabezado de Pregunta con Conteo de Avance -->
+                        <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-800">
+                            <span id="question-module-badge" class="px-3 py-1 bg-slate-800 text-emerald-400 border border-slate-700 text-xs font-bold rounded-lg uppercase">
+                                Módulo
+                            </span>
+                            <span class="text-xs font-bold text-slate-300 bg-slate-950 px-3 py-1.5 rounded-full border border-slate-800">
+                                Pregunta <span id="current-q-num" class="text-emerald-400">1</span> de <span id="total-q-num" class="text-slate-100">10</span>
+                            </span>
+                        </div>
+
+                        <!-- Texto de la Pregunta -->
+                        <h3 id="question-text" class="text-lg sm:text-xl font-bold text-white mb-6 leading-relaxed">
+                            Cargando pregunta...
+                        </h3>
+
+                        <!-- Opciones de Respuesta -->
+                        <div id="options-container" class="space-y-3">
+                            <!-- Inyectadas dinámicamente mediante JS -->
+                        </div>
+                    </div>
+
+                    <!-- Botón para Avanzar Pregunta -->
+                    <div class="pt-6 mt-6 border-t border-slate-800 flex justify-end">
+                        <button id="next-btn" onclick="nextQuestion()" disabled class="px-6 py-3 bg-slate-800 text-slate-500 font-bold text-sm rounded-xl transition-all cursor-not-allowed">
+                            Siguiente Pregunta <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PANTALLA 3: REPORTE FINAL DE RESULTADOS -->
+        <section id="results-screen" class="hidden bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm glow-border">
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <div id="result-badge-icon" class="w-20 h-20 rounded-full mx-auto flex items-center justify-center text-3xl mb-4">
+                    <i id="result-icon" class="fa-solid"></i>
+                </div>
+                <h2 id="result-title" class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Resultados del Examen</h2>
+                <p id="result-subtitle" class="text-slate-400 text-sm">Resumen de desempeño según parámetros de idoneidad CNV.</p>
+            </div>
+
+            <!-- Métricas Principales -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 max-w-3xl mx-auto">
+                <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 text-center">
+                    <span class="text-xs text-slate-400 uppercase font-bold block mb-1">Aciertos / Totales</span>
+                    <span id="score-text" class="text-2xl font-extrabold text-emerald-400">0 / 0</span>
+                </div>
+                <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 text-center">
+                    <span class="text-xs text-slate-400 uppercase font-bold block mb-1">Porcentaje de Aprobación</span>
+                    <span id="percentage-text" class="text-2xl font-extrabold text-emerald-400">0%</span>
+                </div>
+                <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-4 text-center">
+                    <span class="text-xs text-slate-400 uppercase font-bold block mb-1">Tiempo Utilizado</span>
+                    <span id="elapsed-time-text" class="text-2xl font-extrabold text-slate-200">00:00</span>
+                </div>
+            </div>
+
+            <!-- Detalle de Respuestas Incorrectas -->
+            <div class="max-w-4xl mx-auto">
+                <h3 class="text-base font-bold text-slate-200 mb-4 flex items-center">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i>
+                    Revisión de Respuestas Incorrectas y Fuentes Legales
+                </h3>
+                <div id="incorrect-list" class="space-y-4">
+                    <!-- Se puebla con JS si existen errores -->
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-800 text-center">
+                <button onclick="resetQuiz()" class="px-8 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base rounded-xl transition-all shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-rotate-right mr-2"></i>Realizar un Nuevo Examen
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/90 py-6 text-center text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center space-y-3">
+            <div>
+                <a href="https://www.argentina.gob.ar/servicio/rendir-el-examen-de-idoneidad" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-semibold hover:bg-emerald-500/20 transition-all">
+                    <span>Rendir el examen de idoneidad | Argentina.gob.ar</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
+                </a>
+            </div>
+            <p class="text-slate-500">Material de práctica para la acreditación de idoneidad ante la Comisión Nacional de Valores (CNV).</p>
+        </div>
+    </footer>
+
+    <!-- LÓGICA JAVASCRIPT Y BANCO INTEGRAL DE PREGUNTAS -->
+    <script>
+        // BANCO DE PREGUNTAS: basado en los 6 módulos de la Guía de Idoneidad CNV (Normativa.html),
+        // en las Normas CNV T.O. (Normas CNV T.O..html), en el Ecosistema del Mercado de Capitales (MCA.html)
+        // y en los contenidos de Extras.html. Cada pregunta es única: nunca se repite dentro de un examen.
+        const MODULE_NAMES = {
+            MOD1: "Módulo I: Marco Normativo, Emisoras y Régimen Sancionatorio",
+            MOD2: "Módulo II: Prevención del Lavado de Activos y FT",
+            MOD3: "Módulo III: Transparencia, Gobierno Corporativo y Atención al Inversor",
+            MOD4: "Módulo IV: Análisis de Inversiones, Contabilidad y NIIF",
+            MOD5: "Módulo V: Agentes, Instrumentos, Liquidación y Compensación",
+            MOD6: "Módulo VI: Productos de Inversión Colectiva (FCI y Fideicomisos)"
+        };
+
+        // q(módulo, pregunta, opción correcta, [3 opciones incorrectas], fuente)
+        const q = (module, question, correct, wrong, source) => ({
+            module, moduleName: MODULE_NAMES[module], question,
+            options: [correct, ...wrong], correctIndex: 0, source
+        });
+
+        const RAW_QUESTIONS = [
+            // ===== MÓDULO I: MARCO NORMATIVO, EMISORAS Y RÉGIMEN SANCIONATORIO =====
+            q("MOD1", "¿Cuál es la naturaleza jurídica de la Comisión Nacional de Valores (CNV)?",
+              "Entidad autárquica con plena capacidad jurídica de derecho público y privado",
+              ["Entidad privada sin fines de lucro integrada por los propios agentes del mercado", "Órgano dependiente del Poder Judicial de la Nación con facultades de tribunal", "Sucursal especializada del Banco Central de la República Argentina"],
+              "Ley 26.831 y Ley 22.169 – Guía de Idoneidad, Módulo I"),
+            q("MOD1", "¿Cuál es la función principal de la CNV respecto de la oferta pública de valores negociables?",
+              "Regular, supervisar y fiscalizar a los participantes para proteger al inversor",
+              ["Garantizar una rentabilidad mínima a todos los inversores del mercado", "Fijar el tipo de cambio aplicable a las operaciones bursátiles del país", "Emitir directamente los valores negociables que se negocian en el mercado"],
+              "Ley 26.831 – Art. 19 (facultades de la CNV)"),
+            q("MOD1", "Según la Ley 26.831, se considera oferta pública de valores negociables a:",
+              "La invitación a personas en general o a grupos determinados para realizar actos jurídicos con valores negociables, por cualquier medio",
+              ["Toda negociación privada y reservada entre dos personas determinadas, sin ningún tipo de difusión ni invitación pública", "La venta de acciones realizada únicamente dentro de la sede física de una bolsa, por intermedio de un agente matriculado", "La emisión de valores negociables destinada exclusivamente a los socios actuales de la emisora, mediante comunicación directa"],
+              "Ley 26.831 – Art. 2 (definiciones)"),
+            q("MOD1", "La oferta pública de valores negociables realizada por personas no autorizadas por la CNV se considera:",
+              "Irregular, y la CNV puede ordenar su cese y aplicar sanciones",
+              ["Válida, siempre que se comunique a la CNV dentro de los 30 días siguientes", "Válida si está dirigida únicamente a inversores minoristas o no calificados", "Permitida si la empresa tiene forma de sociedad anónima y domicilio local"],
+              "Ley 26.831 – Guía de Idoneidad, Módulo I (Oferta Irregular)"),
+            q("MOD1", "Para emitir valores negociables mediante oferta pública, una sociedad debe previamente:",
+              "Obtener la autorización de la CNV e ingresar al régimen de oferta pública",
+              ["Inscribirse únicamente en la AFIP", "Contar con el aval del Banco Central de la República Argentina", "Obtener una autorización de la Bolsa de Comercio local sin intervención de la CNV"],
+              "Normas CNV T.O. – Título II (Emisoras)"),
+            q("MOD1", "¿Cuál es el principal objetivo de una entidad Emisora en el mercado de capitales?",
+              "Obtener financiamiento emitiendo valores negociables mediante oferta pública",
+              ["Fiscalizar y sancionar a los agentes que operan en los mercados autorizados", "Liquidar y compensar las operaciones concertadas por los demás participantes", "Custodiar de manera centralizada los valores de todos los inversores"],
+              "Ecosistema del Mercado de Capitales (MCA) – Emisoras"),
+            q("MOD1", "El prospecto de una emisión de valores negociables es:",
+              "El documento con la información necesaria para que el público inversor evalúe la oferta",
+              ["Una garantía otorgada por el Estado sobre el rendimiento de los valores ofrecidos", "El contrato de custodia que firma cada inversor con la Caja de Valores", "Un informe interno de la emisora, de uso reservado para su directorio y su auditor"],
+              "Ley 26.831 y Normas CNV T.O. – Título II"),
+            q("MOD1", "¿Qué protege la oferta pública de adquisición (OPA) obligatoria ante una toma de control societario?",
+              "La igualdad de trato: los minoritarios pueden vender al mismo precio que el controlante",
+              ["El derecho del adquirente a pagar a los accionistas minoritarios un precio menor", "La reserva de la identidad del adquirente frente a la CNV y al mercado en general", "La exclusión automática de los accionistas minoritarios de la sociedad adquirida"],
+              "Normas CNV T.O. – Título III (OPA) y Extras: Cómo protegen las OPAs al pequeño inversor"),
+            q("MOD1", "¿Cuál de los siguientes constituye un valor negociable?",
+              "Una obligación negociable",
+              ["Un contrato de locación de un inmueble urbano", "Una cuenta corriente bancaria en pesos", "Un certificado de libre deuda fiscal"],
+              "Ley 26.831 – Art. 2 y Ley 23.576 de Obligaciones Negociables"),
+            q("MOD1", "¿Cuál de las siguientes es una sanción que puede aplicar la CNV a quienes infrinjan la normativa?",
+              "Apercibimiento, multa o inhabilitación, según la gravedad",
+              ["Prisión preventiva dispuesta por la propia CNV en sede administrativa", "Expropiación de los bienes de la sociedad infractora por decisión del directorio", "Disolución automática de la sociedad por simple resolución administrativa"],
+              "Ley 26.831 – Régimen sancionatorio (Módulo I)"),
+            q("MOD1", "Antes de aplicar una sanción, la CNV debe tramitar:",
+              "Un sumario que respete el derecho de defensa del sumariado",
+              ["Una votación previa entre todos los agentes inscriptos en el mercado", "Una consulta pública abierta a la totalidad de los inversores", "Una autorización previa del Congreso de la Nación para cada caso"],
+              "Normas CNV T.O. – Título XIII (Procedimiento sumarial)"),
+            q("MOD1", "¿En qué año fue sancionada la Ley de Mercado de Capitales N° 26.831?",
+              "2012",
+              ["2001", "2018", "2024"],
+              "Extras: Ley 26.831"),
+
+            // ===== MÓDULO II: PREVENCIÓN DEL LAVADO DE ACTIVOS Y FINANCIAMIENTO DEL TERRORISMO =====
+            q("MOD2", "¿Qué organismo tiene a su cargo recibir y analizar información para prevenir e impedir el lavado de activos en la Argentina?",
+              "Unidad de Información Financiera (UIF)",
+              ["Comisión Nacional de Valores (CNV)", "Administración Federal de Ingresos Públicos (AFIP)", "Superintendencia de Seguros de la Nación"],
+              "Ley 25.246"),
+            q("MOD2", "¿Qué ley creó la Unidad de Información Financiera (UIF)?",
+              "Ley 25.246",
+              ["Ley 24.083", "Ley 23.576", "Ley 27.440"],
+              "Ley 25.246 – Guía de Idoneidad, Módulo II"),
+            q("MOD2", "El objetivo central del lavado de activos es:",
+              "Dar apariencia de licitud a fondos de origen delictivo",
+              ["Obtener beneficios fiscales legítimos mediante estructuras societarias", "Financiar exclusivamente actos de terrorismo internacional", "Reducir la volatilidad de los mercados de capitales locales"],
+              "Guía de Idoneidad CNV – Módulo II (Objetivo: simulación de licitud)"),
+            q("MOD2", "¿Cuál es el orden de las tres etapas básicas del lavado de activos?",
+              "Colocación, estratificación e integración",
+              ["Integración, colocación y estratificación", "Estratificación, integración y colocación", "Captación, custodia y rescate"],
+              "Guía de Idoneidad CNV – Módulo II (Etapas básicas)"),
+            q("MOD2", "¿Cuál es una diferencia característica entre el lavado de activos y el financiamiento del terrorismo?",
+              "En el FT los fondos pueden ser de origen lícito; en el lavado provienen de un delito",
+              ["El lavado solo se comete con dinero en efectivo y el FT solo con valores negociables", "El FT no está alcanzado por la normativa de prevención de la UIF", "No existen diferencias: ambos son conceptos idénticos para la normativa"],
+              "Guía de Idoneidad CNV – Módulo II (Diferencias entre LA y FT)"),
+            q("MOD2", "Cuando un sujeto obligado detecta una operación inusual sin justificación económica o jurídica, debe emitir un:",
+              "Reporte de Operación Sospechosa (ROS)",
+              ["Balance consolidado anual", "Aviso de incumplimiento de cotización", "Sumario administrativo interno"],
+              "Ley 25.246 y Res. UIF 29/2013"),
+            q("MOD2", "¿Cómo se denomina la política mediante la cual los sujetos obligados identifican a sus clientes y verifican el origen de sus fondos?",
+              "Conozca a su Cliente (KYC)",
+              ["Régimen de reserva y secreto bancario", "Declaración de idoneidad bursátil", "Auditoría impositiva de cartera"],
+              "Res. UIF 78/2023 (Mercado de Capitales)"),
+            q("MOD2", "En el mercado de capitales, ¿cuál de los siguientes es sujeto obligado ante la UIF?",
+              "Un Agente de Liquidación y Compensación registrado en la CNV",
+              ["Un inversor minorista por la sola tenencia de cuotapartes de un fondo", "Un medio de prensa que publica información financiera", "Un estudio jurídico que no participa de las operaciones del mercado"],
+              "Ley 25.246 y Res. UIF 78/2023"),
+            q("MOD2", "¿Qué es el GAFI (FATF)?",
+              "Organismo intergubernamental que fija estándares (las 40 Recomendaciones) contra el lavado y el FT",
+              ["Un tribunal internacional con sede en París que juzga y condena a quienes lavan activos", "Una calificadora internacional que mide el riesgo crediticio de emisores y de valores", "Un mercado internacional de derivados regulado por las Naciones Unidas"],
+              "Guía de Idoneidad CNV – Módulo II (Las 40 Recomendaciones del GAFI)"),
+            q("MOD2", "Respecto de los clientes que son Personas Expuestas Políticamente (PEP), el sujeto obligado debe:",
+              "Aplicar medidas de debida diligencia reforzada",
+              ["Rechazarlos siempre como clientes sin evaluar su perfil", "Eximirlos del proceso de identificación por su condición pública", "Informar su identidad a los demás clientes del agente"],
+              "Res. UIF 192/2024 (PEP)"),
+            q("MOD2", "¿Qué rol cumple la CNV frente a los sujetos obligados del mercado de capitales en materia de prevención del lavado de activos?",
+              "Supervisa y fiscaliza su cumplimiento, en coordinación con la UIF",
+              ["Ninguno: la materia es de competencia exclusiva del Banco Central", "Dicta la sentencia penal por los delitos de lavado de activos", "Reemplaza a la UIF en la recepción de los reportes de operaciones sospechosas"],
+              "Normas CNV T.O. – Título XI y Res. UIF 22/2011"),
+
+            // ===== MÓDULO III: TRANSPARENCIA, GOBIERNO CORPORATIVO Y ATENCIÓN AL INVERSOR =====
+            q("MOD3", "Según las Normas CNV, un Hecho Relevante es:",
+              "Todo hecho apto para afectar en forma sustancial la colocación o negociación de los valores o la actividad del sujeto",
+              ["Cualquier cambio menor en la nómina del personal administrativo, aunque no afecte la actividad de la emisora", "Únicamente la distribución de dividendos en efectivo que apruebe la asamblea de accionistas", "Toda noticia sobre la emisora publicada por la prensa, haya sido o no confirmada por ella"],
+              "Normas CNV T.O. – Título I, Cap. II, Sec. II, Art. 2 (Definiciones)"),
+            q("MOD3", "¿A través de qué sistema las emisoras comunican sus Hechos Relevantes y presentan su información a la CNV?",
+              "Autopista de la Información Financiera (AIF)",
+              ["Registro Nacional de Sociedades por Acciones", "Boletín Oficial exclusivamente", "Sistema interno de la Caja de Valores"],
+              "Normas CNV T.O. – Título XV (AIF)"),
+            q("MOD3", "El régimen informativo periódico de las emisoras comprende, entre otros, la presentación de:",
+              "Estados financieros trimestrales y anuales",
+              ["Declaraciones juradas de patrimonio de cada accionista", "Balances diarios de caja", "Informes mensuales de los inversores minoristas"],
+              "Normas CNV T.O. – Título IV (Régimen informativo periódico)"),
+            q("MOD3", "¿Qué característica debe reunir un director independiente?",
+              "Independencia de criterio y de intereses respecto de la emisora y sus controlantes",
+              ["Ser accionista controlante de la emisora o integrar el grupo económico que la controla", "Desempeñar un cargo gerencial ejecutivo dentro de la propia emisora o de sus filiales", "Ser proveedor exclusivo de bienes o servicios de la emisora y de su grupo"],
+              "Normas CNV T.O. – Título II, Cap. III (Director independiente)"),
+            q("MOD3", "Según la Ley 19.550, el director que tenga un interés contrario al de la sociedad en una operación debe:",
+              "Informarlo al directorio y abstenerse de intervenir en la deliberación",
+              ["Votar a favor de la operación para facilitar su aprobación rápida", "Mantenerlo en reserva hasta la asamblea de accionistas siguiente", "Renunciar de manera automática y definitiva a su cargo en el directorio"],
+              "Ley 19.550 – Conflicto de interés (Guía de Idoneidad, Módulo III)"),
+            q("MOD3", "Entre las obligaciones del código de conducta profesional frente a los clientes se encuentra:",
+              "Actuar con lealtad y diligencia, priorizando el interés del cliente",
+              ["Garantizar a los clientes la rentabilidad de sus inversiones en el tiempo", "Anteponer el interés del agente al del cliente cuando ambos entren en conflicto", "Compartir la información reservada del cliente con otros agentes del mercado"],
+              "Guía de Idoneidad CNV – Módulo III (Código de conducta profesional)"),
+            q("MOD3", "¿Qué conducta es contraria a la transparencia y está prohibida en el ámbito de la oferta pública?",
+              "Operar utilizando información privilegiada",
+              ["Difundir los Hechos Relevantes en forma oportuna", "Publicar los estados financieros en la AIF", "Responder las consultas del público inversor"],
+              "Ley 26.831 y Normas CNV T.O. – Título XII (Transparencia)"),
+            q("MOD3", "El Código de Gobierno Societario de la CNV se aplica bajo el principio de:",
+              "Cumplir o explicar",
+              ["Cumplimiento voluntario sin informar al mercado", "Prohibición absoluta de apartarse de sus prácticas", "Aprobación previa de cada práctica por la asamblea"],
+              "Guía de Idoneidad CNV – Módulo III (Gobierno Corporativo)"),
+            q("MOD3", "El principio fundamental de la Ley 26.831 respecto de la información bursátil es:",
+              "Transparencia y protección del inversor",
+              ["Reserva del secreto de mercado abierto", "Rentabilidad mínima prometida al inversor", "Libre cotización garantizada por el Estado"],
+              "Ley 26.831 – Guía de Idoneidad, Módulo III"),
+            q("MOD3", "¿Cuál es la función del Responsable de Relaciones con el Público Inversor de una emisora?",
+              "Atender consultas del público inversor y ser el nexo con la CNV y los mercados",
+              ["Aprobar los estados contables de la emisora en reemplazo de su directorio", "Fijar el precio de colocación de los valores negociables de la emisora", "Auditar externamente las cuentas de la emisora y emitir su dictamen"],
+              "Guía de Idoneidad CNV – Módulo III"),
+
+            // ===== MÓDULO IV: ANÁLISIS DE INVERSIONES, CONTABILIDAD Y NIIF =====
+            q("MOD4", "Un proyecto de inversión cuyo VAN (valor actual neto) es positivo:",
+              "Genera valor: el valor actual de sus flujos supera la inversión inicial",
+              ["Debe rechazarse porque no alcanza a cubrir el costo de capital del proyecto", "Tiene una TIR necesariamente igual a cero en todos los casos", "Solo es viable si el flujo de fondos del primer año resulta negativo"],
+              "Guía de Idoneidad CNV – Módulo IV (VAN – TIR)"),
+            q("MOD4", "La Tasa Interna de Retorno (TIR) es:",
+              "La tasa de descuento que hace igual a cero el VAN del proyecto",
+              ["La tasa de inflación esperada para el período de evaluación", "La tasa de interés de referencia fijada por el Banco Central", "El rendimiento promedio de todas las acciones que cotizan en el mercado"],
+              "Guía de Idoneidad CNV – Módulo IV (VAN – TIR)"),
+            q("MOD4", "Si la tasa de interés de mercado sube, el precio de un bono de tasa fija:",
+              "Tiende a bajar",
+              ["Tiende a subir en la misma proporción", "Se mantiene siempre igual al valor nominal", "Se duplica"],
+              "Guía de Idoneidad CNV – Módulo IV (Valuación de bonos)"),
+            q("MOD4", "El riesgo de crédito de un bono es:",
+              "La posibilidad de que el emisor no pague capital o intereses en término",
+              ["La variación del precio del bono ante cambios en la tasa de interés de mercado", "La dificultad de vender el bono rápidamente sin resignar precio", "La pérdida derivada de las variaciones del tipo de cambio"],
+              "Guía de Idoneidad CNV – Módulo IV (Riesgos asociados a la renta fija)"),
+            q("MOD4", "A diferencia de la renta fija, en la renta variable (acciones):",
+              "El rendimiento no está predeterminado: depende de resultados y cotización",
+              ["El emisor promete un cupón fijo y un plazo de devolución", "El capital se devuelve en un plazo cierto y con tasa conocida", "El inversor es acreedor de la sociedad y no socio de ella"],
+              "Guía de Idoneidad CNV – Módulo IV (Renta fija y renta variable)"),
+            q("MOD4", "El análisis fundamental de una acción se basa principalmente en:",
+              "La situación económico-financiera de la empresa, para estimar su valor intrínseco",
+              ["Exclusivamente los gráficos de precio y volumen de los últimos meses de cotización", "La psicología de los grandes inversores y los rumores que circulan en el mercado", "La cantidad de operaciones cursadas en cada jornada de negociación bursátil"],
+              "Guía de Idoneidad CNV – Módulo IV (Análisis fundamental)"),
+            q("MOD4", "El análisis técnico se caracteriza por:",
+              "Estudiar gráficos de precios y volúmenes para identificar tendencias",
+              ["Analizar únicamente los estados contables anuales de la emisora", "Calcular el VAN de los proyectos de inversión de la empresa", "Evaluar el grado de cumplimiento del código de gobierno societario"],
+              "Guía de Idoneidad CNV – Módulo IV (Análisis técnico)"),
+            q("MOD4", "El ratio PER (Price Earnings Ratio) se calcula como:",
+              "Precio de la acción dividido por la ganancia por acción",
+              ["Ganancia por acción dividida por el precio de la acción", "Activo corriente dividido por el pasivo corriente de la empresa", "Pasivo total dividido por el patrimonio neto de la empresa"],
+              "Guía de Idoneidad CNV – Módulo IV (Índices y ratios)"),
+            q("MOD4", "El índice de liquidez corriente se calcula dividiendo:",
+              "Activo corriente dividido por pasivo corriente",
+              ["Patrimonio neto dividido por el activo total", "Pasivo total dividido por el patrimonio neto", "Resultado neto dividido por las ventas del ejercicio"],
+              "Guía de Idoneidad CNV – Módulo IV (Indicadores de liquidez y solvencia)"),
+            q("MOD4", "El patrimonio neto de una empresa es igual a:",
+              "Activo menos pasivo",
+              ["Activo más pasivo", "Pasivo menos activo", "Ventas menos costos"],
+              "Guía de Idoneidad CNV – Módulo IV (Activo, pasivo y patrimonio neto)"),
+            q("MOD4", "¿Qué son las NIIF?",
+              "Normas Internacionales de Información Financiera, que favorecen la comparabilidad",
+              ["Normas Impositivas de Interés Fiscal dictadas por la AFIP", "Normas de Inversión e Intermediación Financiera dictadas por la CNV", "Normas de Identificación de Inversores Frecuentes del mercado"],
+              "Guía de Idoneidad CNV – Módulo IV (NIIF)"),
+            q("MOD4", "Cuando el auditor no logra obtener evidencia suficiente y el posible efecto es generalizado, emite:",
+              "Una abstención de opinión",
+              ["Una opinión favorable sin salvedades", "Una opinión favorable con párrafo de énfasis", "Un certificado de solvencia de la emisora"],
+              "Guía de Idoneidad CNV – Módulo IV (Informe de auditoría y tipos de opinión)"),
+            q("MOD4", "En el modelo de cost of carry, el precio teórico de un futuro se obtiene:",
+              "Del precio de contado más el costo de financiar y mantener el activo hasta el vencimiento",
+              ["Del precio de contado menos la totalidad de los dividendos pagados por la empresa en su historia", "Como un valor aleatorio, sin ninguna relación con el precio de contado", "Únicamente del valor nominal del contrato, sin considerar el plazo"],
+              "Guía de Idoneidad CNV – Módulo IV (Valuación de futuros)"),
+
+            // ===== MÓDULO V: AGENTES, INSTRUMENTOS, LIQUIDACIÓN Y COMPENSACIÓN =====
+            q("MOD5", "Un Agente de Liquidación y Compensación (ALyC) debe inscribirse obligatoriamente en el registro de:",
+              "La Comisión Nacional de Valores (CNV)",
+              ["La Inspección General de Justicia (IGJ) exclusivamente", "El Ministerio de Economía de la Nación", "La Administración Federal de Ingresos Públicos (AFIP)"],
+              "Normas CNV T.O. – Título VII (Agentes)"),
+            q("MOD5", "¿Qué agente participa en la negociación de valores negociables pero no presta el servicio de liquidación y compensación?",
+              "Agente de Negociación (AN)",
+              ["Agente de Liquidación y Compensación Integral", "Cámara Compensadora", "Agente Depositario Central de Valores Negociables"],
+              "Normas CNV T.O. – Título VII"),
+            q("MOD5", "¿Qué categoría de agente presta servicios de asesoramiento global de inversión?",
+              "Agente Asesor Global de Inversión (AAGI)",
+              ["Agente de Calificación de Riesgo (ACR)", "Agente Depositario Central (ADCVN)", "Cámara Compensadora de operaciones"],
+              "Normas CNV T.O. – Título VII, Cap. IV (AAGI)"),
+            q("MOD5", "¿Cuál es la función de los Agentes de Calificación de Riesgo?",
+              "Emitir opiniones sobre la capacidad de pago de emisores y valores",
+              ["Custodiar valores negociables de manera centralizada para el mercado", "Liquidar las operaciones concertadas en los mercados autorizados", "Intermediar las órdenes de compra y venta de los inversores"],
+              "Normas CNV T.O. – Título IX"),
+            q("MOD5", "¿Cómo reduce el riesgo de incumplimiento una Cámara Compensadora?",
+              "Interponiéndose como contraparte central que garantiza la liquidación",
+              ["Fijando el precio máximo al que pueden venderse los títulos", "Prestando fondos a los inversores que no puedan cumplir sus compras", "Calificando previamente el riesgo crediticio de cada emisor"],
+              "Ecosistema del Mercado de Capitales (MCA) – Cámaras Compensadoras"),
+            q("MOD5", "¿Qué función cumple Caja de Valores S.A. en el mercado argentino?",
+              "Agente depositario central: custodia centralizada de valores",
+              ["Calificadora que mide el riesgo crediticio de los emisores", "Organismo que regula y autoriza la oferta pública de valores", "Entidad que emite moneda de curso legal en el país"],
+              "Normas CNV T.O. – Título VIII y MCA – Cámaras y custodia"),
+            q("MOD5", "En los sistemas de negociación por interferencia de ofertas rige la prioridad:",
+              "Precio-tiempo: mejor precio y, a igual precio, la primera oferta ingresada",
+              ["Antigüedad del cliente como inversor dentro del mercado", "El mayor tamaño de la orden, sin importar el precio ofertado", "El orden alfabético de los agentes que ingresan las ofertas"],
+              "Normas CNV T.O. – Título VI (Mercados) y Guía de Idoneidad, Módulo V"),
+            q("MOD5", "Un contrato de Opción de Compra (CALL) otorga a su comprador:",
+              "El derecho, no la obligación, de comprar el activo subyacente a un precio fijado",
+              ["La obligación ineludible de entregar el activo subyacente al vencimiento pactado", "El cobro garantizado de los dividendos en efectivo que pague el activo", "Una cuota de participación en el capital social del mercado donde opera"],
+              "Guía de Idoneidad CNV – Módulo V (Contratos de opciones)"),
+            q("MOD5", "Un contrato de Opción de Venta (PUT) otorga a su comprador:",
+              "El derecho, no la obligación, de vender el activo subyacente a un precio fijado",
+              ["La obligación de comprar el activo subyacente al llegar el vencimiento", "El derecho a cobrar los dividendos que pague el activo subyacente", "Un cupón fijo calculado sobre el valor nominal del activo contratado"],
+              "Guía de Idoneidad CNV – Módulo V (Contratos de opciones)"),
+            q("MOD5", "Un contrato de Futuro se diferencia de un Forward principalmente en que el Futuro:",
+              "Está estandarizado y se negocia en mercados con liquidación diaria de diferencias",
+              ["No exige márgenes de garantía ni depósitos iniciales a los participantes", "Se negocia exclusivamente fuera de los mercados, en forma privada y bilateral (OTC)", "No tiene fecha de vencimiento ni precio de ejercicio determinados"],
+              "Guía de Idoneidad CNV – Módulo V (Futuros y Forwards)"),
+            q("MOD5", "Un swap de tasa de interés consiste en:",
+              "Un acuerdo de intercambio de flujos (tasa fija por variable) sobre un monto nocional",
+              ["La venta definitiva de un bono antes de su vencimiento, sin posibilidad de recompra", "La compra de acciones con descuento sobre el precio de mercado", "Un préstamo sin intereses entre dos bancos con garantía de títulos"],
+              "Guía de Idoneidad CNV – Módulo V (Swaps)"),
+            q("MOD5", "¿Qué representan los CEDEARs?",
+              "Certificados que representan acciones extranjeras, depositadas y negociadas localmente",
+              ["Bonos de deuda pública del Tesoro emitidos en pesos y ajustados por el índice CER", "Pagarés emitidos por gobiernos provinciales para financiar obras de infraestructura", "Cuotapartes de fondos comunes de inversión cerrados de desarrollo inmobiliario"],
+              "Normas CNV T.O. – Título II (CEDEAR)"),
+            q("MOD5", "Las Obligaciones Negociables (ON) son títulos de deuda emitidos por sociedades que otorgan al tenedor:",
+              "El derecho al cobro del capital y los intereses según las condiciones de emisión",
+              ["La calidad inmediata de accionista con derecho a voto en las asambleas", "La propiedad de los inmuebles de la empresa emisora y de sus filiales", "Una garantía de rendimiento otorgada por el Banco Central de la República"],
+              "Ley 23.576 de Obligaciones Negociables"),
+            q("MOD5", "La Factura de Crédito Electrónica MiPyME, regulada por la Ley 27.440, es:",
+              "Un título ejecutivo transmisible que facilita el financiamiento de las PyMEs",
+              ["Un bono soberano en pesos emitido por el Tesoro Nacional", "Un certificado de depósito a plazo fijo emitido por un banco", "Una cuotaparte de un fondo común de inversión abierto"],
+              "Ley 27.440 de Financiamiento Productivo – Guía de Idoneidad, Módulo V"),
+            q("MOD5", "Una caución bursátil es:",
+              "Un préstamo garantizado con valores negociables entregados en garantía",
+              ["Una venta definitiva de valores sin posibilidad de recompra", "Un seguro de caución contra incumplimientos de obligaciones fiscales", "Una opción de compra sobre acciones con vencimiento a plazo"],
+              "Guía de Idoneidad CNV – Módulo V (Cauciones, pases y garantías)"),
+
+            // ===== MÓDULO VI: PRODUCTOS DE INVERSIÓN COLECTIVA (FCI Y FIDEICOMISOS) =====
+            q("MOD6", "Los dos órganos requeridos para la constitución de un Fondo Común de Inversión (FCI) son:",
+              "La Sociedad Gerente y la Sociedad Depositaria",
+              ["El Fiduciario Financiero y la Bolsa de Comercio", "El Auditor General y el Representante de los Cuotapartistas", "El Agente de Colocación y la Cámara Compensadora"],
+              "Ley 24.083 de Fondos Comunes de Inversión"),
+            q("MOD6", "El patrimonio de un Fondo Común de Inversión se divide en alícuotas denominadas:",
+              "Cuotapartes",
+              ["Acciones ordinarias", "Obligaciones negociables", "Certificados de participación fiduciaria"],
+              "Ley 24.083 – Art. 1"),
+            q("MOD6", "La custodia de los activos que integran la cartera de un FCI corresponde a:",
+              "La Sociedad Depositaria",
+              ["La Sociedad Gerente", "La CNV directamente", "El agente de colocación y distribución"],
+              "Ley 24.083 y Normas CNV T.O. – Título V"),
+            q("MOD6", "A diferencia de un FCI abierto, un FCI cerrado:",
+              "Tiene cuotapartes limitadas, no admite rescates continuos y las negocia en mercados",
+              ["Permite suscribir y rescatar cuotapartes en cualquier momento, a su valor diario", "No requiere Sociedad Depositaria para custodiar sus activos", "Solo puede invertir sus recursos en depósitos a plazo bancarios"],
+              "Normas CNV T.O. – Título V (Productos de Inversión Colectiva)"),
+            q("MOD6", "El valor de la cuotaparte de un FCI se obtiene dividiendo:",
+              "El patrimonio neto del fondo por las cuotapartes en circulación",
+              ["El patrimonio de la Sociedad Gerente por la cantidad de sus acciones", "El valor nominal de la emisión por el plazo de duración del fondo", "El total de rescates del período por el total de suscripciones"],
+              "Ley 24.083 – Guía de Idoneidad, Módulo VI (Suscripciones y rescates)"),
+            q("MOD6", "El Reglamento de Gestión de un FCI es:",
+              "El documento que regula el fondo, firmado por Gerente y Depositaria y aprobado por la CNV",
+              ["Un contrato individual que firma cada cuotapartista directamente con la CNV al suscribir", "El estatuto de la Bolsa de Comercio donde cotizan las cuotapartes", "Un informe de calificación de riesgo emitido sobre el fondo y su cartera"],
+              "Guía de Idoneidad CNV – Módulo VI (Reglamento de Gestión)"),
+            q("MOD6", "¿Cuál es una ventaja de invertir en un FCI?",
+              "Diversificación y gestión profesional con montos de ingreso reducidos",
+              ["Rendimiento mínimo garantizado por el Estado Nacional durante toda la vida del fondo", "Ausencia total de riesgo de mercado en cualquier escenario", "Plazo de permanencia obligatorio de cinco años como mínimo"],
+              "Guía de Idoneidad CNV – Módulo VI (Ventajas y desventajas de los FCI)"),
+            q("MOD6", "¿Qué garantiza la arquitectura legal de un FCI respecto del patrimonio?",
+              "Que el patrimonio del fondo esté separado del de la Gerente y la Depositaria",
+              ["Que la Sociedad Gerente pueda disponer libremente de los activos del fondo", "Que el patrimonio del fondo se confunda con el de la Depositaria", "Que los cuotapartistas respondan con su patrimonio por las deudas de la Gerente"],
+              "Extras: Arquitectura de Fondos Comunes"),
+            q("MOD6", "¿Qué valores fiduciarios puede emitir un fideicomiso financiero?",
+              "Valores representativos de deuda y certificados de participación",
+              ["Acciones ordinarias con derecho a voto en asamblea", "Cuotapartes de fondos comunes de inversión abiertos", "Pagarés bancarios emitidos por entidades financieras"],
+              "Código Civil y Comercial – Cap. 30 y Normas CNV T.O. – Título V"),
+            q("MOD6", "En un fideicomiso, los bienes fideicomitidos constituyen:",
+              "Un patrimonio separado del patrimonio del fiduciario y del fiduciante",
+              ["Parte del patrimonio personal del fiduciario, que responde con ellos", "Garantía común de todos los acreedores personales del fiduciario", "Propiedad de la CNV hasta la liquidación final del fideicomiso"],
+              "Código Civil y Comercial – Cap. 30 (Fideicomiso)"),
+            // ============ AMPLIACIÓN: 150 PREGUNTAS ADICIONALES (basadas en el texto de las Normas CNV T.O.) ============
+
+            // ===== MÓDULO I (ampliación) =====
+            q("MOD1", "Una vez resuelto el retiro del régimen de oferta pública, ¿en qué plazo debe solicitarse la autorización a la CNV?",
+              "Dentro de los 2 días hábiles de resuelto el retiro",
+              ["Dentro de los 30 días corridos de resuelto el retiro", "Dentro de los 6 meses calendario de la asamblea", "No hay plazo: puede solicitarse en cualquier momento"],
+              "Normas CNV T.O. – Título III, Cap. I, Sec. I, Art. 2"),
+            q("MOD1", "Notificada la resolución favorable de la CNV al retiro, la emisora debe publicarlo en la AIF y en los sistemas de los Mercados dentro de:",
+              "5 días corridos",
+              ["48 horas hábiles", "15 días hábiles", "3 meses calendario"],
+              "Normas CNV T.O. – Título III, Cap. I, Sec. I, Art. 3"),
+            q("MOD1", "Luego del retiro o cancelación de la oferta pública, la CNV:",
+              "Conserva su poder disciplinario por infracciones anteriores al retiro",
+              ["Pierde toda facultad sancionatoria sobre la emisora que se retiró", "Solo puede sancionar si la propia emisora se lo solicita", "Transfiere ese poder disciplinario al Mercado donde cotizaba"],
+              "Normas CNV T.O. – Título III, Cap. I, Sec. I, Art. 4"),
+            q("MOD1", "Cuando el retiro voluntario del régimen de oferta pública afecta a las acciones, la decisión debe ser tomada por:",
+              "Una asamblea extraordinaria, como punto expreso del orden del día",
+              ["El directorio, por mayoría simple de sus miembros", "Una asamblea ordinaria sin punto expreso del orden del día", "El síndico, mediante informe fundado dirigido a la CNV"],
+              "Normas CNV T.O. – Título III, Cap. I, Sec. II, Art. 6"),
+            q("MOD1", "En el retiro voluntario que afecta a las acciones, la sociedad o el accionista controlante deben formular:",
+              "Una oferta pública de adquisición (OPA) por retiro",
+              ["Una oferta de recompra dirigida solo a los directores", "Un aumento de capital obligatorio", "Una declaración jurada ante la UIF"],
+              "Normas CNV T.O. – Título III, Cap. I, Sec. II, Art. 6"),
+            q("MOD1", "La cancelación de la autorización de oferta pública se hace efectiva desde:",
+              "La notificación de la resolución o disposición de la CNV",
+              ["La fecha de la asamblea que aprobó la cancelación", "La publicación posterior en el Boletín Oficial", "El cierre del ejercicio económico siguiente al pedido"],
+              "Normas CNV T.O. – Título III, Cap. I, Sec. III, Art. 9"),
+            q("MOD1", "Si transcurren 6 meses sin concretarse la colocación primaria y no hay programa global vigente, la CNV:",
+              "Cancela de oficio la autorización de oferta pública",
+              ["Prorroga automáticamente la autorización por igual plazo", "Aplica una multa fija y mantiene la autorización", "Exige una nueva calificación de riesgo y renueva la autorización"],
+              "Normas CNV T.O. – Título III, Cap. I, Sec. III, Art. 13"),
+            q("MOD1", "La oferta pública de adquisición (OPA) tiene por objeto adquirir o canjear:",
+              "Acciones con derecho a voto de una sociedad admitida al régimen de oferta pública",
+              ["Cualquier bien mueble de una sociedad cerrada sin oferta pública", "Únicamente obligaciones negociables que no otorgan derecho a voto", "Cuotapartes de fondos comunes de inversión abiertos al público"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. I, Art. 1"),
+            q("MOD1", "¿Quién queda obligado a formular una OPA obligatoria?",
+              "Quien alcanza una participación de control en una sociedad admitida al régimen",
+              ["Todo accionista que compre una sola acción de la sociedad cotizante", "El directorio de cualquier sociedad anónima de capital cerrado", "Quien vende su participación de control a un tercero interesado"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. I, Art. 3"),
+            q("MOD1", "Entre personas jurídicas, se considera actuación concertada cuando las participaciones de una en otra superan:",
+              "El 10% del capital social",
+              ["El 1% del capital social", "El 25% del capital social", "El 51% del capital social"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. I, Art. 4"),
+            q("MOD1", "Quien pretenda realizar una OPA o canje de acciones debe solicitar previamente:",
+              "La autorización de la CNV, por la plataforma TAD",
+              ["La conformidad escrita de todos los accionistas minoritarios", "La aprobación previa de la AFIP y del BCRA", "Un dictamen favorable de la UIF y de la IGJ"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. II, Art. 6"),
+            q("MOD1", "Al alcanzarse la participación de control, esa circunstancia debe difundirse:",
+              "De inmediato, como Hecho Relevante, por la AIF y los Mercados",
+              ["Recién al cierre del ejercicio, en la memoria anual de la sociedad", "Solo mediante carta documento remitida al directorio de la afectada", "Dentro del año, a través de una publicación en el Boletín Oficial"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. II, Art. 7"),
+            q("MOD1", "Quien debe formular una OPA obligatoria presenta la solicitud de autorización, como máximo, dentro de:",
+              "Un (1) mes desde que alcanzó la participación de control",
+              ["Diez (10) días corridos desde el anuncio de la oferta", "Seis (6) meses desde el cierre del ejercicio", "Tres (3) años desde la adquisición"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. II, Art. 9"),
+            q("MOD1", "Aprobada en lo formal la oferta por la CNV, el oferente difunde el prospecto en la AIF y en los Mercados dentro de:",
+              "5 días hábiles de notificada la aprobación",
+              ["24 horas corridas de notificada la aprobación", "30 días hábiles de notificada la aprobación", "90 días corridos de notificada la aprobación"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. II, Art. 12"),
+            q("MOD1", "El plazo para que los inversores acepten una OPA no puede ser inferior a ni exceder de, respectivamente:",
+              "10 días hábiles y 20 días hábiles",
+              ["5 días corridos y 10 días corridos", "30 días hábiles y 60 días hábiles", "1 mes y 12 meses"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. II, Art. 13"),
+            q("MOD1", "En una OPA, la contraprestación debe ser:",
+              "En dinero, expresada por acción",
+              ["En especie, mediante bienes de capital del oferente", "En criptoactivos exclusivamente", "En pagarés del oferente a 180 días"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. III, Art. 16"),
+            q("MOD1", "Hasta la publicación del resultado de la oferta, el oferente y quienes actúan concertadamente con él:",
+              "No pueden adquirir ni vender valores de la sociedad afectada",
+              ["Pueden comprar libremente en el mercado a precios mayores", "Deben vender su tenencia previa para evitar conflictos", "Solo pueden operar a través de la propia sociedad afectada"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. II, Art. 11"),
+            q("MOD1", "En una OPA obligatoria con informe de valuación exigible, un accionista puede presentar, a su costa, un informe de evaluadora independiente dentro de:",
+              "15 días corridos de efectuado el anuncio",
+              ["48 horas de efectuado el anuncio", "3 meses de efectuado el anuncio", "30 días hábiles de cerrada la oferta"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. III, Art. 18"),
+            q("MOD1", "Si se verifica el incumplimiento de la obligación de formular una OPA, la CNV dispone:",
+              "La subasta de las participaciones adquiridas, además de sanciones",
+              ["La suspensión automática de la próxima asamblea anual de la sociedad", "La condonación de la obligación si se abona una multa menor", "La disolución de la sociedad afectada y su liquidación inmediata"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. IX, Art. 33"),
+            q("MOD1", "Una oferta competidora debe presentarse ante la CNV hasta cuántos días corridos antes de finalizar el período de aceptación de la oferta precedente:",
+              "5 días corridos",
+              ["1 día hábil", "30 días corridos", "6 meses"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. X, Art. 35"),
+            q("MOD1", "¿Qué significa la sigla DUVA en el régimen de ofertas públicas de adquisición?",
+              "Declaración Unilateral de Adquisición",
+              ["Depósito Único de Valores Admitidos", "Documento Unificado de Valores Argentinos", "Directorio de Unidades de Valor Adquisitivo"],
+              "Normas CNV T.O. – Título III, Cap. II, Sec. XV (DUVA)"),
+            q("MOD1", "Según las Normas CNV, se considera denuncia a la presentación ante la CNV en la que se sostiene:",
+              "Una irregularidad administrativa dentro de la competencia del organismo",
+              ["La solicitud de autorización de una nueva oferta pública de valores", "La presentación del balance anual de una emisora inscripta", "La consulta sobre el valor diario de una cuotaparte de un fondo"],
+              "Normas CNV T.O. – Título XIII, Cap. I, Sec. I, Art. 2"),
+            q("MOD1", "En el trámite de una denuncia, el denunciante:",
+              "No es parte ni puede tomar vista de las actuaciones durante la investigación",
+              ["Es parte del procedimiento y puede tomar vista en todo momento", "Dirige la investigación junto con el conductor del sumario", "Debe afrontar las costas del sumario en todos los casos que denuncie"],
+              "Normas CNV T.O. – Título XIII, Cap. I, Sec. I, Art. 6"),
+            q("MOD1", "Las investigaciones que realiza la CNV tienen carácter:",
+              "Reservado",
+              ["Público", "Optativo", "Arbitral"],
+              "Normas CNV T.O. – Título XIII, Cap. I, Sec. II, Art. 13"),
+            q("MOD1", "Ante el desistimiento del denunciante, la CNV:",
+              "Puede seguir actuando de oficio hasta finalizar la investigación",
+              ["Debe archivar la denuncia sin más trámite y sin investigar", "Debe trasladar el caso al denunciante para que lo continúe él", "Debe devolver las actuaciones a la emisora denunciada para su revisión"],
+              "Normas CNV T.O. – Título XIII, Cap. I, Sec. I, Art. 9"),
+
+            // ===== MÓDULO II (ampliación) =====
+            q("MOD2", "Según el Título XI de las Normas CNV, ¿cuál de las siguientes categorías integra los sujetos obligados del mercado de capitales?",
+              "Los Agentes de Negociación (AN)",
+              ["Un estudio contable independiente de una emisora", "Un medio de comunicación especializado en finanzas", "Una universidad pública que dicta cursos de finanzas"],
+              "Normas CNV T.O. – Título XI, Sec. I, Art. 1"),
+            q("MOD2", "Los Fiduciarios Financieros son sujetos obligados cuando actúan en:",
+              "Fideicomisos financieros con oferta pública autorizada por la CNV",
+              ["Cualquier fideicomiso privado de administración", "Fideicomisos de garantía inmobiliarios sin oferta pública", "Fideicomisos testamentarios de familia"],
+              "Normas CNV T.O. – Título XI, Sec. I, Art. 1"),
+            q("MOD2", "¿Qué sujeto obligado pone en contacto, de manera profesional, a inversores con emprendedores que solicitan financiación mediante portales web?",
+              "Las Plataformas de Financiamiento Colectivo (PFC)",
+              ["Los Agentes de Custodia de productos de inversión", "Los Agentes de Calificación de Riesgo", "Las Cámaras Compensadoras de futuros"],
+              "Normas CNV T.O. – Título XI, Sec. I, Art. 1"),
+            q("MOD2", "¿Qué sigla identifica a los proveedores de servicios de activos virtuales incluidos entre los sujetos obligados?",
+              "PSAV",
+              ["PSP", "ACVN", "AAGI"],
+              "Normas CNV T.O. – Título XI, Sec. I, Art. 1"),
+            q("MOD2", "Según el Título XI, los recibos de fondos de clientes deben efectuarse desde:",
+              "Cuentas a la vista de titularidad o cotitularidad del cliente, o CVU de su CUIT",
+              ["Efectivo entregado en la sucursal del agente, sin trazabilidad alguna", "Cuentas de terceros que el cliente indique de manera verbal", "Cheques al portador sin identificación del librador ni del banco"],
+              "Normas CNV T.O. – Título XI, Sec. II, Art. 3"),
+            q("MOD2", "Para inscribir a una persona como agente, la CNV evalúa las condiciones de:",
+              "Idoneidad, integridad y solvencia",
+              ["Rentabilidad, liquidez y antigüedad", "Nacionalidad, edad y profesión", "Capital, ventas y cantidad de clientes"],
+              "Normas CNV T.O. – Título XI, Sec. IV, Art. 7"),
+            q("MOD2", "Si el agente es una persona jurídica, la evaluación de idoneidad se hace respecto de:",
+              "Cada administrador, director o persona con funciones directivas",
+              ["Solamente el accionista mayoritario de la sociedad inscripta", "Únicamente el contador que firma sus estados contables anuales", "Solo el oficial de cumplimiento designado ante la UIF"],
+              "Normas CNV T.O. – Título XI, Sec. IV, Art. 9"),
+            q("MOD2", "El incumplimiento del deber de conservar la idoneidad, integridad y solvencia importa:",
+              "La caducidad de la inscripción en el registro de la CNV",
+              ["Una simple advertencia sin consecuencias", "La suspensión del examen de idoneidad por un año", "La obligación de rendir nuevamente el examen"],
+              "Normas CNV T.O. – Título XI, Sec. IV, Art. 12"),
+            q("MOD2", "La CNV no autoriza la oferta pública de valores si la emisora o sus beneficiarios finales:",
+              "Registran condenas por lavado o financiación del terrorismo, o figuran en listas del CSNU",
+              ["Tienen pérdidas en el último ejercicio contable cerrado y auditado por un contador", "Poseen menos de diez accionistas registrados en su libro de acciones", "Han cambiado su domicilio social durante el último año calendario completo"],
+              "Normas CNV T.O. – Título XI, Sec. IV, Art. 13"),
+            q("MOD2", "Los sujetos obligados solo pueden dar curso a operaciones ordenadas por sujetos de jurisdicciones:",
+              "Que no sean no cooperantes fiscales ni de alto riesgo para el GAFI",
+              ["Que sean exclusivamente limítrofes con la República Argentina", "Que figuren como no cooperantes pero con baja tributación", "Que no tengan ningún convenio vigente de cooperación con la CNV"],
+              "Normas CNV T.O. – Título XI, Sec. III, Art. 5"),
+            q("MOD2", "Entre la información que los sujetos obligados remiten a la CNV por medio de la AIF se encuentran:",
+              "Los beneficiarios finales",
+              ["Los precios diarios de cierre de las acciones", "La cotización diaria de cada cuotaparte", "Las tasas de caución del día"],
+              "Normas CNV T.O. – Título XI, Sec. I, Art. 2"),
+            q("MOD2", "Los Oficiales de Cumplimiento de los sujetos obligados deben constituir, cuando se les requiera:",
+              "Un domicilio especial electrónico para las notificaciones",
+              ["Una garantía bancaria a favor de la UIF por cada cliente", "Una sucursal propia en cada una de las provincias", "Un seguro de responsabilidad civil obligatorio y renovable"],
+              "Normas CNV T.O. – Título XI, Sec. VI, Art. 19"),
+            q("MOD2", "¿Qué figura designa el sujeto obligado como responsable de velar por el cumplimiento de la normativa de prevención del lavado de activos?",
+              "El Oficial de Cumplimiento",
+              ["El síndico titular", "El director independiente", "El auditor externo"],
+              "Ley 25.246 y Res. UIF 78/2023"),
+            q("MOD2", "El beneficiario final es:",
+              "La persona humana que, en última instancia, posee o controla al cliente",
+              ["El empleado del agente que ejecuta la orden del cliente", "El banco donde el cliente mantiene su cuenta operativa", "El agente que cobra la comisión de la operación realizada"],
+              "Res. UIF 78/2023 y Normas CNV T.O. – Título XI"),
+            q("MOD2", "Un enfoque basado en riesgos implica:",
+              "Aplicar controles más intensos a los clientes de mayor riesgo",
+              ["Aplicar exactamente el mismo control a todos los clientes", "Controlar únicamente las operaciones realizadas en efectivo", "Delegar en el propio cliente la evaluación de su riesgo"],
+              "Res. UIF 78/2023 – Guía de Idoneidad, Módulo II"),
+            q("MOD2", "En la etapa de estratificación del lavado de activos, el lavador:",
+              "Realiza múltiples transacciones para ocultar el origen de los fondos",
+              ["Introduce por primera vez el dinero en el sistema financiero", "Reintegra los fondos a la economía como ganancias aparentemente lícitas", "Declara voluntariamente los fondos ante la UIF"],
+              "Guía de Idoneidad CNV – Módulo II (Etapas básicas)"),
+            q("MOD2", "En la etapa de colocación del lavado de activos, los fondos de origen ilícito:",
+              "Se introducen en el sistema financiero o en la economía formal",
+              ["Se mezclan mediante múltiples transferencias entre cuentas", "Se reintegran a la economía con apariencia lícita", "Se declaran ante la autoridad tributaria como ganancias"],
+              "Guía de Idoneidad CNV – Módulo II (Etapas básicas)"),
+            q("MOD2", "En la etapa de integración del lavado de activos:",
+              "Los fondos regresan a la economía legal con apariencia de legitimidad",
+              ["Se ingresan por primera vez fondos en efectivo al sistema", "Se multiplican las transferencias para dificultar el rastreo", "Se denuncian los fondos ante la CNV"],
+              "Guía de Idoneidad CNV – Módulo II (Etapas básicas)"),
+            q("MOD2", "Quien emite un Reporte de Operación Sospechosa (ROS):",
+              "No puede informar al cliente ni a terceros sobre el reporte",
+              ["Debe avisar al cliente para que justifique la operación", "Debe publicarlo en el Boletín Oficial a los diez días", "Puede difundirlo libremente entre otros agentes del mercado"],
+              "Ley 25.246 – Deber de confidencialidad"),
+            q("MOD2", "La UIF puede aplicar a los sujetos obligados que incumplan sus deberes:",
+              "Sanciones administrativas, como apercibimiento o multa",
+              ["Penas de prisión dictadas directamente por la propia UIF", "Exclusivamente la inhabilitación de por vida del oficial", "Ninguna sanción: solo puede emitir meras recomendaciones"],
+              "Ley 25.246 – Régimen administrativo sancionatorio"),
+            q("MOD2", "El perfil transaccional del cliente permite:",
+              "Contrastar sus operaciones con su actividad y capacidad económica",
+              ["Fijar el precio de los valores negociables que el cliente compra", "Determinar su calificación crediticia dentro del mercado", "Establecer la comisión que cobra el agente por cada orden"],
+              "Res. UIF 78/2023 – Guía de Idoneidad, Módulo II"),
+            q("MOD2", "La sigla PLA/FT/FP hace referencia a la prevención del:",
+              "Lavado de activos, financiación del terrorismo y proliferación de armas de destrucción masiva",
+              ["Lavado de activos, fraude tributario y pago de sobornos a funcionarios públicos extranjeros", "Ahorro previsional, financiamiento de pymes y fomento productivo de la industria nacional", "Planeamiento, fiscalización técnica y financiamiento privado de obras de infraestructura"],
+              "Normas CNV T.O. – Título XI"),
+            q("MOD2", "¿Qué organismo emite las listas de terroristas y organizaciones terroristas que la CNV considera al autorizar emisoras?",
+              "El Consejo de Seguridad de la ONU (CSNU)",
+              ["El Banco Mundial", "El Fondo Monetario Internacional", "La Organización Mundial del Comercio"],
+              "Normas CNV T.O. – Título XI, Sec. IV, Art. 13"),
+            q("MOD2", "Los pagos a clientes de los sujetos obligados deben cursarse hacia:",
+              "Cuentas a la vista de titularidad o cotitularidad del cliente",
+              ["Cuentas de cualquier tercero indicado de manera verbal", "Billeteras virtuales sin identificación de su titular", "Cajas de seguridad que el propio agente administra"],
+              "Normas CNV T.O. – Título XI, Sec. II, Art. 3"),
+
+            // ===== MÓDULO III (ampliación) =====
+            q("MOD3", "¿Quiénes deben inscribirse en el Registro de Idóneos de la CNV?",
+              "Quienes venden, promocionan o asesoran al público inversor a través de un Agente",
+              ["Todos los accionistas de una emisora que cotiza en bolsa", "Los auditores externos que firman los estados de las emisoras", "Los inversores que operan con su propia cartera de valores"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. I, Art. 1"),
+            q("MOD3", "La aprobación del examen de idoneidad tiene una vigencia de ___ a los efectos de la inscripción en el Registro de Idóneos:",
+              "2 años",
+              ["6 meses", "5 años", "Tiempo indefinido"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. II, Art. 21"),
+            q("MOD3", "Aprobar el examen de idoneidad:",
+              "No confiere por sí solo la calidad de Idóneo: hace falta la inscripción en el Registro",
+              ["Habilita de inmediato a operar con clientes del Agente, sin ningún otro trámite", "Equivale a la matrícula de ALyC otorgada por la CNV a las personas humanas", "Reemplaza el alta que el Agente debe realizar en el acceso Registro de Idóneos de la AIF"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. II, Art. 21"),
+            q("MOD3", "No pueden ser Idóneos de los Agentes Registrados en la CNV los menores de:",
+              "18 años",
+              ["16 años", "21 años", "25 años"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. I, Art. 3"),
+            q("MOD3", "El alta de un Idóneo en el Registro es solicitada por:",
+              "El Agente donde desarrollará la actividad, vía AIF",
+              ["El propio Idóneo, mediante trámite ante la AFIP", "La Bolsa de Comercio, por cuenta del Agente", "La Unidad de Información Financiera (UIF)"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. I, Art. 5"),
+            q("MOD3", "La persona idónea que no está inscripta en el Registro mediante un Agente pasa a la condición de:",
+              "Inactivo, sin poder ejercer hasta una nueva alta",
+              ["Suspendido por diez años calendario", "Idóneo honorario sin facultades de venta", "Auditor externo de la propia CNV"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. I, Art. 8"),
+            q("MOD3", "La calidad de idoneidad de una persona:",
+              "Es independiente del Agente en donde desarrolle la actividad",
+              ["Pertenece al Agente y se pierde al cambiar de empleador", "Se renueva automáticamente cada año", "Solo es válida en una única provincia"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. I, Art. 8"),
+            q("MOD3", "Las normas de conducta exigen al Idóneo actuar con:",
+              "Honestidad, imparcialidad, profesionalidad, diligencia y lealtad",
+              ["Reserva absoluta frente a la CNV y a todos los inversores del mercado", "Prioridad del interés del Agente sobre el del cliente", "Exclusividad con un único cliente durante todo el año"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. I, Art. 9"),
+            q("MOD3", "¿Quién elabora, administra y actualiza el banco de preguntas del examen de idoneidad?",
+              "La CNV",
+              ["Cada entidad administradora a su criterio", "El Banco Central de la República Argentina", "La Bolsa de Comercio"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. II, Art. 19"),
+            q("MOD3", "Las preguntas y respuestas correctas del examen de idoneidad:",
+              "Las publica la CNV y son la única referencia válida para corregir",
+              ["Son secretas y solo las conoce el evaluador de cada examen", "Se publican únicamente luego de transcurridos diez años", "Pueden ser modificadas libremente por cada entidad administradora"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. II, Art. 27"),
+            q("MOD3", "¿Cuál de las siguientes certificaciones exime totalmente de rendir el examen de idoneidad de la CNV?",
+              "Certified European Financial Analyst (CEFA)",
+              ["Nivel 1 del Chartered Financial Analyst (CFA)", "Un curso de bolsa de tres meses de duración", "Una diplomatura de veinte horas en finanzas"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. II, Art. 24"),
+            q("MOD3", "Quien acredita el Nivel 1 del CFA se exime de los Módulos 3, 4, 5 y 6, por lo que debe rendir:",
+              "Los Módulos 1 y 2",
+              ["Los Módulos 3 y 4", "Solamente el Módulo 6", "Todos los módulos del examen"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. II, Art. 25"),
+            q("MOD3", "Para conservar su registración, el Idóneo debe:",
+              "Hacer los cursos de actualización que establezca la CNV",
+              ["Rendir nuevamente el examen completo cada año calendario", "Renovar su matrícula ante la Inspección General de Justicia", "Presentar balances trimestrales ante la CNV por la AIF"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. II, Art. 26"),
+            q("MOD3", "El Idóneo que incumple la normativa puede ser sancionado conforme a:",
+              "El artículo 132 de la Ley de Mercado de Capitales",
+              ["El Código Aduanero", "La Ley de Defensa del Consumidor exclusivamente", "El reglamento interno de la Bolsa de Comercio"],
+              "Normas CNV T.O. – Título XII, Cap. V, Sec. I, Art. 10"),
+            q("MOD3", "Los sujetos alcanzados deben informar a la CNV los Hechos Relevantes:",
+              "En forma inmediata, a través de la AIF",
+              ["Una vez por año, junto con la memoria", "Al cierre de cada trimestre calendario", "Solo cuando lo requiera el Mercado"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. II, Art. 2"),
+            q("MOD3", "La enumeración de supuestos de Hechos Relevantes que contienen las Normas CNV es:",
+              "Ejemplificativa: no releva de informar otros hechos no enunciados",
+              ["Taxativa: solo deben informarse los hechos allí enumerados", "Optativa para las emisoras de menor tamaño relativo", "Aplicable únicamente a las sociedades constituidas en el extranjero"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. II, Art. 3"),
+            q("MOD3", "En el ámbito de la oferta pública está prohibido:",
+              "Todo acto u omisión que afecte la transparencia",
+              ["Publicar los estados financieros en la AIF en término", "Informar los Hechos Relevantes de manera inmediata", "Contar con un Código de Conducta aprobado por el directorio"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. I, Art. 1"),
+            q("MOD3", "Las emisoras con valores listados deben dirigir a los Mercados:",
+              "Comunicaciones similares a las de la CNV, que los Mercados publican de inmediato",
+              ["Únicamente el balance anual, presentado una sola vez por año al cierre del ejercicio", "Una carta de intención sin contenido informativo relevante para el mercado", "Solo la nómina de accionistas minoritarios de la emisora que cotiza"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. IV, Art. 5"),
+            q("MOD3", "En cada elección de directores, los accionistas que proponen candidatos deben informar a la asamblea, antes de la votación:",
+              "La condición de independientes o no independientes de los candidatos",
+              ["El patrimonio personal declarado de cada uno de los candidatos", "La remuneración que percibirá cada uno de los candidatos", "La nacionalidad y el estado civil de cada uno de los candidatos"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. III, Art. 4"),
+            q("MOD3", "Los directores y administradores de emisoras con acciones en oferta pública deben informar a la CNV:",
+              "La cantidad y clase de acciones y opciones que poseen o administran",
+              ["Las operaciones personales ajenas al mercado de capitales", "Los depósitos bancarios que mantienen sus familiares directos", "El domicilio real de cada accionista minoritario de la emisora"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. VI, Art. 8"),
+            q("MOD3", "Los cambios en las tenencias producidos durante el mes anterior deben informarse a la CNV antes del día:",
+              "15 de cada mes",
+              ["1 de cada mes", "30 de cada mes", "10 de enero de cada año"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. VI, Art. 9"),
+            q("MOD3", "Las emisoras deben informar por la AIF la nómina de los integrantes de sus órganos de administración y fiscalización dentro de:",
+              "15 días hábiles de producida la designación",
+              ["48 horas corridas de producida la designación", "6 meses calendario de producida la designación", "Un año de producida la designación del órgano"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. VI, Art. 10"),
+            q("MOD3", "La información de inversiones de clientes se presenta con periodicidad mensual, dentro de:",
+              "10 días hábiles de finalizado cada mes calendario",
+              ["48 horas del cierre de cada operación realizada", "30 días corridos del cierre de cada trimestre", "90 días del cierre del ejercicio económico anual"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. V, Art. 6"),
+            q("MOD3", "La manifestación sobre tenencias que se efectúa ante la CNV tiene el efecto de:",
+              "Declaración jurada",
+              ["Simple comunicación sin responsabilidad", "Dictamen pericial", "Opinión no vinculante"],
+              "Normas CNV T.O. – Título XII, Cap. I, Sec. VI, Art. 15"),
+            q("MOD3", "Las personas registradas en la CNV deben contar con:",
+              "Un Código de Protección al Inversor o Código de Conducta",
+              ["Un seguro de caución por cada cliente", "Un estudio jurídico exclusivo en cada provincia", "Un código de colores para identificar a sus clientes"],
+              "Normas CNV T.O. – Título XII, Cap. II, Sec. III, Art. 6"),
+
+            // ===== MÓDULO IV (ampliación) =====
+            q("MOD4", "Las emisoras del régimen de oferta pública incluyen en la memoria anual, como anexo separado, un reporte del:",
+              "Código de Gobierno Societario",
+              ["Código Penal", "Código Aduanero", "Código de Minería"],
+              "Normas CNV T.O. – Título IV, Cap. I, Sec. I, Art. 1"),
+            q("MOD4", "Los estados financieros anuales y por períodos intermedios cuentan con informe de auditoría y de revisión, respectivamente, suscripto por:",
+              "Un contador público independiente inscripto en el Registro de Auditores de la CNV",
+              ["El gerente general de la emisora, que es quien prepara los estados financieros", "El síndico titular, aunque no se encuentre inscripto en registro alguno de la CNV", "El presidente de la Bolsa de Comercio donde cotizan los valores de la emisora"],
+              "Normas CNV T.O. – Título IV, Cap. I, Sec. I, Art. 6"),
+            q("MOD4", "Las PyMEs que emiten bajo el Régimen PyME CNV presentan sus estados contables anuales dentro de:",
+              "70 días corridos desde el cierre del ejercicio",
+              ["10 días hábiles desde el cierre del ejercicio", "6 meses corridos desde el cierre del ejercicio", "Un año desde el cierre del ejercicio"],
+              "Normas CNV T.O. – Título IV, Cap. I, Sec. II, Art. 9"),
+            q("MOD4", "Los administradores de emisoras de ON autónomas, bajo programas globales o de CEDEAR/CEVA, presentan información trimestral dentro de ___ de finalizado cada trimestre:",
+              "10 días",
+              ["1 día", "6 meses", "1 año"],
+              "Normas CNV T.O. – Título IV, Cap. II, Art. 1"),
+            q("MOD4", "La reseña informativa que acompaña los estados financieros es aprobada por:",
+              "El directorio de la emisora",
+              ["La Cámara Compensadora", "La asamblea de obligacionistas", "El Banco Central"],
+              "Normas CNV T.O. – Título IV, Cap. III, Art. 4"),
+            q("MOD4", "Las entidades financieras emisoras pueden presentar sus estados financieros según los plazos y normas que establezca:",
+              "El Banco Central de la República Argentina (BCRA)",
+              ["La Administración Federal de Ingresos Públicos", "La Inspección General de Justicia", "El Instituto Nacional de Asociativismo"],
+              "Normas CNV T.O. – Título IV, Cap. I, Sec. I, Art. 2"),
+            q("MOD4", "Las cooperativas y asociaciones mutuales pueden presentar sus estados financieros según las normas del:",
+              "INAES",
+              ["BCRA", "SSN", "IGJ"],
+              "Normas CNV T.O. – Título IV, Cap. I, Sec. I, Art. 3"),
+            q("MOD4", "En un bono, el cupón es:",
+              "El pago periódico de intereses",
+              ["El valor de rescate final del título", "El impuesto que grava el capital invertido", "La comisión que cobra el agente"],
+              "Guía de Idoneidad CNV – Módulo IV (Características de la renta fija)"),
+            q("MOD4", "La TEA (tasa efectiva anual), respecto de la TNA, refleja:",
+              "El efecto de la capitalización de intereses",
+              ["La inflación esperada para el período", "El riesgo país del Estado emisor", "La comisión que cobra la Bolsa por operar"],
+              "Guía de Idoneidad CNV – Módulo IV (Análisis y valuación de la renta fija)"),
+            q("MOD4", "La duration de un bono mide:",
+              "El plazo medio ponderado de sus flujos y la sensibilidad del precio a la tasa",
+              ["La cantidad total de cupones que paga el título hasta su vencimiento", "El riesgo cambiario que soporta quien mantiene el título en cartera", "La calificación crediticia asignada al emisor por la agencia"],
+              "Guía de Idoneidad CNV – Módulo IV (Valuación de bonos)"),
+            q("MOD4", "Un bono cupón cero:",
+              "No paga intereses periódicos: se emite con descuento y paga el nominal al vencimiento",
+              ["Paga intereses mensuales calculados sobre el valor nominal y los entrega al tenedor", "Otorga derecho a voto en las asambleas de la sociedad emisora y a dividendos", "Se emite siempre por encima de su valor nominal, con una prima fija para el inversor"],
+              "Guía de Idoneidad CNV – Módulo IV (Condiciones de emisión)"),
+            q("MOD4", "Diversificar una cartera permite:",
+              "Reducir el riesgo específico de cada activo sin resignar necesariamente rendimiento",
+              ["Eliminar por completo todo el riesgo de mercado que enfrenta la cartera de inversión", "Garantizar un rendimiento mínimo anual al inversor, cualquiera sea el escenario", "Evitar el pago de impuestos sobre las ganancias de capital obtenidas en la cartera"],
+              "Guía de Idoneidad CNV – Módulo IV (Riesgos asociados)"),
+            q("MOD4", "El riesgo sistemático o de mercado:",
+              "Afecta a todos los activos y no se elimina por diversificación",
+              ["Afecta a una sola empresa y desaparece diversificando", "Solo existe en la renta fija", "Depende exclusivamente de la calificación de la emisora"],
+              "Guía de Idoneidad CNV – Módulo IV (Riesgos asociados)"),
+            q("MOD4", "Una acción con beta mayor a 1:",
+              "Es más volátil que el mercado en su conjunto",
+              ["Es menos volátil que el mercado en su conjunto", "No tiene relación con el mercado", "Está libre de riesgo"],
+              "Guía de Idoneidad CNV – Módulo IV (Análisis fundamental)"),
+            q("MOD4", "El dividend yield se calcula como:",
+              "Dividendo por acción dividido por el precio de la acción",
+              ["Precio de la acción dividido por el dividendo por acción", "Resultado neto dividido por el activo total", "Patrimonio neto dividido por las acciones emitidas"],
+              "Guía de Idoneidad CNV – Módulo IV (Política de dividendos y ratios)"),
+            q("MOD4", "El valor libro por acción es:",
+              "El patrimonio neto dividido por la cantidad de acciones",
+              ["El precio de cotización de la acción en el mercado", "La ganancia por acción multiplicada por el PER", "El dividendo anual dividido por el precio"],
+              "Guía de Idoneidad CNV – Módulo IV (Concepto de valor libro)"),
+            q("MOD4", "El capital de trabajo de una empresa es:",
+              "El activo corriente menos el pasivo corriente",
+              ["El activo total menos el patrimonio neto", "Las ventas menos los costos operativos", "El patrimonio neto menos las deudas bancarias"],
+              "Guía de Idoneidad CNV – Módulo IV (Indicadores de liquidez)"),
+            q("MOD4", "El ratio de endeudamiento mide:",
+              "La relación entre el pasivo y el patrimonio neto",
+              ["La relación entre las ventas y el activo corriente", "La rentabilidad del capital propio", "El plazo medio de cobranza de créditos"],
+              "Guía de Idoneidad CNV – Módulo IV (Indicadores de solvencia)"),
+            q("MOD4", "El ROE (Return on Equity) se calcula como:",
+              "Resultado neto dividido por el patrimonio neto",
+              ["Activo corriente dividido por pasivo corriente", "Pasivo total dividido por patrimonio neto", "Ventas dividido por activo total"],
+              "Guía de Idoneidad CNV – Módulo IV (Indicadores de rentabilidad)"),
+            q("MOD4", "El valor presente de un flujo futuro:",
+              "Disminuye cuanto mayor es la tasa de descuento",
+              ["Aumenta cuanto mayor es la tasa de descuento", "No depende de la tasa de descuento", "Es siempre igual al flujo futuro"],
+              "Guía de Idoneidad CNV – Módulo IV (VAN – TIR)"),
+            q("MOD4", "A diferencia del precio de mercado, el valor contable histórico:",
+              "Refleja costos pasados y no incorpora necesariamente expectativas futuras",
+              ["Incorpora todas las expectativas futuras que tienen los inversores", "Se modifica a cada segundo, junto con la negociación del título", "Es siempre superior al valor de mercado de la empresa"],
+              "Extras: Valen los balances o manda el mercado – Guía de Idoneidad, Módulo IV"),
+            q("MOD4", "El auditor emite una opinión adversa cuando los estados contables:",
+              "Contienen desvíos significativos y generalizados frente a las normas contables",
+              ["Son razonables en todos sus aspectos significativos y no tienen errores", "Presentan un error menor, aislado y de escaso monto relativo en una cuenta", "No fueron presentados dentro del plazo fijado por la CNV para el ejercicio"],
+              "Guía de Idoneidad CNV – Módulo IV (Tipos de opinión)"),
+            q("MOD4", "Una opinión con salvedades indica que los estados contables:",
+              "Son razonables, excepto por un aspecto significativo específico",
+              ["Son completamente incorrectos en todos sus aspectos relevantes", "No pudieron ser auditados en absoluto por el contador", "Fueron aprobados expresamente por la propia CNV"],
+              "Guía de Idoneidad CNV – Módulo IV (Informe de auditoría)"),
+
+            // ===== MÓDULO V (ampliación) =====
+            q("MOD5", "El patrimonio neto mínimo exigido a un Agente de Negociación (AN) es de:",
+              "65.350 UVA",
+              ["470.350 UVA", "2.700.000 UVA", "25.500.000 UVA"],
+              "Normas CNV T.O. – Título VII, Cap. I, Art. 9"),
+            q("MOD5", "El patrimonio neto mínimo exigido a un ALyC Propio o Integral es de:",
+              "470.350 UVA",
+              ["65.350 UVA", "150.000 UVA", "20.000 UVA"],
+              "Normas CNV T.O. – Título VII, Cap. II, Art. 13"),
+            q("MOD5", "Los Mercados deben contar con un patrimonio neto no inferior a:",
+              "2.700.000 UVA",
+              ["65.350 UVA", "470.350 UVA", "150.000 UVA"],
+              "Normas CNV T.O. – Título VI, Cap. I, Sec. III, Art. 12"),
+            q("MOD5", "El Agente Depositario Central de Valores Negociables (ADCVN) debe contar con un patrimonio neto mínimo de:",
+              "25.500.000 UVA",
+              ["2.700.000 UVA", "470.350 UVA", "150.000 UVA"],
+              "Normas CNV T.O. – Título VIII, Cap. I, Sec. IV, Art. 10"),
+            q("MOD5", "Como contrapartida líquida, el AN debe acreditar un mínimo de ___ de su patrimonio neto mínimo:",
+              "20%",
+              ["50%", "5%", "100%"],
+              "Normas CNV T.O. – Título VII, Cap. I, Art. 11"),
+            q("MOD5", "Como contrapartida líquida, el ALyC Propio o Integral debe acreditar un mínimo de ___ de su patrimonio neto mínimo:",
+              "50%",
+              ["20%", "5%", "100%"],
+              "Normas CNV T.O. – Título VII, Cap. II, Art. 15"),
+            q("MOD5", "El ALyC Integral se caracteriza por:",
+              "Ofrecer liquidación y compensación a otros AN, previo convenio",
+              ["Actuar únicamente como calificador del riesgo de los emisores", "Custodiar valores negociables en forma centralizada para el mercado", "Emitir cuotapartes de fondos comunes de inversión abiertos"],
+              "Normas CNV T.O. – Título VII, Cap. II, Art. 5"),
+            q("MOD5", "Para liquidar y compensar sus operaciones, el AN debe celebrar:",
+              "Un convenio con un ALyC Integral",
+              ["Un convenio con la Sociedad Depositaria de un FCI", "Un convenio con un Agente de Calificación", "Un convenio con la UIF"],
+              "Normas CNV T.O. – Título VII, Cap. I, Art. 7"),
+            q("MOD5", "Los Mercados que cumplen funciones de Cámara Compensadora deben constituir, con recursos propios:",
+              "Fondos de garantía para atender compromisos no cumplidos por agentes",
+              ["Un fondo de pensión destinado a los empleados del Mercado", "Un fondo de inversión abierto a la suscripción del público", "Un fondo especial destinado a pagar las multas de la CNV"],
+              "Normas CNV T.O. – Título VI, Cap. I, Sec. IV, Art. 15"),
+            q("MOD5", "Los Mercados deben contar en su ámbito con:",
+              "Un tribunal arbitral permanente aprobado por la CNV",
+              ["Un tribunal penal propio con jueces designados", "Una cámara judicial delegada por la CNV", "Un registro de jueces designado por el BCRA"],
+              "Normas CNV T.O. – Título VI, Cap. I, Sec. X, Art. 31"),
+            q("MOD5", "El patrimonio neto mínimo del ADCVN se incrementa en un ___ por cada actividad afín o complementaria que desarrolle:",
+              "25%",
+              ["1%", "75%", "100%"],
+              "Normas CNV T.O. – Título VIII, Cap. I, Sec. IV, Art. 10"),
+            q("MOD5", "Entre las actividades que puede realizar un AN se encuentra:",
+              "Asesorar sobre inversiones y actuar en la colocación y negociación de valores",
+              ["Emitir moneda de curso legal para liquidar operaciones bursátiles", "Calificar el riesgo crediticio de los emisores que cotizan", "Fijar las tasas de fiscalización y control que cobra la CNV"],
+              "Normas CNV T.O. – Título VII, Cap. I, Art. 2"),
+            q("MOD5", "Pueden emitir CEDEAR o CEVA, entre otros:",
+              "Bancos comerciales autorizados por el BCRA e inscriptos como ALyC o Depositaria",
+              ["Cualquier persona humana mayor de edad, sin necesidad de inscripción alguna", "Únicamente las universidades públicas que dicten carreras de finanzas", "Exclusivamente las cámaras compensadoras de los mercados autorizados"],
+              "Normas CNV T.O. – Título II, Cap. VIII, Sec. II, Art. 5"),
+            q("MOD5", "Pueden actuar como Agentes de Calificación de Riesgo:",
+              "Sociedades anónimas y universidades públicas inscriptas",
+              ["Únicamente los bancos comerciales del sistema financiero local", "Cualquier persona humana, aun sin registro alguno ante la CNV", "Exclusivamente las cámaras compensadoras de los mercados"],
+              "Normas CNV T.O. – Título IX, Cap. I"),
+            q("MOD5", "En los Agentes de Calificación de Riesgo, la calificación es decidida por:",
+              "El Consejo de Calificación",
+              ["El gerente comercial del agente", "La asamblea de accionistas de la emisora calificada", "El Mercado donde cotiza el valor"],
+              "Normas CNV T.O. – Título IX, Cap. I, Sec. XI"),
+            q("MOD5", "En el ADCVN, las tenencias de los inversores se registran en:",
+              "Subcuentas comitentes",
+              ["Cajas de ahorro del agente", "Libros de la emisora", "Cuentas de la Cámara Compensadora"],
+              "Normas CNV T.O. – Título VIII, Cap. I, Sec. IX"),
+            q("MOD5", "Una acción preferida se caracteriza, en general, por:",
+              "Preferencia en el cobro de dividendos, por lo general sin derecho a voto",
+              ["Un rendimiento fijo garantizado por el Estado Nacional sin importar los resultados", "Siempre más votos por acción que las acciones ordinarias de la sociedad", "Ser un título de deuda de corto plazo que paga cupón fijo al tenedor"],
+              "Guía de Idoneidad CNV – Módulo V (Acciones. Tipos y características)"),
+            q("MOD5", "Un bono soberano es:",
+              "Un título de deuda emitido por el Estado Nacional",
+              ["Una acción de una empresa pública", "Una cuotaparte de un fondo común de inversión", "Un contrato de futuro sobre divisas"],
+              "Guía de Idoneidad CNV – Módulo V (Títulos públicos)"),
+            q("MOD5", "El mercado primario es aquel en el que:",
+              "Se colocan por primera vez los valores negociables emitidos",
+              ["Se negocian valores que ya fueron emitidos entre inversores", "Se liquidan exclusivamente operaciones de futuros", "Se registran las sanciones de la CNV"],
+              "Guía de Idoneidad CNV – Módulo V (Colocación primaria)"),
+            q("MOD5", "El mercado secundario permite:",
+              "Que los inversores negocien entre sí valores ya emitidos",
+              ["Que las emisoras coloquen por primera vez sus valores", "Que la CNV fije el precio de las acciones", "Que los bancos presten dinero sin garantía"],
+              "Guía de Idoneidad CNV – Módulo V (Negociación secundaria)"),
+            q("MOD5", "La prima de una opción es:",
+              "El precio que el comprador paga al lanzador por el derecho",
+              ["El dividendo que paga la acción subyacente de la opción", "La comisión que cobra el mercado por registrar el contrato", "El valor del activo subyacente al llegar el vencimiento"],
+              "Guía de Idoneidad CNV – Módulo V (Concepto de prima)"),
+            q("MOD5", "Un productor que desea fijar hoy el precio de su cosecha futura se cubre:",
+              "Vendiendo contratos de futuros",
+              ["Comprando contratos de futuros", "Comprando acciones de la bolsa", "No existe forma de cubrirse"],
+              "Guía de Idoneidad CNV – Módulo V (Coberturas con futuros)"),
+            q("MOD5", "Un spread con opciones consiste en:",
+              "Combinar compras y ventas de opciones con distintos precios de ejercicio",
+              ["Comprar únicamente opciones que tengan el mismo vencimiento y precio", "Vender acciones propias y comprar bonos soberanos en pesos", "Intercambiar flujos de tasa fija por flujos de tasa variable"],
+              "Guía de Idoneidad CNV – Módulo V (Armado de spreads con call y put)"),
+
+            // ===== MÓDULO VI (ampliación) =====
+            q("MOD6", "El patrimonio neto mínimo de una Sociedad Gerente de FCI es de:",
+              "UVA 150.000",
+              ["UVA 65.350", "UVA 470.350", "UVA 2.700.000"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. II, Art. 5"),
+            q("MOD6", "La Sociedad Gerente debe incrementar su patrimonio neto mínimo, por cada fondo común adicional que administre, en:",
+              "UVA 20.000",
+              ["UVA 150.000", "UVA 65.350", "UVA 2.700.000"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. II, Art. 5"),
+            q("MOD6", "Como contrapartida líquida, la Sociedad Gerente debe acreditar un mínimo de ___ de su patrimonio neto mínimo:",
+              "50%",
+              ["20%", "5%", "100%"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. II, Art. 5"),
+            q("MOD6", "La Sociedad Depositaria de un FCI debe ser:",
+              "Una entidad financiera regida por la Ley de Entidades Financieras",
+              ["Una sociedad de bolsa que no cuente con autorización del BCRA", "Una fundación sin fines de lucro del sector privado local", "Un fideicomiso de administración de bienes inmuebles urbanos"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. III, Art. 12"),
+            q("MOD6", "Entre los libros que la Sociedad Gerente debe llevar por cada fondo se encuentra el de:",
+              "Suscripciones y rescates",
+              ["Visitas del público", "Socios de la Bolsa de Comercio", "Compras del IVA de la Sociedad Depositaria"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. IV, Art. 16"),
+            q("MOD6", "Las Sociedades Gerentes y Depositarias presentan sus estados contables anuales dentro de:",
+              "70 días corridos desde el cierre de su ejercicio",
+              ["10 días hábiles desde el cierre de su ejercicio", "6 meses desde el cierre de su ejercicio", "Un año desde el cierre de su ejercicio"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. VII, Art. 25"),
+            q("MOD6", "El ACDI de FCI se distingue del ACD porque:",
+              "Percibe suscripciones y paga rescates por cuenta de la Depositaria",
+              ["Administra el patrimonio del fondo según el reglamento", "Califica el riesgo crediticio de las cuotapartes", "Custodia los activos que integran la cartera del fondo"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. VI, Art. 22"),
+            q("MOD6", "Los ACDI de FCI son registrados como cuotapartistas en:",
+              "El registro de cuotapartes de la Sociedad Depositaria",
+              ["El registro de la Bolsa de Comercio local", "El Boletín Oficial de la República Argentina", "El registro de sujetos obligados de la UIF"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. VI, Art. 23"),
+            q("MOD6", "El valor de la cuotaparte debe expresarse con, por lo menos:",
+              "Tres (3) decimales",
+              ["Un (1) decimal", "Ningún decimal", "Diez (10) decimales"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. IV, Art. 55"),
+            q("MOD6", "El valor unitario de suscripción y rescate de la cuotaparte se determina:",
+              "Todos los días hábiles, dividiendo el patrimonio neto por las cuotapartes",
+              ["Una sola vez por año, al cierre del ejercicio económico del propio fondo", "Cada vez que se reúne la asamblea general de cuotapartistas del fondo", "Semanalmente, en función del precio del dólar vigente cada día viernes"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. IV, Art. 53"),
+            q("MOD6", "El rescate de cuotapartes es:",
+              "El medio legal para dotar de liquidez a la inversión en el FCI",
+              ["Una sanción que la CNV aplica al cuotapartista incumplidor", "La emisión de nuevas cuotapartes que realiza la Gerente", "El pago de dividendos a los accionistas del propio fondo"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 32"),
+            q("MOD6", "El valor de rescate corresponde a la valuación de la cuotaparte del día en que:",
+              "Se solicitó el rescate",
+              ["Se pagó el rescate", "Se constituyó el fondo", "Se reunió la asamblea de cuotapartistas"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 34"),
+            q("MOD6", "Las cuotapartes se emiten y registran únicamente contra:",
+              "El pago total del precio de suscripción",
+              ["La promesa de pago a treinta días", "La entrega de un pagaré del suscriptor", "El pago de la mitad del precio"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 28"),
+            q("MOD6", "El rescate puede abonarse con activos de la cartera del fondo:",
+              "Excepcionalmente, y con autorización previa de la CNV",
+              ["Siempre que el cuotapartista lo pida verbalmente", "Libremente, a decisión de la Sociedad Depositaria", "Nunca, bajo ninguna circunstancia"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 36"),
+            q("MOD6", "El Reglamento de Gestión puede prever el rescate automático cuando el patrimonio neto del fondo sea igual o inferior a:",
+              "UVA 20.000",
+              ["UVA 150.000", "UVA 2.700.000", "UVA 470.350"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 37"),
+            q("MOD6", "El honorario de la Sociedad Gerente se calcula sobre:",
+              "El patrimonio neto del fondo, devengado diariamente",
+              ["El patrimonio propio de la Sociedad Depositaria", "Las ventas anuales que registre la Gerente", "La cantidad de cuotapartistas que tiene el fondo"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 39"),
+            q("MOD6", "La Sociedad Gerente puede establecer comisiones de rescate:",
+              "Con el porcentaje máximo del reglamento de gestión",
+              ["Con el porcentaje que fije cada cuotapartista al suscribir", "Sin límite ni previsión alguna en el reglamento", "Solo si lo autoriza la AFIP caso por caso"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 46"),
+            q("MOD6", "La moneda del FCI, en la que se expresa el valor de las cuotapartes, la establece:",
+              "El reglamento de gestión",
+              ["La Bolsa de Comercio", "La Unidad de Información Financiera", "Cada cuotapartista al suscribir"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 25"),
+            q("MOD6", "Además de rescatarlas, los cuotapartistas pueden:",
+              "Transmitirlas a terceros o afectarlas en garantía",
+              ["Votar el reglamento de gestión por mayoría simple", "Designar por su cuenta a la Sociedad Depositaria", "Modificar el valor diario de la cuotaparte del fondo"],
+              "Normas CNV T.O. – Título V, Cap. II, Sec. III, Art. 48"),
+            q("MOD6", "Por cada FCI abierto, la Sociedad Gerente debe elaborar una:",
+              "Una Ficha Única, salvo en fondos para inversores calificados",
+              ["Una ficha médica de cada uno de los cuotapartistas del fondo", "Una ficha de depósito ante la Bolsa de Comercio", "Una ficha fiscal individual ante la AFIP"],
+              "Normas CNV T.O. – Título V, Cap. I, Sec. VII, Art. 31 bis"),
+            q("MOD6", "En materia de fideicomisos financieros, las Normas CNV establecen:",
+              "La prohibición de constituir fideicomisos unilaterales",
+              ["La obligación de que el fiduciario sea siempre una persona humana", "La exclusión de los valores representativos de deuda", "La libertad de emitir sin autorización de la CNV"],
+              "Normas CNV T.O. – Título V, Cap. IV, Sec. II"),
+            q("MOD6", "En el fideicomiso, el fiduciante es:",
+              "Quien transmite los bienes al fiduciario",
+              ["Quien administra el patrimonio fideicomitido", "Quien recibe los beneficios del fideicomiso", "Quien controla la oferta pública"],
+              "Código Civil y Comercial – Cap. 30 (Fideicomiso)"),
+            q("MOD6", "Un FCI de renta variable invierte principalmente en:",
+              "Acciones y otros valores de renta variable",
+              ["Plazos fijos y cuentas a la vista bancarias", "Bonos cupón cero emitidos por el Tesoro", "Cauciones bursátiles de muy corto plazo"],
+              "Guía de Idoneidad CNV – Módulo VI (Categorías de FCI)")
+            ,
+            // ----- preguntas adicionales para completar las 150 nuevas -----
+            q("MOD2", "Además de las Normas CNV, los sujetos obligados del mercado de capitales deben observar:",
+              "La Ley 25.246 y las resoluciones y comunicaciones de la UIF",
+              ["El Código Aduanero y las resoluciones generales de la AFIP", "La Ley de Defensa del Consumidor, de manera exclusiva", "Los reglamentos internos de cada Mercado, únicamente"],
+              "Normas CNV T.O. – Título XI, Sec. I, Art. 1"),
+            q("MOD4", "Con periodicidad anual, las emisoras del régimen de oferta pública deben presentar por la AIF:",
+              "La memoria del órgano de administración sobre la gestión del ejercicio",
+              ["El detalle diario de las órdenes cursadas por cada cliente", "Las declaraciones juradas personales de los inversores", "Los contratos de locación de las oficinas de la sociedad"],
+              "Normas CNV T.O. – Título IV, Cap. I, Sec. I, Art. 1"),
+            q("MOD4", "El ajuste por inflación de los estados financieros busca:",
+              "Expresar las cifras en moneda de poder adquisitivo homogéneo",
+              ["Incrementar artificialmente las ganancias de la empresa emisora", "Reemplazar el valor contable por la cotización bursátil", "Eliminar los pasivos en moneda extranjera de la empresa"],
+              "Normas CNV T.O. – Título IV, Cap. III, Art. 3 y Guía de Idoneidad, Módulo IV"),
+            q("MOD5", "Un cheque de pago diferido (CPD) es:",
+              "Una orden de pago librada contra cuenta corriente, con fecha de pago posterior",
+              ["Un bono emitido por el Tesoro Nacional con cupón fijo", "Una cuotaparte de un fondo común de inversión cerrado", "Un contrato de futuro sobre una divisa extranjera"],
+              "Guía de Idoneidad CNV – Módulo V (CPD / Pagaré / FCE)"),
+            q("MOD5", "Los márgenes de garantía en los contratos de futuros sirven para:",
+              "Cubrir el riesgo de incumplimiento de las posiciones abiertas",
+              ["Pagar la comisión de la Bolsa de Comercio por cada contrato", "Financiar la compra del activo subyacente en el mercado", "Reemplazar el pago de impuestos que debe el operador"],
+              "Guía de Idoneidad CNV – Módulo V (Operaciones garantizadas: mecanismos de garantías)"),
+            q("MOD6", "Los certificados de participación de un fideicomiso financiero otorgan:",
+              "Derechos sobre el remanente del patrimonio fideicomitido, tras pagar la deuda",
+              ["El cobro de un cupón fijo garantizado por el fiduciario", "La condición de acreedor privilegiado del propio fiduciario", "El derecho a votar en la asamblea de la Sociedad Gerente"],
+              "Normas CNV T.O. – Título V, Cap. IV, Sec. XIII (VRD y certificados de participación)"),
+            q("MOD6", "Los valores representativos de deuda (VRD) de un fideicomiso financiero otorgan:",
+              "Derecho al cobro de capital e intereses con cargo al patrimonio fideicomitido",
+              ["Derecho a los dividendos de la Sociedad Gerente del fondo", "La propiedad directa del patrimonio personal del fiduciario", "Un derecho de voto en la asamblea del Mercado autorizado"],
+              "Normas CNV T.O. – Título V, Cap. IV, Sec. XIII (VRD y certificados de participación)")
+        ];
+
+        // Se eliminan duplicados por texto de pregunta y se asigna un id único a cada una
+        const QUESTION_BANK = RAW_QUESTIONS
+            .filter((item, i, arr) => arr.findIndex(x => x.question === item.question) === i)
+            .map((item, i) => ({ id: i + 1, ...item }));
+
+        // VARIABLES DE ESTADO Y CONFIGURACIÓN DEL QUIZ
+        let activeQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let timerInterval = null;
+        let totalTimeSeconds = 0;
+        let remainingSeconds = 0;
+        let userAnswers = [];
+        
+        // ESTADO DEL GRÁFICO DE VELAS JAPONESAS
+        let candleHistory = []; // Registro de { isCorrect: boolean, priceOpen, priceClose, high, low }
+        let currentCandlePrice = 100; // Precio base inicial
+
+        // FUNCIÓN MEZCLADORA (Fisher-Yates)
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ACTUALIZAR CANTIDADES DISPONIBLES SEGÚN LOS MÓDULOS ELEGIDOS
+        function updateAvailability() {
+            const selected = Array.from(document.querySelectorAll('input[name="module"]:checked')).map(cb => cb.value);
+            const available = QUESTION_BANK.filter(item => selected.includes(item.module)).length;
+            const select = document.getElementById('question-count');
+            const previous = parseInt(select.value);
+
+            const options = [10, 20, 30, 40, 50, 60, 80, 100, 150, 200].filter(n => n < available).map(n => ({ value: n, label: `${n} Preguntas` }));
+            if (available > 0) options.push({ value: available, label: `Todas las disponibles (${available})` });
+
+            select.innerHTML = '';
+            options.forEach(o => {
+                const opt = document.createElement('option');
+                opt.value = o.value;
+                opt.textContent = o.label;
+                select.appendChild(opt);
+            });
+
+            const keep = options.find(o => o.value === previous) || options.find(o => o.value === 10) || options[options.length - 1];
+            if (keep) select.value = keep.value;
+
+            document.getElementById('availability-note').textContent = available > 0
+                ? `Preguntas disponibles en los módulos elegidos: ${available}. Cada pregunta aparece una sola vez por examen.`
+                : 'Selecciona al menos un módulo para ver las preguntas disponibles.';
+        }
+
+        document.querySelectorAll('input[name="module"]').forEach(cb => cb.addEventListener('change', updateAvailability));
+        updateAvailability();
+
+        // INICIAR SIMULACIÓN DE EXAMEN
+        function startQuiz() {
+            const selectedModules = Array.from(document.querySelectorAll('input[name="module"]:checked')).map(cb => cb.value);
+            if (selectedModules.length === 0) {
+                alert("Por favor, selecciona al menos un módulo normativo para evaluar.");
+                return;
+            }
+
+            const requestedCount = parseInt(document.getElementById('question-count').value);
+            const requestedMinutes = parseInt(document.getElementById('time-limit').value);
+
+            // Filtrar banco por módulos elegidos
+            let filteredBank = QUESTION_BANK.filter(q => selectedModules.includes(q.module));
+
+            if (filteredBank.length === 0) {
+                alert("No hay preguntas disponibles para los módulos seleccionados.");
+                return;
+            }
+
+            // Muestreo SIN repetición: nunca se piden más preguntas que las disponibles
+            const totalToAsk = Math.min(requestedCount, filteredBank.length);
+            activeQuestions = shuffleArray(filteredBank).slice(0, totalToAsk).map((sourceQ, i) => {
+                // Desordenar opciones conservando cuál es la correcta
+                const shuffledOptions = shuffleArray(sourceQ.options.map((opt, idx) => ({
+                    text: opt,
+                    isCorrect: idx === sourceQ.correctIndex
+                })));
+                return {
+                    uniqueId: i + 1,
+                    module: sourceQ.module,
+                    moduleName: sourceQ.moduleName,
+                    question: sourceQ.question,
+                    options: shuffledOptions.map(o => o.text),
+                    correctIndex: shuffledOptions.findIndex(o => o.isCorrect),
+                    source: sourceQ.source
+                };
+            });
+
+            // Inicializar estados
+            currentIndex = 0;
+            score = 0;
+            userAnswers = [];
+            candleHistory = [];
+            currentCandlePrice = 100;
+            totalTimeSeconds = requestedMinutes * 60;
+            remainingSeconds = totalTimeSeconds;
+
+            // Cambiar pantallas
+            document.getElementById('config-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            // Inicializar Gráfico de Velas e Iniciar Timer
+            updateCandleCounters();
+            drawCandleChart();
+            startTimer();
+
+            // Renderizar primera pregunta
+            renderQuestion();
+        }
+
+        // RELOJ DIGITAL DE CUENTA REGRESIVA
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                updateTimerDisplay();
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz(true); // Finalizar por tiempo agotado
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
+            const displayStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerEl = document.getElementById('digital-timer');
+            timerEl.innerText = displayStr;
+
+            if (remainingSeconds <= totalTimeSeconds * 0.2) {
+                timerEl.classList.remove('text-emerald-400');
+                timerEl.classList.add('text-rose-500', 'animate-pulse');
+            } else {
+                timerEl.classList.remove('text-rose-500', 'animate-pulse');
+                timerEl.classList.add('text-emerald-400');
+            }
+        }
+
+        // RENDERIZAR PREGUNTA ACTUAL
+        function renderQuestion() {
+            const q = activeQuestions[currentIndex];
+
+            // Actualizar indicativos
+            document.getElementById('current-q-num').innerText = currentIndex + 1;
+            document.getElementById('total-q-num').innerText = activeQuestions.length;
+            document.getElementById('question-module-badge').innerText = q.moduleName;
+            document.getElementById('question-text').innerText = q.question;
+
+            // Deshabilitar botón Siguiente hasta responder
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = true;
+            nextBtn.className = "px-6 py-3 bg-slate-800 text-slate-500 font-bold text-sm rounded-xl transition-all cursor-not-allowed";
+
+            // Renderizar Opciones de Respuesta
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((optText, i) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = "w-full text-left p-4 rounded-xl border border-slate-800 bg-slate-950/80 hover:border-emerald-500/60 text-slate-200 text-sm font-medium transition-all flex items-start space-x-3";
+                btn.onclick = () => selectOption(i);
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs font-bold flex-shrink-0 border border-slate-700">${String.fromCharCode(65 + i)}</span>
+                    <span class="flex-grow pt-0.5">${optText}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // SELECCIÓN DE OPCIÓN Y GENERACIÓN DE VELA JAPONESA
+        function selectOption(selectedIndex) {
+            const q = activeQuestions[currentIndex];
+            const isCorrect = selectedIndex === q.correctIndex;
+
+            // Registros de respuesta
+            userAnswers.push({
+                question: q.question,
+                selectedOption: q.options[selectedIndex],
+                correctOption: q.options[q.correctIndex],
+                isCorrect: isCorrect,
+                source: q.source
+            });
+
+            if (isCorrect) score++;
+
+            // AGREGAR VELA AL HISTORIAL DEL GRÁFICO (REQUERIMIENTO 2)
+            let openP = currentCandlePrice;
+            let closeP = isCorrect ? openP + (10 + Math.random() * 8) : openP - (10 + Math.random() * 8);
+            let highP = Math.max(openP, closeP) + (2 + Math.random() * 4);
+            let lowP = Math.min(openP, closeP) - (2 + Math.random() * 4);
+            currentCandlePrice = closeP;
+
+            candleHistory.push({
+                isCorrect: isCorrect,
+                open: openP,
+                close: closeP,
+                high: highP,
+                low: lowP
+            });
+
+            // Actualizar Canvas de Velas Japonesas y Contadores
+            drawCandleChart();
+            updateCandleCounters();
+
+            // Deshabilitar opciones e iluminar feedback
+            const optionsContainer = document.getElementById('options-container');
+            const buttons = optionsContainer.querySelectorAll('button');
+
+            buttons.forEach((btn, idx) => {
+                btn.onclick = null;
+                if (idx === q.correctIndex) {
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-500/10 text-emerald-300 text-sm font-semibold transition-all flex items-start space-x-3 shadow-lg shadow-emerald-500/10";
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-500/10 text-rose-300 text-sm font-semibold transition-all flex items-start space-x-3";
+                } else {
+                    btn.className = "w-full text-left p-4 rounded-xl border border-slate-900 bg-slate-950/40 text-slate-600 text-sm font-medium opacity-50 flex items-start space-x-3";
+                }
+            });
+
+            // Habilitar Botón Siguiente
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = false;
+            nextBtn.className = "px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-xl transition-all shadow-lg shadow-emerald-500/20 cursor-pointer";
+        }
+
+        // ACTUALIZAR CONTADORES DE VELAS VERDES / ROJAS
+        function updateCandleCounters() {
+            const corrects = candleHistory.filter(c => c.isCorrect).length;
+            const incorrects = candleHistory.filter(c => !c.isCorrect).length;
+            document.getElementById('candle-correct-count').innerText = corrects;
+            document.getElementById('candle-incorrect-count').innerText = incorrects;
+        }
+
+        // DIBUJAR GRÁFICO DE VELAS JAPONESAS EN CANVAS (HTML5 CANVAS 2D)
+        function drawCandleChart() {
+            const canvas = document.getElementById('candlestick-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Limpiar lienzo
+            ctx.clearRect(0, 0, width, height);
+
+            // Fondo del gráfico con rejilla ligera
+            ctx.fillStyle = "#0B1120";
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.strokeStyle = "rgba(30, 41, 59, 0.5)";
+            ctx.lineWidth = 1;
+            for (let y = 20; y < height; y += 30) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            if (candleHistory.length === 0) {
+                ctx.fillStyle = "#64748B";
+                ctx.font = "11px Inter, sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("Esperando respuestas para", width / 2, height / 2 - 8);
+                ctx.fillText("generar velas japonesas...", width / 2, height / 2 + 10);
+                return;
+            }
+
+            // Calcular escala del gráfico (mínimo y máximo del precio)
+            let allPrices = [];
+            candleHistory.forEach(c => allPrices.push(c.high, c.low));
+            let minP = Math.min(...allPrices) - 5;
+            let maxP = Math.max(...allPrices) + 5;
+            if (maxP === minP) { maxP += 10; minP -= 10; }
+
+            const marginX = 25;
+            const availableW = width - (marginX * 2);
+            const count = Math.max(activeQuestions.length, 10);
+            const candleSpacing = availableW / count;
+            const candleWidth = Math.max(candleSpacing * 0.6, 6);
+
+            function mapY(price) {
+                return height - 15 - ((price - minP) / (maxP - minP)) * (height - 30);
+            }
+
+            // Renderizar cada vela en la secuencia
+            candleHistory.forEach((c, i) => {
+                const x = marginX + (i * candleSpacing) + (candleSpacing / 2);
+                const openY = mapY(c.open);
+                const closeY = mapY(c.close);
+                const highY = mapY(c.high);
+                const lowY = mapY(c.low);
+
+                const isBull = c.isCorrect; // Verde (Bullish) = Respuesta Correcta | Roja (Bearish) = Incorrecta
+                const color = isBull ? "#10B981" : "#F43F5E";
+
+                // Dibujar mecha superior e inferior (wick)
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(x, highY);
+                ctx.lineTo(x, lowY);
+                ctx.stroke();
+
+                // Dibujar cuerpo de la vela (body)
+                const bodyTop = Math.min(openY, closeY);
+                const bodyHeight = Math.max(Math.abs(openY - closeY), 3); // Altura mínima visible
+
+                ctx.fillStyle = color;
+                ctx.fillRect(x - (candleWidth / 2), bodyTop, candleWidth, bodyHeight);
+            });
+        }
+
+        // AVANZAR PREGUNTA O CONCLUIR EXAMEN
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < activeQuestions.length) {
+                renderQuestion();
+            } else {
+                finishQuiz(false);
+            }
+        }
+
+        // FINALIZAR EXAMEN Y DESPLEGAR RESULTADOS
+        function finishQuiz(byTimeout = false) {
+            clearInterval(timerInterval);
+
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            const totalQ = activeQuestions.length;
+            const percentage = Math.round((score / totalQ) * 100);
+            const elapsedTimeSeconds = totalTimeSeconds - remainingSeconds;
+            const elapsedMin = Math.floor(elapsedTimeSeconds / 60);
+            const elapsedSec = elapsedTimeSeconds % 60;
+
+            document.getElementById('score-text').innerText = `${score} / ${totalQ}`;
+            document.getElementById('percentage-text').innerText = `${percentage}%`;
+            document.getElementById('elapsed-time-text').innerText = `${String(elapsedMin).padStart(2, '0')}:${String(elapsedSec).padStart(2, '0')}`;
+
+            const badgeIcon = document.getElementById('result-badge-icon');
+            const resultIcon = document.getElementById('result-icon');
+            const titleEl = document.getElementById('result-title');
+            const subtitleEl = document.getElementById('result-subtitle');
+
+            // Exigencia Aprobatoria CNV: >= 70%
+            if (percentage >= 70) {
+                badgeIcon.className = "w-20 h-20 rounded-full mx-auto flex items-center justify-center text-3xl mb-4 bg-emerald-500/20 border border-emerald-500 text-emerald-400";
+                resultIcon.className = "fa-solid fa-trophy";
+                titleEl.innerText = "¡Examen Aprobado!";
+                subtitleEl.innerText = byTimeout ? "El tiempo ha expirado. Has alcanzado el porcentaje normativo de idoneidad." : "¡Felicitaciones! Has acreditado la idoneidad requerida por la CNV.";
+            } else {
+                badgeIcon.className = "w-20 h-20 rounded-full mx-auto flex items-center justify-center text-3xl mb-4 bg-rose-500/20 border border-rose-500 text-rose-400";
+                resultIcon.className = "fa-solid fa-circle-xmark";
+                titleEl.innerText = "Examen No Aprobado";
+                subtitleEl.innerText = byTimeout ? "El tiempo expiró sin alcanzar la puntuación mínima del 70%." : "No has alcanzado el 70% mínimo regulatorio requerido.";
+            }
+
+            // Renderizar Lista de Errores con Fuentes Legales
+            const incorrectContainer = document.getElementById('incorrect-list');
+            incorrectContainer.innerHTML = '';
+
+            const incorrectAnswers = userAnswers.filter(a => !a.isCorrect);
+
+            if (incorrectAnswers.length === 0) {
+                incorrectContainer.innerHTML = `
+                    <div class="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-sm font-medium text-center">
+                        <i class="fa-solid fa-star mr-2"></i>¡Puntaje Perfecto! Respondiste todas las preguntas de forma correcta.
+                    </div>
+                `;
+            } else {
+                incorrectAnswers.forEach((ans, idx) => {
+                    const item = document.createElement('div');
+                    item.className = "p-4 rounded-xl border border-slate-800 bg-slate-950/80 space-y-2 text-sm";
+                    item.innerHTML = `
+                        <p class="font-bold text-slate-200">${idx + 1}. ${ans.question}</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                            <div class="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300">
+                                <span class="font-bold block mb-0.5">Tu Respuesta:</span>
+                                ${ans.selectedOption || "Sin responder"}
+                            </div>
+                            <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">
+                                <span class="font-bold block mb-0.5">Respuesta Correcta:</span>
+                                ${ans.correctOption}
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-400 font-mono pt-1">
+                            <span class="text-emerald-400 font-semibold">Fuente / Marco Legal:</span> ${ans.source}
+                        </div>
+                    `;
+                    incorrectContainer.appendChild(item);
+                });
+            }
+        }
+
+        // REINICIAR AL MENÚ PRINCIPAL
+        function resetQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('config-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

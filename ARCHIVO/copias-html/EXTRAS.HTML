@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos y Contenido Extra | Mercado de Capitales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glass-hover: rgba(59, 130, 246, 0.4);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* Marquesina Superior de Navegación */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(9, 13, 22, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-links a.quiz-btn {
+            background: var(--accent-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .nav-links a.quiz-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Contenedor Principal */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Secciones */
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-main);
+        }
+
+        .section-title i {
+            color: var(--accent-primary);
+        }
+
+        /* Grid de Tarjetas con Glassmorphism */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-glass);
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-gradient);
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-glass-hover);
+            box-shadow: 0 12px 30px -10px rgba(59, 130, 246, 0.15);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-tag {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        a.card {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .card-action {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.25rem;
+            color: #60a5fa;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        a.card:hover .card-action {
+            color: #fff;
+        }
+
+        /* Enlaces Institucionales */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .institutional-link {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .institutional-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-glass-hover);
+            transform: translateX(4px);
+        }
+
+        .institutional-link .info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #fff;
+        }
+
+        .institutional-link .info span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .institutional-link i {
+            color: var(--accent-primary);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .institutional-link:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-glass);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            background: rgba(9, 13, 22, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .nav-links {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .main-container {
+                padding: 2rem 1rem;
+            }
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Marquesina Superior de Navegación -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-chart-line"></i> MCA • Finanzas y Normativa
+        </div>
+        <ul class="nav-links">
+            <li><a href="Extras.html" class="active">Extras</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-container">
+        
+        <div class="page-header">
+            <h1>Recursos y Contenido Extra</h1>
+            <p>Herramientas analíticas avanzadas, conceptos normativos y enlaces institucionales clave para profesionales del mercado de capitales.</p>
+        </div>
+
+        <!-- Tarjetas de Estudio -->
+        <section>
+            <div class="grid-cards">
+                
+                <a class="card" href="EXTRAS/Arquitectura%20de%20Fondos%20Comunes.pptx.pdf.pptx" target="_blank" rel="noopener">
+                    <h3><i class="fa-solid fa-diagram-project"></i> Arquitectura de Fondos Comunes</h3>
+                    <p>Estructura operativa y legal que separa el patrimonio del fondo del patrimonio de la Sociedad Gerente y de la Sociedad Depositaria, garantizando la protección de los cuotapartistas.</p>
+                    <span class="card-tag">Estructura FCI</span>
+                    <span class="card-action"><i class="fa-solid fa-file-powerpoint"></i> Abrir presentación</span>
+                </a>
+
+                <a class="card" href="EXTRAS/C%C3%B3mo%20protegen%20las%20OPAs%20al%20peque%C3%B1o%20inversor.m4a" target="_blank" rel="noopener">
+                    <h3><i class="fa-solid fa-user-shield"></i> Cómo protegen las OPAs al pequeño inversor</h3>
+                    <p>Mediante el principio de igualdad de trato, exigiendo que quien adquiere el control societario formule una oferta pública de adquisición extensiva a todos los accionistas minoritarios al mismo precio.</p>
+                    <span class="card-tag">Protección al Inversor</span>
+                    <span class="card-action"><i class="fa-solid fa-headphones"></i> Escuchar podcast</span>
+                </a>
+
+                <a class="card" href="EXTRAS/Ecosistema%20de%20Responsabilidad%20PLAFT.pptx" target="_blank" rel="noopener">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Ecosistema de Responsabilidad PLAFT</h3>
+                    <p>Conjunto de políticas, procedimientos y controles internos obligatorios para los sujetos obligados del mercado orientados a prevenir el lavado de activos y la financiación del terrorismo.</p>
+                    <span class="card-tag">Cumplimiento Normativo</span>
+                    <span class="card-action"><i class="fa-solid fa-file-powerpoint"></i> Abrir presentación</span>
+                </a>
+
+                <a class="card" href="EXTRAS/Ley%2026.831.m4a" target="_blank" rel="noopener">
+                    <h3><i class="fa-solid fa-scale-balanced"></i> Ley 26.831</h3>
+                    <p>Ley de Mercado de Capitales de Argentina, sancionada en 2012, que reformó el marco regulatorio, fortaleciendo el rol de la CNV y modernizando la infraestructura de negociación.</p>
+                    <span class="card-tag">Marco Legal</span>
+                    <span class="card-action"><i class="fa-solid fa-headphones"></i> Escuchar podcast</span>
+                </a>
+
+                <a class="card" href="EXTRAS/Reglas%20para%20tomar%20el%20control%20de%20empresas.m4a" target="_blank" rel="noopener">
+                    <h3><i class="fa-solid fa-building-flag"></i> Reglas para tomar el control de empresas</h3>
+                    <p>Normas de la CNV que regulan las tomas de control societario (OPAs obligatorias), garantizando transparencia, información pública oportuna y equidad para todos los inversores.</p>
+                    <span class="card-tag">Gobierno Corporativo</span>
+                    <span class="card-action"><i class="fa-solid fa-headphones"></i> Escuchar podcast</span>
+                </a>
+
+                <a class="card" href="EXTRAS/Regulaci%C3%B3n%20del%20mercado%20de%20capitales%20argentino.m4a" target="_blank" rel="noopener">
+                    <h3><i class="fa-solid fa-gavel"></i> Regulación del mercado de capitales argentino</h3>
+                    <p>Sistema normativo encabezado por la CNV que supervisa la transparencia, la oferta pública de valores negociables y la integridad de los mercados autorizados.</p>
+                    <span class="card-tag">Supervisión CNV</span>
+                    <span class="card-action"><i class="fa-solid fa-headphones"></i> Escuchar podcast</span>
+                </a>
+
+                <a class="card" href="EXTRAS/Resol.%2078%20UIF.mp4" target="_blank" rel="noopener">
+                    <h3><i class="fa-solid fa-file-contract"></i> Resol. 78 UIF</h3>
+                    <p>Normativa de la Unidad de Información Financiera que detalla los lineamientos y obligaciones específicas en materia de prevención de lavado de activos para los agentes del mercado de capitales.</p>
+                    <span class="card-tag">Normativa UIF</span>
+                    <span class="card-action"><i class="fa-solid fa-circle-play"></i> Ver video</span>
+                </a>
+
+                <a class="card" href="EXTRAS/Valen%20los%20balances%20o%20manda%20el%20mercado.m4a" target="_blank" rel="noopener">
+                    <h3><i class="fa-solid fa-chart-pie"></i> Valen los balances o manda el mercado</h3>
+                    <p>Dilema de valoración donde los estados contables (balances) reflejan la situación histórica y formal de la empresa, mientras que el precio de mercado incorpora expectativas futuras, flujos y psicología de los inversores.</p>
+                    <span class="card-tag">Análisis Financiero</span>
+                    <span class="card-action"><i class="fa-solid fa-headphones"></i> Escuchar podcast</span>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- Enlaces Institucionales -->
+        <section>
+            <h2 class="section-title"><i class="fa-solid fa-globe"></i> Enlaces Institucionales</h2>
+            <div class="links-grid">
+                <a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener" class="institutional-link">
+                    <div class="info">
+                        <h4>Comisión Nacional de Valores (CNV)</h4>
+                        <span>Organismo regulador y fiscalizador</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+                <a href="https://www.byma.com.ar" target="_blank" rel="noopener" class="institutional-link">
+                    <div class="info">
+                        <h4>BYMA (Bolsas y Mercados Argentinos)</h4>
+                        <span>Mercado líder de negociación</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+                <a href="https://www.bcra.gob.ar" target="_blank" rel="noopener" class="institutional-link">
+                    <div class="info">
+                        <h4>Banco Central de la República Argentina</h4>
+                        <span>Política monetaria y regulaciones</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 MCA • Todos los derechos reservados. Estándares normativos y financieros actualizados.</p>
+    </footer>
+
+</body>
+</html>

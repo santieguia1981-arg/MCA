@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marco Normativo - Mercado de Capitales</title>
+    <!-- Fuentes y CDN de Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        :root {
+            --bg: #070B14;
+            --panel: #0B1120;
+            --card: #161F33;
+            --ink: #F8FAFC;
+            --muted: #9CA3AF;
+            --line: #1E293B;
+            --accent: #10B981;
+            --neon: #00FF9D;
+            --blue: #0A84FF;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--ink);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Encabezado / Navegación Superior -->
+    <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 backdrop-blur-md z-40 px-6 py-4">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">⚖️</span>
+                <div>
+                    <h1 class="text-lg font-bold text-white leading-tight">Marco Normativo</h1>
+                    <p class="text-xs text-emerald-400 font-semibold tracking-wide">EXAMEN DE IDONEIDAD - CNV</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-5xl mx-auto px-4 py-10 flex-grow w-full">
+        
+        <!-- Hero Intro -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden shadow-xl">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <span class="text-xs font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/50">Compendio Oficial</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-4 mb-3">Tabla de Contenido: Los VI Módulos</h2>
+            <p class="text-slate-400 text-sm sm:text-base max-w-3xl leading-relaxed">
+                Centro de acceso oficial a los marcos normativos, temarios detallados y bibliografía de referencia de los 6 módulos correspondientes al Examen de Idoneidad en el Mercado de Capitales de la Comisión Nacional de Valores (CNV).
+            </p>
+        </div>
+
+        <!-- Módulos con Desplegables Interactivos (<details>) -->
+        <div class="space-y-4">
+
+            <!-- MÓDULO I -->
+            <details class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 group">
+                <summary class="flex items-center justify-between p-6 cursor-pointer select-none hover:bg-slate-800/50">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xl font-extrabold px-3 py-2 bg-emerald-950/50 text-emerald-400 border border-emerald-800/40 rounded-xl">I</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">Módulo I: Marco Normativo, Emisoras y Régimen Sancionatorio</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Ley 26.831, CNV, Oferta Pública, OPA, PyME y Procedimiento Sumarial.</p>
+                        </div>
+                    </div>
+                    <span class="text-slate-400 group-open:rotate-180 transition-transform duration-300 text-sm font-bold">▼</span>
+                </summary>
+                <div class="px-6 pb-6 pt-2 border-t border-slate-800/80 space-y-6">
+                    <!-- a) Temario -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">a) Temario del Módulo</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            El marco normativo del mercado de capitales. Emisoras. Régimen sancionatorio. OPA. Oferta Pública. Objetivos, competencias y facultades de la CNV. Definiciones. Secreto. Procedimiento sancionatorio. Tribunal arbitral. Funciones y obligaciones de las entidades. Emisoras. Concepto. Requisitos. Obligaciones. Asambleas. Prospecto. Colocación de valores. Inversores Institucionales y calificados. Oferta Irregular. La OPA obligatoria. Principios Generales. Deberes. Sanciones. Régimen de participaciones residuales (DUVA). Retiro del régimen de OP. Pyme. Definición.
+                        </p>
+                    </div>
+                    <!-- b) Bibliografía -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">b) Bibliografía y Fuentes Oficiales</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" class="text-blue-400 hover:underline">Ley 26.831 de Mercado de Capitales</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" class="text-blue-400 hover:underline">Normas CNV (N.T. 2013 y mod.) – Títulos I, II, III, IV, V, VI, XVI</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/61791/texact.htm" target="_blank" class="text-blue-400 hover:underline">Código Civil y Comercial de la Nación – Artículo 146</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/25000-29999/25553/texact.htm" target="_blank" class="text-blue-400 hover:underline">Ley 19.550 de Sociedades Comerciales – Artículos 280, 255 y 269</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/408/norma.htm" target="_blank" class="text-blue-400 hover:underline">Ley 23.576 de Obligaciones Negociables</a></li>
+                            <li>Decreto 1087/1993 y modificatorios</li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/422/texact.htm" target="_blank" class="text-blue-400 hover:underline">Ley 24.467 de Pequeña y Mediana Empresa</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+
+            <!-- MÓDULO II -->
+            <details class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 group">
+                <summary class="flex items-center justify-between p-6 cursor-pointer select-none hover:bg-slate-800/50">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xl font-extrabold px-3 py-2 bg-blue-950/50 text-blue-400 border border-blue-800/40 rounded-xl">II</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">Módulo II: Prevención del Lavado de Activos y Financiamiento del Terrorismo</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">PLAFT, UIF, Sujetos Obligados, Etapas y Normativa Aplicable.</p>
+                        </div>
+                    </div>
+                    <span class="text-slate-400 group-open:rotate-180 transition-transform duration-300 text-sm font-bold">▼</span>
+                </summary>
+                <div class="px-6 pb-6 pt-2 border-t border-slate-800/80 space-y-6">
+                    <!-- a) Temario -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">a) Temario del Módulo</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Prevención del lavado de activos y del financiamiento del terrorismo. Concepto y características generales. Actividades delictivas. Objetivo (simulación de licitud). Normas de Prevención del Lavado de Dinero. Normativa Aplicable (CNV – UIF). Etapas Básicas (colocación – estratificación – integración). Diferencias entre Lavado de Activos y Financiamiento del Terrorismo. Sujetos Obligados UIF – CNV. Autoridades de Supervisión. Autoridades de Aplicación de la Ley.
+                        </p>
+                    </div>
+                    <!-- b) Bibliografía -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">b) Bibliografía y Fuentes Oficiales</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                            <li><a href="https://www.fatf-gafi.org/" target="_blank" class="text-blue-400 hover:underline">Las 40 Recomendaciones del FATF-GAFI</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/62758/texact.htm" target="_blank" class="text-blue-400 hover:underline">Ley 25.246 de Lavado de Activo de Origen Delictivo - Modificación Código Penal</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" class="text-blue-400 hover:underline">Ley 26.831 de Mercado de Capitales</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" class="text-blue-400 hover:underline">Normas CNV (N.T. 2013 y mod.) – Título XI</a></li>
+                            <li>Decreto 918/2012</li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" class="text-blue-400 hover:underline">Resolución UIF 29/2013: Obligación de Reportar Hechos u Operaciones Sospechosas</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" class="text-blue-400 hover:underline">Resolución UIF 3/2014: Reporte de Registración y cumplimiento por parte de los sujetos obligados</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" class="text-blue-400 hover:underline">Resolución UIF 72/2023: Reglamentación del procedimiento de supervisión del cumplimiento de la normativa de la UIF</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" class="text-blue-400 hover:underline">Resolución UIF 22/2011: Comisión Nacional de Valores - Sujetos Obligados</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" class="text-blue-400 hover:underline">Resolución UIF 78/2023: Mercado de Capitales</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" class="text-blue-400 hover:underline">Resolución UIF 56/2024: Plazos para la realización de ROS</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" class="text-blue-400 hover:underline">Resolución UIF 192/2024: PEPs</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/395000-399999/396654/norma.htm" target="_blank" class="text-blue-400 hover:underline">Ley 27.739 – Modificaciones al Código Penal</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+
+            <!-- MÓDULO III -->
+            <details class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 group">
+                <summary class="flex items-center justify-between p-6 cursor-pointer select-none hover:bg-slate-800/50">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xl font-extrabold px-3 py-2 bg-amber-950/50 text-amber-400 border border-amber-800/40 rounded-xl">III</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">Módulo III: Transparencia, Gobierno Corporativo y Atención al Inversor</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Régimen Informativo, Denuncias, Reclamos y Código de Conducta.</p>
+                        </div>
+                    </div>
+                    <span class="text-slate-400 group-open:rotate-180 transition-transform duration-300 text-sm font-bold">▼</span>
+                </summary>
+                <div class="px-6 pb-6 pt-2 border-t border-slate-800/80 space-y-6">
+                    <!-- a) Temario -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">a) Temario del Módulo</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Transparencia. Procedimiento de denuncias, reclamos y consultas. Régimen Informativo ocasional y periódico. Gobierno Corporativo. Inversores. Transparencia. Ámbito de aplicación. Obligaciones de los participantes. Régimen informativo ocasional y periódico. Gobierno Corporativo. Conductas contrarias a la transparencia en el ámbito de la oferta pública. Procedimiento aplicable ante incumplimiento. Denuncias. Concepto. Recepción y Tratamiento. Cómo efectuarlas. Dónde dirigirlas. Reclamos y Consultas. Definición. Cómo efectuarlos. Dónde dirigirlos. Código de conducta profesional. Obligaciones con los clientes. Obligaciones con los empleadores. Responsable de relaciones con el Público Inversor. Oficina de Atención al Inversor.
+                        </p>
+                    </div>
+                    <!-- b) Bibliografía -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">b) Bibliografía y Fuentes Oficiales</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" class="text-blue-400 hover:underline">Normas CNV (N.T. 2013 y mod.) – Títulos II, IV, VII, XII, XIII (Cap. I) y XVI</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" class="text-blue-400 hover:underline">Ley 26.831 de Mercado de Capitales</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/61791/texact.htm" target="_blank" class="text-blue-400 hover:underline">Ley 19.550 de Sociedades Comerciales – Conflicto de Interés</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+
+            <!-- MÓDULO IV -->
+            <details class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 group">
+                <summary class="flex items-center justify-between p-6 cursor-pointer select-none hover:bg-slate-800/50">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xl font-extrabold px-3 py-2 bg-purple-950/50 text-purple-400 border border-purple-800/40 rounded-xl">IV</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">Módulo IV: Análisis de Inversiones, Contabilidad y NIIF</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">TIR, VAN, Renta Fija/Variable, Normas Contables y Auditoría.</p>
+                        </div>
+                    </div>
+                    <span class="text-slate-400 group-open:rotate-180 transition-transform duration-300 text-sm font-bold">▼</span>
+                </summary>
+                <div class="px-6 pb-6 pt-2 border-t border-slate-800/80 space-y-6">
+                    <!-- a) Temario -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">a) Temario del Módulo</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Los parámetros de análisis de alternativas de inversión (ej. TIR, VAN). Normas de contabilidad internacionales y locales (diferencias entre valor histórico y corriente). NIIF. Normas de auditoría internacionales y locales. Características generales de la Renta Fija. Condiciones de Emisión. Análisis y valuación de la Renta Fija. Valuación de Bonos. VAN – TIR. Riesgos Asociados (de precio, de reinversión, de crédito, de liquidez de tipo de cambio). Características generales de la Renta Variable. Estructura del Mercado de Capitales Argentino. Organigrama. Instrumentos de Renta Variable (Acciones): (1) Análisis fundamental. Formación de precios. Herramientas de análisis de mercados. Componentes de la oferta y la demanda. (2) Análisis técnico. Psicología del inversor. Análisis técnico como herramienta en la toma de decisión. Identificación de tendencias del mercado. Construcción de gráficos. (3) Índices-Ratios (liquidez, endeudamiento, rentabilidad, PER) (4) Valuación de futuros. Modelos cost of carry. (5) Modelos de valuación de opciones. Cálculo de las volatilidades. NIIF: Introducción a las Normas Contables Internacionales. Su evolución. Principales diferencias con las Normas Argentinas. Cuestiones de exposición. Unidad de medida. Medición, reconocimiento de resultados. Alcance del control societario que ejerce la Comisión Nacional de Valores (“CNV”): Personas jurídicas que se encuentran bajo control societario de la CNV. Fiscalización societaria al momento de emisión de obligaciones negociables mediante oferta pública. Órganos societarios que requieren publicidad mediante inscripción registral. Reformas de estatuto por cambio de denominación social. Objeto social y capital social de sociedades que se encuentran dentro del régimen de oferta pública. Registro de acciones de sociedades que se encuentran dentro del régimen de oferta pública. Domicilio y sede social inscripta. Diferencias entre ambos conceptos. Asambleas de sociedades que se encuentran dentro del régimen de oferta pública. Depósito de las acciones de los accionistas que desean concurrir. Registro de Auditores Externos y Registro de Asociaciones de Profesionales Auditores. Inscripción. Actualización de datos registrales. Exclusiones. Cancelaciones. Publicación de los Registros. Auditores Externos: Designaciones, independencia, informe de auditoría y tipos de opinión, y sistema de control de calidad de las auditorías externas. Nuevo Informe Extenso de Auditoría: Objetivos del nuevo informe, características, aplicación y vigencia. Información contable periódica a presentar por las Sociedades Emisoras en el Régimen de Oferta Pública (Acciones, Obligaciones Negociables, Valores de Corto Plazo, Pymes). Plazos y requisitos formales de presentación de la información contable. Informes de Auditoría. Requisitos. Entidades que presentan estados financieros conforme NIIF y entidades que presentan conforme Normas Contables Profesionales Argentinas. Concepto activo, pasivo, patrimonio neto y valor libro. Indicadores de liquidez, solvencia, rentabilidad e inmovilización de capital.
+                        </p>
+                    </div>
+                    <!-- b) Bibliografía -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">b) Bibliografía y Fuentes Oficiales</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" class="text-blue-400 hover:underline">Ley 26.831 de Mercado de Capitales – Art. 19; Título III, Capítulo V, Sección III (artículos 104 a 108)</a></li>
+                            <li>Ley 22.169: C.N.V. - Sociedades por Acciones – Funciones de la Comisión Nacional de Valores</li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/408/norma.htm" target="_blank" class="text-blue-400 hover:underline">Ley 23.576 de Obligaciones Negociables – Art. 10</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/61791/texact.htm" target="_blank" class="text-blue-400 hover:underline">Ley 19.550 de Sociedades Comerciales – Arts. 5º, 11, 60, 188, 208, 213, 235 y 238</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" class="text-blue-400 hover:underline">Normas CNV (N.T. 2013 y mod.) – Título II: Capítulos II (Sección II), III (Secciones VI, VII y VII) y IV; y Título IV: Capítulo I (Secciones I y II) y Capítulo III</a></li>
+                            <li><a href="https://www.facpce.org.ar/" target="_blank" class="text-blue-400 hover:underline">Resolución Técnica N° 37 - Normas de Auditoría de la Federación Argentina de Consejos Profesionales de Ciencias Económicas</a></li>
+                            <li>Régimen Informativo Periódico y Nuevo Informe Extenso de Auditoría - KAM</li>
+                            <li>“Mercado de Capitales: Manual para no especialistas” del Instituto Argentino de Mercado de Capitales – Capítulos 6, 12 y 13</li>
+                            <li>“Manual de estudio de contratos de futuros y opciones” del Mercado a Término de Buenos Aires</li>
+                            <li>“Operaciones con Futuros” de ROFEX</li>
+                            <li>“Estrategias con Futuros y Opciones” de ROFEX</li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+
+            <!-- MÓDULO V -->
+            <details class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 group">
+                <summary class="flex items-center justify-between p-6 cursor-pointer select-none hover:bg-slate-800/50">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xl font-extrabold px-3 py-2 bg-rose-950/50 text-rose-400 border border-rose-800/40 rounded-xl">V</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-rose-400 transition-colors">Módulo V: Agentes, Instrumentos, Liquidación y Compensación</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Categorías de Agentes, Derivados, Cauciones, Pases y Garantías.</p>
+                        </div>
+                    </div>
+                    <span class="text-slate-400 group-open:rotate-180 transition-transform duration-300 text-sm font-bold">▼</span>
+                </summary>
+                <div class="px-6 pb-6 pt-2 border-t border-slate-800/80 space-y-6">
+                    <!-- a) Temario -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">a) Temario del Módulo</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Agentes. Categorías. Funciones. Limitaciones. Responsabilidades. Los instrumentos que se utilizan en el mercado de capitales. Distintas operaciones. Liquidación y Compensación. Garantías. Agentes e instituciones del mercado de capitales (Mercados y Cámaras compensadoras. Agentes de negociación. Agentes de Liquidación y compensación. Agentes productores. Agentes de corretaje de valores negociables. Agentes de depósito colectivo. Agentes de custodia, registro y pago. Agente Asesor Global de Inversión. Agentes de calificación de riesgo. Plataformas de Financiamiento Colectivo). Valores negociables. Clasificación. Acciones. Tipos. Características. Política de dividendos. Precio de las Acciones. Títulos Públicos. Características. Derivados. Definición. Riesgo y volatilidad. Operaciones a plazo, opciones, swaps. Futuros y Forwards. (Contratos de opciones. Conceptos, coberturas, especulación. Concepto de prima. Estrategias de cobertura y especulación. Armado de spreads utilizando call y put. Swaps: concepto. Swaps de tasa de interés. Swaps de divisas, commodity, equity swaps. Contrato de futuros. Coberturas desde el punto de vista comprador y vendedor. Distintos tipos. Obligaciones Negociables. CPD/Pagaré/FCE. Tipos de operaciones: colocación primaria. Negociación secundaria. Prioridad precio tiempo. Otras operaciones. Operaciones garantizadas: liquidación, compensación y mecanismos de garantías).
+                        </p>
+                    </div>
+                    <!-- b) Bibliografía -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">b) Bibliografía y Fuentes Oficiales</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" class="text-blue-400 hover:underline">Ley 26.831 de Mercado de Capitales – Arts. 2, 99, 100, 112, 115, 120 y Capítulos I y II del Título II</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/300000-304999/303350/norma.htm" target="_blank" class="text-blue-400 hover:underline">Ley 27.440 de Financiamiento Productivo – Arts. 1 a 25 y del 195 a 199</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" class="text-blue-400 hover:underline">Normas CNV (N.T. 2013 y mod.) – Títulos VI a IX y XIV</a></li>
+                            <li>“Mercado de Capitales: Manual para no especialistas” del Instituto Argentino de Mercado de Capitales – Capítulo 7</li>
+                            <li>“Manual de estudio de contratos de futuros y opciones” del Mercado a Término de Buenos Aires</li>
+                            <li>“Operaciones con Futuros” de ROFEX</li>
+                            <li>“Estrategias con Futuros y Opciones” de ROFEX</li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+
+            <!-- MÓDULO VI -->
+            <details class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 group">
+                <summary class="flex items-center justify-between p-6 cursor-pointer select-none hover:bg-slate-800/50">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xl font-extrabold px-3 py-2 bg-cyan-950/50 text-cyan-400 border border-cyan-800/40 rounded-xl">VI</span>
+                        <div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">Módulo VI: Productos de Inversión Colectiva (FCI y Fideicomisos)</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Fondos Comunes de Inversión Abiertos/Cerrados y Fideicomisos Financieros.</p>
+                        </div>
+                    </div>
+                    <span class="text-slate-400 group-open:rotate-180 transition-transform duration-300 text-sm font-bold">▼</span>
+                </summary>
+                <div class="px-6 pb-6 pt-2 border-t border-slate-800/80 space-y-6">
+                    <!-- a) Temario -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">a) Temario del Módulo</h4>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Productos de Inversión Colectiva. Fondos Comunes de Inversión. Categorías. Funciones. Limitaciones. Los instrumentos que se utilizan en el mercado de capitales. Distintas operaciones. Fideicomisos Financieros. FCI. Definición y características generales de los FCI. Marco normativo. Diversas clases. Funcionamiento. Limitaciones. Suscripciones – rescates. Reglamento de Gestión y/o prospectos. Ventajas y desventajas de los FCI. Fideicomisos Financieros. Distintos tipos. Principales características.
+                        </p>
+                    </div>
+                    <!-- b) Bibliografía -->
+                    <div class="bg-slate-950/40 border border-slate-800/60 rounded-xl p-4">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">b) Bibliografía y Fuentes Oficiales</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/432/norma.htm" target="_blank" class="text-blue-400 hover:underline">Ley 24.083 de Fondos Comunes de Inversión</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" class="text-blue-400 hover:underline">Normas CNV (N.T. 2013 y mod.) – Título V, Capítulos I al X; Título II, Capítulo IX; y Título VI, Capítulo IV</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/235000-239999/235975/texact.htm" target="_blank" class="text-blue-400 hover:underline">Código Civil y Comercial de la Nación – Capítulo 30 y concordantes</a></li>
+                            <li>Ley 24.441 de Fideicomisos – parte no derogada</li>
+                            <li>“Mercado de Capitales: Manual para no especialistas” del Instituto Argentino de Mercado de Capitales – Capítulo 6</li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+
+        </div>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        <p class="max-w-4xl mx-auto px-4">
+            Contenido oficial basado estrictamente en la Guía de Estudio de Idoneidad de la Comisión Nacional de Valores (CNV). 
+            Todas las fuentes bibliográficas conservan sus hipervínculos de acceso a las páginas oficiales.
+        </p>
+    </footer>
+
+</body>
+</html>

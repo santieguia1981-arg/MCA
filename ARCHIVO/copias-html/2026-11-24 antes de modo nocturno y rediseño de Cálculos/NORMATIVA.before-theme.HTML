@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Seguridad: CSP (solo recursos propios, sin conexiones externas), sin referrer, forzar HTTPS fuera de localhost -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; font-src 'self' data: file:; media-src 'self' file:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="description" content="Marco normativo del Mercado de Capitales: los 6 módulos de la guía de idoneidad CNV con temarios y bibliografía oficial.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="Marco Normativo - Mercado de Capitales">
+    <meta property="og:description" content="Marco normativo del Mercado de Capitales: los 6 módulos de la guía de idoneidad CNV con temarios y bibliografía oficial.">
+    <link rel="icon" type="image/png" href="img/logo-mca.png?v=2">
+    <script src="js/ui.js" defer></script>
+    <script>if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) location.replace('https:' + location.href.substring(5));</script>
+    <title>Marco Normativo - Mercado de Capitales</title>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/mca.css">
+    <style>
+        body { display: flex; flex-direction: column; }
+        .n-index { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1.5rem; }
+        .n-chip { padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); background: color-mix(in srgb, var(--c) 10%, transparent); color: var(--c); font-size: 0.76rem; font-weight: 700; text-decoration: none; transition: transform 0.2s ease, background 0.2s ease; }
+        .n-chip:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--c) 20%, transparent); }
+
+        .n-list { display: grid; gap: 0.9rem; }
+        .n-mod { position: relative; border-radius: var(--r-lg); border: 1px solid var(--line); background: linear-gradient(180deg, rgba(21, 33, 58, 0.66), rgba(12, 19, 34, 0.88)); box-shadow: var(--shadow); overflow: hidden; transition: border-color 0.25s ease, box-shadow 0.25s ease; scroll-margin-top: 90px; }
+        .n-mod::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--c); opacity: 0.8; }
+        .n-mod:hover { border-color: color-mix(in srgb, var(--c) 45%, transparent); }
+        .n-mod[open] { border-color: color-mix(in srgb, var(--c) 55%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--c) 30%, transparent), 0 18px 44px -20px color-mix(in srgb, var(--c) 40%, transparent); }
+        .n-mod summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 1.1rem; padding: 1.25rem 1.5rem 1.25rem 1.7rem; }
+        .n-mod summary::-webkit-details-marker { display: none; }
+        .n-num { flex: none; min-width: 52px; height: 52px; padding: 0 0.6rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 14px; font-family: var(--mono); font-size: 1.3rem; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); }
+        .n-sum { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+        .n-sum strong { font-size: 1.02rem; font-weight: 700; color: #fff; line-height: 1.3; }
+        .n-sum small { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
+        .n-chev { flex: none; width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line-2); transition: transform 0.25s ease, border-color 0.2s ease; }
+        .n-chev::before { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--ink-2); border-bottom: 2px solid var(--ink-2); transform: rotate(45deg) translate(-1px, -1px); }
+        .n-mod[open] .n-chev { transform: rotate(180deg); border-color: var(--c); }
+        .n-body { display: grid; gap: 1rem; padding: 0 1.5rem 1.5rem 1.7rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+        .n-block { padding: 1.1rem 1.25rem; border-radius: var(--r-md); background: rgba(6, 10, 18, 0.55); border: 1px solid var(--line); }
+        .n-block h4 { margin: 0 0 0.6rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c); }
+        .n-block p { margin: 0; color: var(--ink-2); font-size: 0.9rem; line-height: 1.75; }
+        .n-block ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.45rem; color: var(--ink-2); font-size: 0.88rem; }
+        .n-block li::marker { color: var(--c); }
+        .n-block a { color: var(--acc-2); text-decoration: none; border-bottom: 1px solid rgba(52, 211, 153, 0.3); transition: color 0.2s ease, border-color 0.2s ease; }
+        .n-block a:hover { color: #fff; border-color: #fff; }
+        @media (max-width: 640px) { .n-mod summary { padding: 1rem; gap: 0.8rem; } .n-num { min-width: 44px; height: 44px; font-size: 1.1rem; } .n-body { padding: 1rem; } }
+    
+  /* Botón y Modal AVISO LEGAL (referencia MCA.HTML) */
+  .m-footer-brand .mt-6 { margin-top: 1.5rem; }
+  .m-footer-brand button[onclick*="openLegalModal"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background-color: rgba(15, 23, 42, 0.9);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -4px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .m-footer-brand button[onclick*="openLegalModal"]:hover {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+  }
+  #legal-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    pointer-events: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(2, 6, 23, 0.95);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  #legal-modal.hidden { display: none !important; }
+  #legal-modal.flex { display: flex !important; }
+  #legal-modal > div {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01)), #0B1120;
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    border-radius: 1rem;
+    max-width: 42rem;
+    width: 100%;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  #legal-modal > div::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(45, 212, 191, 0.1), rgba(255, 255, 255, 0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  #legal-modal > div > div:first-child {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.9);
+    background-color: rgba(2, 6, 23, 0.6);
+  }
+  #legal-modal > div > div:first-child > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  #legal-modal > div > div:first-child > div:first-child > div:first-child {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background-color: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+    flex-shrink: 0;
+  }
+  #legal-modal > div > div:first-child span {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #34d399;
+  }
+  #legal-modal-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.35;
+    margin: 0.125rem 0 0;
+  }
+  #legal-modal > div > div:nth-child(2) {
+    padding: 1.25rem 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    line-height: 1.625;
+  }
+  #legal-modal > div > div:nth-child(2) > div {
+    background-color: rgba(2, 6, 23, 0.7);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(30, 41, 59, 0.8);
+  }
+  #legal-modal > div > div:nth-child(2) h4 {
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.375rem;
+    font-size: 0.92rem;
+  }
+  #legal-modal > div > div:nth-child(2) h4 i { color: #34d399; font-size: 0.75rem; }
+  #legal-modal > div > div:nth-child(2) p { margin: 0; color: #cbd5e1; }
+  #legal-modal > div > div:last-child {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(30, 41, 59, 0.9);
+    background-color: rgba(2, 6, 23, 0.6);
+    display: flex;
+    justify-content: flex-end;
+  }
+  #legal-modal button[data-legal-accept="true"] {
+    background-color: #10b981;
+    color: #020617;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 0;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    cursor: pointer;
+  }
+  #legal-modal button[data-legal-accept="true"]:hover {
+    background-color: #34d399;
+  }
+  body.legal-locked {
+    overflow: hidden !important;
+  }
+</style>
+</head>
+<body>
+
+    <header class="m-nav">
+        <div class="m-nav-inner">
+            <a class="m-brand" href="MCA.HTML" aria-label="Inicio · MCA">
+                <img class="m-brand-logo" src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+                <span class="m-brand-text"><small>Mercado de Capitales</small><strong>MCA • Finanzas y Normativa</strong></span>
+            </a>
+            <nav class="m-links" aria-label="Navegación principal">
+            <a href="MCA.HTML">Inicio</a>
+            <a href="NORMAS%20CNV%20T.O..HTML">Normas CNV T.O.</a>
+            <a href="NORMATIVA.HTML" aria-current="page">Normativa</a>
+            <a href="EXTRAS.HTML">Extras</a>
+            <a href="CALCULOS.HTML">Cálculos</a>
+            <a href="QUIZ.HTML" target="_blank" rel="noopener">Quiz</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="m-main">
+        <div class="m-container m-container--narrow">
+
+            <section class="m-hero m-reveal">
+                <span class="m-eyebrow"><span class="dot"></span> Compendio oficial · Examen de Idoneidad CNV</span>
+                <h1>Tabla de Contenido: <span class="grad">los VI Módulos</span></h1>
+                <p class="lead">Centro de acceso oficial a los marcos normativos, temarios detallados y bibliografía de referencia de los 6 módulos correspondientes al Examen de Idoneidad en el Mercado de Capitales de la Comisión Nacional de Valores (CNV).</p>
+                <div class="n-index">
+                <a class="n-chip" href="#modulo-I" style="--c: #34D399">Módulo I</a>
+                <a class="n-chip" href="#modulo-II" style="--c: #60A5FA">Módulo II</a>
+                <a class="n-chip" href="#modulo-III" style="--c: #FBBF24">Módulo III</a>
+                <a class="n-chip" href="#modulo-IV" style="--c: #C084FC">Módulo IV</a>
+                <a class="n-chip" href="#modulo-V" style="--c: #FB7185">Módulo V</a>
+                <a class="n-chip" href="#modulo-VI" style="--c: #22D3EE">Módulo VI</a>
+                </div>
+            </section>
+
+            <!-- Módulos con desplegables interactivos (<details>) -->
+            <section class="n-list" style="margin-top: 1rem;">
+                <details class="n-mod m-reveal" id="modulo-I" style="--c: #34D399; --i: 0">
+                    <summary>
+                        <span class="n-num">I</span>
+                        <span class="n-sum">
+                            <strong>Módulo I: Marco Normativo, Emisoras y Régimen Sancionatorio</strong>
+                            <small>Ley 26.831, CNV, Oferta Pública, OPA, PyME y Procedimiento Sumarial.</small>
+                        </span>
+                        <span class="n-chev" aria-hidden="true"></span>
+                    </summary>
+                    <div class="n-body">
+                        <div class="n-block">
+                            <h4>a) Temario del Módulo</h4>
+                            <p>El marco normativo del mercado de capitales. Emisoras. Régimen sancionatorio. OPA. Oferta Pública. Objetivos, competencias y facultades de la CNV. Definiciones. Secreto. Procedimiento sancionatorio. Tribunal arbitral. Funciones y obligaciones de las entidades. Emisoras. Concepto. Requisitos. Obligaciones. Asambleas. Prospecto. Colocación de valores. Inversores Institucionales y calificados. Oferta Irregular. La OPA obligatoria. Principios Generales. Deberes. Sanciones. Régimen de participaciones residuales (DUVA). Retiro del régimen de OP. Pyme. Definición.</p>
+                        </div>
+                        <div class="n-block">
+                            <h4>b) Bibliografía y Fuentes Oficiales</h4>
+                            <ul>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" rel="noopener noreferrer">Ley 26.831 de Mercado de Capitales</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Normas CNV (N.T. 2013 y mod.) – Títulos I, II, III, IV, V, VI, XVI</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/61791/texact.htm" target="_blank" rel="noopener noreferrer">Código Civil y Comercial de la Nación – Artículo 146</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/25000-29999/25553/texact.htm" target="_blank" rel="noopener noreferrer">Ley 19.550 de Sociedades Comerciales – Artículos 280, 255 y 269</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/408/norma.htm" target="_blank" rel="noopener noreferrer">Ley 23.576 de Obligaciones Negociables</a></li>
+                            <li>Decreto 1087/1993 y modificatorios</li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/422/texact.htm" target="_blank" rel="noopener noreferrer">Ley 24.467 de Pequeña y Mediana Empresa</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="n-mod m-reveal" id="modulo-II" style="--c: #60A5FA; --i: 1">
+                    <summary>
+                        <span class="n-num">II</span>
+                        <span class="n-sum">
+                            <strong>Módulo II: Prevención del Lavado de Activos y Financiamiento del Terrorismo</strong>
+                            <small>PLAFT, UIF, Sujetos Obligados, Etapas y Normativa Aplicable.</small>
+                        </span>
+                        <span class="n-chev" aria-hidden="true"></span>
+                    </summary>
+                    <div class="n-body">
+                        <div class="n-block">
+                            <h4>a) Temario del Módulo</h4>
+                            <p>Prevención del lavado de activos y del financiamiento del terrorismo. Concepto y características generales. Actividades delictivas. Objetivo (simulación de licitud). Normas de Prevención del Lavado de Dinero. Normativa Aplicable (CNV – UIF). Etapas Básicas (colocación – estratificación – integración). Diferencias entre Lavado de Activos y Financiamiento del Terrorismo. Sujetos Obligados UIF – CNV. Autoridades de Supervisión. Autoridades de Aplicación de la Ley.</p>
+                        </div>
+                        <div class="n-block">
+                            <h4>b) Bibliografía y Fuentes Oficiales</h4>
+                            <ul>
+                            <li><a href="https://www.fatf-gafi.org/" target="_blank" rel="noopener noreferrer">Las 40 Recomendaciones del FATF-GAFI</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/62758/texact.htm" target="_blank" rel="noopener noreferrer">Ley 25.246 de Lavado de Activo de Origen Delictivo - Modificación Código Penal</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" rel="noopener noreferrer">Ley 26.831 de Mercado de Capitales</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Normas CNV (N.T. 2013 y mod.) – Título XI</a></li>
+                            <li>Decreto 918/2012</li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Resolución UIF 29/2013: Obligación de Reportar Hechos u Operaciones Sospechosas</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Resolución UIF 3/2014: Reporte de Registración y cumplimiento por parte de los sujetos obligados</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Resolución UIF 72/2023: Reglamentación del procedimiento de supervisión del cumplimiento de la normativa de la UIF</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Resolución UIF 22/2011: Comisión Nacional de Valores - Sujetos Obligados</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Resolución UIF 78/2023: Mercado de Capitales</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Resolución UIF 56/2024: Plazos para la realización de ROS</a></li>
+                            <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Resolución UIF 192/2024: PEPs</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/395000-399999/396654/norma.htm" target="_blank" rel="noopener noreferrer">Ley 27.739 – Modificaciones al Código Penal</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="n-mod m-reveal" id="modulo-III" style="--c: #FBBF24; --i: 2">
+                    <summary>
+                        <span class="n-num">III</span>
+                        <span class="n-sum">
+                            <strong>Módulo III: Transparencia, Gobierno Corporativo y Atención al Inversor</strong>
+                            <small>Régimen Informativo, Denuncias, Reclamos y Código de Conducta.</small>
+                        </span>
+                        <span class="n-chev" aria-hidden="true"></span>
+                    </summary>
+                    <div class="n-body">
+                        <div class="n-block">
+                            <h4>a) Temario del Módulo</h4>
+                            <p>Transparencia. Procedimiento de denuncias, reclamos y consultas. Régimen Informativo ocasional y periódico. Gobierno Corporativo. Inversores. Transparencia. Ámbito de aplicación. Obligaciones de los participantes. Régimen informativo ocasional y periódico. Gobierno Corporativo. Conductas contrarias a la transparencia en el ámbito de la oferta pública. Procedimiento aplicable ante incumplimiento. Denuncias. Concepto. Recepción y Tratamiento. Cómo efectuarlas. Dónde dirigirlas. Reclamos y Consultas. Definición. Cómo efectuarlos. Dónde dirigirlos. Código de conducta profesional. Obligaciones con los clientes. Obligaciones con los empleadores. Responsable de relaciones con el Público Inversor. Oficina de Atención al Inversor.</p>
+                        </div>
+                        <div class="n-block">
+                            <h4>b) Bibliografía y Fuentes Oficiales</h4>
+                            <ul>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Normas CNV (N.T. 2013 y mod.) – Títulos II, IV, VII, XII, XIII (Cap. I) y XVI</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" rel="noopener noreferrer">Ley 26.831 de Mercado de Capitales</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/61791/texact.htm" target="_blank" rel="noopener noreferrer">Ley 19.550 de Sociedades Comerciales – Conflicto de Interés</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="n-mod m-reveal" id="modulo-IV" style="--c: #C084FC; --i: 3">
+                    <summary>
+                        <span class="n-num">IV</span>
+                        <span class="n-sum">
+                            <strong>Módulo IV: Análisis de Inversiones, Contabilidad y NIIF</strong>
+                            <small>TIR, VAN, Renta Fija/Variable, Normas Contables y Auditoría.</small>
+                        </span>
+                        <span class="n-chev" aria-hidden="true"></span>
+                    </summary>
+                    <div class="n-body">
+                        <div class="n-block">
+                            <h4>a) Temario del Módulo</h4>
+                            <p>Los parámetros de análisis de alternativas de inversión (ej. TIR, VAN). Normas de contabilidad internacionales y locales (diferencias entre valor histórico y corriente). NIIF. Normas de auditoría internacionales y locales. Características generales de la Renta Fija. Condiciones de Emisión. Análisis y valuación de la Renta Fija. Valuación de Bonos. VAN – TIR. Riesgos Asociados (de precio, de reinversión, de crédito, de liquidez de tipo de cambio). Características generales de la Renta Variable. Estructura del Mercado de Capitales Argentino. Organigrama. Instrumentos de Renta Variable (Acciones): (1) Análisis fundamental. Formación de precios. Herramientas de análisis de mercados. Componentes de la oferta y la demanda. (2) Análisis técnico. Psicología del inversor. Análisis técnico como herramienta en la toma de decisión. Identificación de tendencias del mercado. Construcción de gráficos. (3) Índices-Ratios (liquidez, endeudamiento, rentabilidad, PER) (4) Valuación de futuros. Modelos cost of carry. (5) Modelos de valuación de opciones. Cálculo de las volatilidades. NIIF: Introducción a las Normas Contables Internacionales. Su evolución. Principales diferencias con las Normas Argentinas. Cuestiones de exposición. Unidad de medida. Medición, reconocimiento de resultados. Alcance del control societario que ejerce la Comisión Nacional de Valores (“CNV”): Personas jurídicas que se encuentran bajo control societario de la CNV. Fiscalización societaria al momento de emisión de obligaciones negociables mediante oferta pública. Órganos societarios que requieren publicidad mediante inscripción registral. Reformas de estatuto por cambio de denominación social. Objeto social y capital social de sociedades que se encuentran dentro del régimen de oferta pública. Registro de acciones de sociedades que se encuentran dentro del régimen de oferta pública. Domicilio y sede social inscripta. Diferencias entre ambos conceptos. Asambleas de sociedades que se encuentran dentro del régimen de oferta pública. Depósito de las acciones de los accionistas que desean concurrir. Registro de Auditores Externos y Registro de Asociaciones de Profesionales Auditores. Inscripción. Actualización de datos registrales. Exclusiones. Cancelaciones. Publicación de los Registros. Auditores Externos: Designaciones, independencia, informe de auditoría y tipos de opinión, y sistema de control de calidad de las auditorías externas. Nuevo Informe Extenso de Auditoría: Objetivos del nuevo informe, características, aplicación y vigencia. Información contable periódica a presentar por las Sociedades Emisoras en el Régimen de Oferta Pública (Acciones, Obligaciones Negociables, Valores de Corto Plazo, Pymes). Plazos y requisitos formales de presentación de la información contable. Informes de Auditoría. Requisitos. Entidades que presentan estados financieros conforme NIIF y entidades que presentan conforme Normas Contables Profesionales Argentinas. Concepto activo, pasivo, patrimonio neto y valor libro. Indicadores de liquidez, solvencia, rentabilidad e inmovilización de capital.</p>
+                        </div>
+                        <div class="n-block">
+                            <h4>b) Bibliografía y Fuentes Oficiales</h4>
+                            <ul>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" rel="noopener noreferrer">Ley 26.831 de Mercado de Capitales – Art. 19; Título III, Capítulo V, Sección III (artículos 104 a 108)</a></li>
+                            <li>Ley 22.169: C.N.V. - Sociedades por Acciones – Funciones de la Comisión Nacional de Valores</li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/408/norma.htm" target="_blank" rel="noopener noreferrer">Ley 23.576 de Obligaciones Negociables – Art. 10</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/61791/texact.htm" target="_blank" rel="noopener noreferrer">Ley 19.550 de Sociedades Comerciales – Arts. 5º, 11, 60, 188, 208, 213, 235 y 238</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Normas CNV (N.T. 2013 y mod.) – Título II: Capítulos II (Sección II), III (Secciones VI, VII y VII) y IV; y Título IV: Capítulo I (Secciones I y II) y Capítulo III</a></li>
+                            <li><a href="https://www.facpce.org.ar/" target="_blank" rel="noopener noreferrer">Resolución Técnica N° 37 - Normas de Auditoría de la Federación Argentina de Consejos Profesionales de Ciencias Económicas</a></li>
+                            <li>Régimen Informativo Periódico y Nuevo Informe Extenso de Auditoría - KAM</li>
+                            <li>“Mercado de Capitales: Manual para no especialistas” del Instituto Argentino de Mercado de Capitales – Capítulos 6, 12 y 13</li>
+                            <li>“Manual de estudio de contratos de futuros y opciones” del Mercado a Término de Buenos Aires</li>
+                            <li>“Operaciones con Futuros” de ROFEX</li>
+                            <li>“Estrategias con Futuros y Opciones” de ROFEX</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="n-mod m-reveal" id="modulo-V" style="--c: #FB7185; --i: 4">
+                    <summary>
+                        <span class="n-num">V</span>
+                        <span class="n-sum">
+                            <strong>Módulo V: Agentes, Instrumentos, Liquidación y Compensación</strong>
+                            <small>Categorías de Agentes, Derivados, Cauciones, Pases y Garantías.</small>
+                        </span>
+                        <span class="n-chev" aria-hidden="true"></span>
+                    </summary>
+                    <div class="n-body">
+                        <div class="n-block">
+                            <h4>a) Temario del Módulo</h4>
+                            <p>Agentes. Categorías. Funciones. Limitaciones. Responsabilidades. Los instrumentos que se utilizan en el mercado de capitales. Distintas operaciones. Liquidación y Compensación. Garantías. Agentes e instituciones del mercado de capitales (Mercados y Cámaras compensadoras. Agentes de negociación. Agentes de Liquidación y compensación. Agentes productores. Agentes de corretaje de valores negociables. Agentes de depósito colectivo. Agentes de custodia, registro y pago. Agente Asesor Global de Inversión. Agentes de calificación de riesgo. Plataformas de Financiamiento Colectivo). Valores negociables. Clasificación. Acciones. Tipos. Características. Política de dividendos. Precio de las Acciones. Títulos Públicos. Características. Derivados. Definición. Riesgo y volatilidad. Operaciones a plazo, opciones, swaps. Futuros y Forwards. (Contratos de opciones. Conceptos, coberturas, especulación. Concepto de prima. Estrategias de cobertura y especulación. Armado de spreads utilizando call y put. Swaps: concepto. Swaps de tasa de interés. Swaps de divisas, commodity, equity swaps. Contrato de futuros. Coberturas desde el punto de vista comprador y vendedor. Distintos tipos. Obligaciones Negociables. CPD/Pagaré/FCE. Tipos de operaciones: colocación primaria. Negociación secundaria. Prioridad precio tiempo. Otras operaciones. Operaciones garantizadas: liquidación, compensación y mecanismos de garantías).</p>
+                        </div>
+                        <div class="n-block">
+                            <h4>b) Bibliografía y Fuentes Oficiales</h4>
+                            <ul>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/205000-209999/208335/normas.htm" target="_blank" rel="noopener noreferrer">Ley 26.831 de Mercado de Capitales – Arts. 2, 99, 100, 112, 115, 120 y Capítulos I y II del Título II</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/300000-304999/303350/norma.htm" target="_blank" rel="noopener noreferrer">Ley 27.440 de Financiamiento Productivo – Arts. 1 a 25 y del 195 a 199</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Normas CNV (N.T. 2013 y mod.) – Títulos VI a IX y XIV</a></li>
+                            <li>“Mercado de Capitales: Manual para no especialistas” del Instituto Argentino de Mercado de Capitales – Capítulo 7</li>
+                            <li>“Manual de estudio de contratos de futuros y opciones” del Mercado a Término de Buenos Aires</li>
+                            <li>“Operaciones con Futuros” de ROFEX</li>
+                            <li>“Estrategias con Futuros y Opciones” de ROFEX</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="n-mod m-reveal" id="modulo-VI" style="--c: #22D3EE; --i: 5">
+                    <summary>
+                        <span class="n-num">VI</span>
+                        <span class="n-sum">
+                            <strong>Módulo VI: Productos de Inversión Colectiva (FCI y Fideicomisos)</strong>
+                            <small>Fondos Comunes de Inversión Abiertos/Cerrados y Fideicomisos Financieros.</small>
+                        </span>
+                        <span class="n-chev" aria-hidden="true"></span>
+                    </summary>
+                    <div class="n-body">
+                        <div class="n-block">
+                            <h4>a) Temario del Módulo</h4>
+                            <p>Productos de Inversión Colectiva. Fondos Comunes de Inversión. Categorías. Funciones. Limitaciones. Los instrumentos que se utilizan en el mercado de capitales. Distintas operaciones. Fideicomisos Financieros. FCI. Definición y características generales de los FCI. Marco normativo. Diversas clases. Funcionamiento. Limitaciones. Suscripciones – rescates. Reglamento de Gestión y/o prospectos. Ventajas y desventajas de los FCI. Fideicomisos Financieros. Distintos tipos. Principales características.</p>
+                        </div>
+                        <div class="n-block">
+                            <h4>b) Bibliografía y Fuentes Oficiales</h4>
+                            <ul>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/432/norma.htm" target="_blank" rel="noopener noreferrer">Ley 24.083 de Fondos Comunes de Inversión</a></li>
+                            <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Normas CNV (N.T. 2013 y mod.) – Título V, Capítulos I al X; Título II, Capítulo IX; y Título VI, Capítulo IV</a></li>
+                            <li><a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/235000-239999/235975/texact.htm" target="_blank" rel="noopener noreferrer">Código Civil y Comercial de la Nación – Capítulo 30 y concordantes</a></li>
+                            <li>Ley 24.441 de Fideicomisos – parte no derogada</li>
+                            <li>“Mercado de Capitales: Manual para no especialistas” del Instituto Argentino de Mercado de Capitales – Capítulo 6</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="m-footer">
+        <div class="m-footer-grid">
+            <div class="m-footer-brand">
+                <img src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+                <p>Plataforma educativa interactiva sobre el mercado de capitales argentino: normativa de la CNV, guía de idoneidad y práctica con simulador.</p>
+            
+                <div class="mt-6">
+                    <button type="button" onclick="openLegalModal()" class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-bold tracking-wider uppercase bg-slate-900/90 hover:bg-emerald-500/15 text-emerald-400 hover:text-emerald-300 border border-emerald-500/35 transition shadow-lg cursor-pointer">
+                        <i class="fa-solid fa-scale-balanced text-base"></i>
+                        <span>AVISO LEGAL</span>
+                    </button>
+                </div>
+        </div>
+            <div>
+                <h4>Secciones</h4>
+                <ul>
+                    <li><a href="MCA.HTML">Inicio</a></li>
+                    <li><a href="NORMAS%20CNV%20T.O..HTML">Normas CNV T.O.</a></li>
+                    <li><a href="NORMATIVA.HTML">Normativa</a></li>
+                    <li><a href="EXTRAS.HTML">Extras</a></li>
+                    <li><a href="CALCULOS.HTML">Cálculos</a></li>
+                    <li><a href="QUIZ.HTML">Quiz</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Referencias oficiales</h4>
+                <ul>
+                    <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Comisión Nacional de Valores</a></li>
+                    <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Unidad de Información Financiera</a></li>
+                    <li><a href="https://www.bcra.gob.ar" target="_blank" rel="noopener noreferrer">Banco Central (BCRA)</a></li>
+                    <li><a href="https://www.argentina.gob.ar/superintendencia-de-seguros" target="_blank" rel="noopener noreferrer">Superintendencia de Seguros de la Nación</a></li>
+                    <li><a href="https://www.argentina.gob.ar/servicio/rendir-el-examen-de-idoneidad" target="_blank" rel="noopener noreferrer">Examen Idoneidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="m-footer-bottom">Contenido oficial basado estrictamente en la Guía de Estudio de Idoneidad de la Comisión Nacional de Valores (CNV). Todas las fuentes bibliográficas conservan sus hipervínculos de acceso a las páginas oficiales.</div>
+    </footer>
+
+    <!-- Modal Aviso Legal (Disponible desde el botón en el pie de página) -->
+    <div id="legal-modal" style="position: fixed; inset: 0; z-index: 2147483647;" class="hidden items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+        <div class="gradient-border glow-card bg-[#0B1120] border border-slate-700/80 rounded-2xl max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
+
+            <!-- Cabecera del Modal -->
+            <div class="flex items-start justify-between gap-4 p-5 sm:p-6 border-b border-slate-800/90 bg-slate-950/60">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/35 flex items-center justify-center text-emerald-400 shrink-0">
+                        <i class="fa-solid fa-file-contract text-base"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-emerald-400">Aviso Legal</span>
+                        <h3 id="legal-modal-title" class="text-base sm:text-lg font-extrabold text-white leading-snug mt-0.5">
+                            Limitación de Responsabilidad, Alcance Educativo y Origen de la Información
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuerpo con scroll interno -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-emerald-400 text-xs"></i>
+                        Carácter exclusivamente educativo
+                    </h4>
+                    <p class="text-slate-300">
+                        Todo el material, las guías, las síntesis y los recursos disponibles en este sitio web han sido elaborados únicamente con fines educativos, académicos y de divulgación general. Este portal no persigue fines de asesoramiento comercial ni constituye una oferta o invitación para operar en el mercado de capitales.
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-landmark text-emerald-400 text-xs"></i>
+                        Origen y fuentes públicas de la normativa
+                    </h4>
+                    <p class="text-slate-300">
+                        La totalidad de la información legal y reglamentaria referenciada en esta plataforma proviene exclusivamente de sitios web, boletines y registros oficiales de acceso público (tales como la Comisión Nacional de Valores [CNV], el Boletín Oficial de la República Argentina, y mercados o cámaras compensadoras autorizadas).
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-ban text-emerald-400 text-xs"></i>
+                        Ausencia de opinión profesional y juicios de valor
+                    </h4>
+                    <p class="text-slate-300">
+                        El contenido se expone de manera estrictamente objetiva y descriptiva. No incorpora juicios de valor, interpretaciones vinculantes ni constituye asesoramiento, recomendación de inversión, dictamen u opinión profesional de índole financiera, legal, contable o impositiva (en los términos de la Ley N° 26.831 y sus normas complementarias).
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-emerald-400 text-xs"></i>
+                        Vigencia normativa y responsabilidad del usuario
+                    </h4>
+                    <p class="text-slate-300">
+                        Debido a la dinámica propia de la regulación bursátil, el titular del sitio no garantiza la actualización en tiempo real ni la vigencia permanente de los textos compilados. Se recomienda a los usuarios verificar siempre la normativa directamente en los digesto y textos ordenados oficiales vigentes, así como consultar con un agente autorizado o profesional matriculado antes de tomar cualquier decisión patrimonial o jurídica.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pie del Modal -->
+            <div class="p-4 sm:px-6 border-t border-slate-800/90 bg-slate-950/60 flex justify-end">
+                <button type="button" data-legal-accept="true" onclick="closeLegalModal(true)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm px-6 py-2.5 rounded-xl transition shadow-md shadow-emerald-500/20 cursor-pointer">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Al hacer clic en un índice (o abrir con #modulo-X) se despliega el módulo correspondiente
+        function openFromHash() {
+            // Validar el hash: solo identificadores simples (evita selectores inválidos/maliciosos)
+            if (!/^#[A-Za-z][\w-]{0,60}$/.test(location.hash)) return;
+            var el = document.getElementById(location.hash.slice(1));
+            if (el && el.tagName === 'DETAILS') el.open = true;
+        }
+        window.addEventListener('hashchange', openFromHash);
+        openFromHash();
+    
+        let isLegalModalOpen = false;
+
+function openLegalModal() {
+            const modal = document.getElementById('legal-modal');
+            if (!modal) return;
+            isLegalModalOpen = true;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('legal-locked');
+        }
+
+function closeLegalModal(confirmedByButton = false) {
+            if (confirmedByButton !== true) return;
+            const modal = document.getElementById('legal-modal');
+            if (!modal) return;
+            isLegalModalOpen = false;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('legal-locked');
+        }
+
+</script>
+</body>
+</html>
