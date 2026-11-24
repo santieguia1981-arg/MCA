@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Seguridad: CSP (solo recursos propios, sin conexiones externas), sin referrer, forzar HTTPS fuera de localhost -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; font-src 'self' data: file:; media-src 'self' file:; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="description" content="Ecosistema interactivo del Mercado de Capitales Argentino: mapa de actores, simulador de operación y material de estudio para la idoneidad CNV.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="Ecosistema Interactivo del Mercado de Capitales Argentino">
+    <meta property="og:description" content="Ecosistema interactivo del Mercado de Capitales Argentino: mapa de actores, simulador de operación y material de estudio para la idoneidad CNV.">
+    <link rel="icon" type="image/png" href="img/logo-mca.png?v=2">
+    <script src="js/tema.js"></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/config.js" defer></script>
+    <script src="vendor/supabase/supabase.js" defer></script>
+    <script src="js/nube.js" defer></script>
+    <script src="js/login.js" defer></script>
+    <script>if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) location.replace('https:' + location.href.substring(5));</script>
+    <title>Ecosistema Interactivo del Mercado de Capitales Argentino</title>
+    <!-- Tailwind CSS (compilado, local) -->
+    <link rel="stylesheet" href="css/tailwind-mca.css">
+    <!-- Google Fonts Inter -->
+    <link rel="stylesheet" href="css/fonts.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #070B14;
+            color: #F8FAFC;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.15);
+        }
+        .glow-card {
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+        }
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(45, 212, 191, 0.1), rgba(255, 255, 255, 0.05));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B1120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        /* Estilos para Tooltips del Glosario */
+        .glossary-term {
+            border-bottom: 1.5px dotted #34D399;
+            color: #34D399;
+            cursor: help;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .glossary-term:hover {
+            background-color: rgba(16, 185, 129, 0.15);
+            border-radius: 4px;
+            padding: 0 2px;
+        }
+
+        /* ---- Portada y paneles ---- */
+        .mca-hero-logo { height: 128px; width: auto; display: block; margin: 0 auto 1.25rem; filter: drop-shadow(0 0 36px rgba(16, 185, 129, 0.28)); user-select: none; }
+        .mca-panel { padding: 1.5rem; }
+        @media (min-width: 640px) { .mca-panel { padding: 1.75rem; } }
+        a.m-card.mca-cta { display: flex; flex-direction: column; gap: 0.85rem; height: 100%; }
+        .mca-cta .go { margin-top: auto; padding-top: 0.9rem; border-top: 1px solid var(--line); color: var(--acc-2); font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .mca-cta .go i { transition: transform 0.2s ease; }
+        a.mca-cta:hover .go i { transform: translateX(4px); }
+
+        /* ---- Arnés Interactivo SVG + Inspector ---- */
+        .harness-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        @media (min-width: 1024px) {
+            .harness-grid {
+                grid-template-columns: 1.35fr 1fr;
+                align-items: start;
+            }
+        }
+        .harness-stage {
+            background: radial-gradient(circle at 50% 42%, rgba(16, 185, 129, 0.08), rgba(7, 11, 20, 0.95) 72%);
+            border: 1px solid rgba(51, 65, 85, 0.65);
+            border-radius: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .harness-grid-bg {
+            background-image:
+                linear-gradient(to right, rgba(30, 41, 59, 0.28) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(30, 41, 59, 0.28) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .flow-line-funds {
+            stroke: #00F0FF;
+            stroke-width: 2;
+            stroke-dasharray: 6 6;
+            animation: dashFlow 18s linear infinite;
+            opacity: 0.65;
+        }
+        .flow-line-titles {
+            stroke: #F59E0B;
+            stroke-width: 2;
+            stroke-dasharray: 6 6;
+            animation: dashFlowReverse 18s linear infinite;
+            opacity: 0.65;
+        }
+        .flow-line-reg {
+            stroke: #38BDF8;
+            stroke-width: 1.5;
+            stroke-dasharray: 3 5;
+            opacity: 0.45;
+        }
+        @keyframes dashFlow {
+            to { stroke-dashoffset: -240; }
+        }
+        @keyframes dashFlowReverse {
+            to { stroke-dashoffset: 240; }
+        }
+        .harness-node {
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+            outline: none;
+        }
+        .harness-node:hover .node-shell,
+        .harness-node:focus-visible .node-shell,
+        .harness-node.is-active .node-shell {
+            stroke-width: 2.5;
+            filter: drop-shadow(0 0 14px var(--node-color));
+        }
+        .harness-node.is-active .node-pulse {
+            opacity: 0.35;
+            animation: nodeRing 2.2s ease-out infinite;
+        }
+        .harness-node.is-disabled {
+            opacity: 0.28;
+            filter: grayscale(0.85);
+        }
+        @keyframes nodeRing {
+            0% { transform: scale(0.95); opacity: 0.45; }
+            100% { transform: scale(1.22); opacity: 0; }
+        }
+        .actor-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+            color: #CBD5E1;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .actor-pill:hover {
+            border-color: rgba(16, 185, 129, 0.6);
+            color: #FFFFFF;
+        }
+        .actor-pill.is-active {
+            background: rgba(16, 185, 129, 0.16);
+            border-color: #10B981;
+            color: #FFFFFF;
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
+        }
+        .toggle-piece-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 0.65rem 0.9rem;
+            border-radius: 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: rgba(11, 17, 32, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.75);
+            color: #E2E8F0;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .toggle-piece-btn.is-off {
+            background: rgba(127, 29, 29, 0.25);
+            border-color: rgba(244, 63, 94, 0.65);
+            color: #FDA4AF;
+        }
+
+        /* ---- Modo claro: la portada usa utilidades Tailwind pensadas para fondo oscuro ---- */
+        :root[data-theme="light"] .mca-hero-logo { filter: brightness(0.4) saturate(1.5) contrast(1.1) drop-shadow(0 0 24px rgba(16, 185, 129, 0.25)); }
+        :root[data-theme="light"] main .bg-slate-950\/50,
+        :root[data-theme="light"] main .bg-slate-950\/60,
+        :root[data-theme="light"] main .bg-slate-950\/70,
+        :root[data-theme="light"] main .bg-slate-900\/90,
+        :root[data-theme="light"] main .bg-slate-900\/80,
+        :root[data-theme="light"] main .bg-slate-900\/60,
+        :root[data-theme="light"] main .bg-slate-900\/50 { background-color: var(--block-bg); }
+        :root[data-theme="light"] main .border-slate-800\/80,
+        :root[data-theme="light"] main .border-slate-800,
+        :root[data-theme="light"] main .border-slate-700\/80,
+        :root[data-theme="light"] main .border-slate-700\/70,
+        :root[data-theme="light"] main .border-slate-700\/60,
+        :root[data-theme="light"] main .border-slate-700 { border-color: var(--line-2); }
+        :root[data-theme="light"] main .text-white { color: var(--ink-strong); }
+        :root[data-theme="light"] main .text-slate-100,
+        :root[data-theme="light"] main .text-slate-200,
+        :root[data-theme="light"] main .text-slate-300 { color: var(--ink-2); }
+        :root[data-theme="light"] main .text-slate-400,
+        :root[data-theme="light"] main .text-slate-500 { color: var(--muted); }
+        :root[data-theme="light"] main .text-emerald-400,
+        :root[data-theme="light"] main .text-emerald-300 { color: var(--acc-2); }
+        :root[data-theme="light"] main .text-cyan-400,
+        :root[data-theme="light"] main .text-cyan-300 { color: #0E7490; }
+        :root[data-theme="light"] main .text-amber-400,
+        :root[data-theme="light"] main .text-amber-300 { color: #B45309; }
+        :root[data-theme="light"] main .text-rose-400,
+        :root[data-theme="light"] main .text-rose-300 { color: #BE123C; }
+        :root[data-theme="light"] main .text-sky-400,
+        :root[data-theme="light"] main .text-sky-300 { color: #0369A1; }
+        :root[data-theme="light"] .actor-pill,
+        :root[data-theme="light"] .toggle-piece-btn { background: #FFFFFF; border-color: var(--line-2); color: var(--ink-2); }
+        :root[data-theme="light"] .actor-pill:hover { color: var(--ink-strong); }
+        :root[data-theme="light"] .actor-pill.is-active { color: var(--ink-strong); background: rgba(16, 185, 129, 0.14); }
+        :root[data-theme="light"] .toggle-piece-btn.is-off { background: rgba(244, 63, 94, 0.08); border-color: rgba(244, 63, 94, 0.55); color: #BE123C; }
+        :root[data-theme="light"] main .text-emerald-200 { color: #065F46; }
+        :root[data-theme="light"] main .text-rose-200 { color: #9F1239; }
+        :root[data-theme="light"] main .bg-emerald-950\/40,
+        :root[data-theme="light"] main .bg-emerald-950\/80 { background-color: rgba(16, 185, 129, 0.10); }
+        :root[data-theme="light"] main .bg-rose-950\/45,
+        :root[data-theme="light"] main .bg-rose-950\/80 { background-color: rgba(244, 63, 94, 0.08); }
+        :root[data-theme="light"] .glossary-term { color: var(--acc-2); border-bottom-color: var(--acc-2); }
+
+  /* Botón y Modal AVISO LEGAL (referencia MCA.HTML) */
+  .m-footer-brand .mt-6 { margin-top: 1.5rem; }
+  .m-footer-brand button[onclick*="openLegalModal"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background-color: rgba(15, 23, 42, 0.9);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -4px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .m-footer-brand button[onclick*="openLegalModal"]:hover {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+  }
+  #legal-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    pointer-events: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(2, 6, 23, 0.95);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  #legal-modal.hidden { display: none !important; }
+  #legal-modal.flex { display: flex !important; }
+  #legal-modal > div {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01)), #0B1120;
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    border-radius: 1rem;
+    max-width: 42rem;
+    width: 100%;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  #legal-modal > div::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(45, 212, 191, 0.1), rgba(255, 255, 255, 0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  #legal-modal > div > div:first-child {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.9);
+    background-color: rgba(2, 6, 23, 0.6);
+  }
+  #legal-modal > div > div:first-child > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  #legal-modal > div > div:first-child > div:first-child > div:first-child {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background-color: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+    flex-shrink: 0;
+  }
+  #legal-modal > div > div:first-child span {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #34d399;
+  }
+  #legal-modal-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.35;
+    margin: 0.125rem 0 0;
+  }
+  #legal-modal > div > div:nth-child(2) {
+    padding: 1.25rem 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    line-height: 1.625;
+  }
+  #legal-modal > div > div:nth-child(2) > div {
+    background-color: rgba(2, 6, 23, 0.7);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(30, 41, 59, 0.8);
+  }
+  #legal-modal > div > div:nth-child(2) h4 {
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.375rem;
+    font-size: 0.92rem;
+  }
+  #legal-modal > div > div:nth-child(2) h4 i { color: #34d399; font-size: 0.75rem; }
+  #legal-modal > div > div:nth-child(2) p { margin: 0; color: #cbd5e1; }
+  #legal-modal > div > div:last-child {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(30, 41, 59, 0.9);
+    background-color: rgba(2, 6, 23, 0.6);
+    display: flex;
+    justify-content: flex-end;
+  }
+  #legal-modal button[data-legal-accept="true"] {
+    background-color: #10b981;
+    color: #020617;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 0;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    cursor: pointer;
+  }
+  #legal-modal button[data-legal-accept="true"]:hover {
+    background-color: #34d399;
+  }
+  body.legal-locked {
+    overflow: hidden !important;
+  }
+        /* Posicionamiento del modal cuando se abre desde el pie */
+        #legal-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483647;
+            pointer-events: auto;
+        }
+        body.legal-locked {
+            overflow: hidden !important;
+        }
+    </style>
+    <link rel="stylesheet" href="css/mca.css">
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+
+    <header class="m-nav">
+        <div class="m-nav-inner">
+            <a class="m-brand" href="MCA.HTML" aria-label="Inicio · MCA">
+                <img class="m-brand-logo" src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+                <span class="m-brand-text"><small>Mercado de Capitales</small><strong>MCA • Finanzas y Normativa</strong></span>
+            </a>
+            <nav class="m-links" aria-label="Navegación principal">
+                <a href="MCA.HTML" aria-current="page">Inicio</a>
+                <a href="NORMAS%20CNV%20T.O..HTML">Normas CNV T.O.</a>
+                <a href="NORMATIVA.HTML">Normativa</a>
+                <a href="EXTRAS.HTML">Extras</a>
+                <a href="CALCULOS.HTML">Cálculos</a>
+                <a href="QUIZ.HTML" target="_blank" rel="noopener">Quiz</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="m-main">
+        <div class="m-container">
+
+            <!-- Portada -->
+            <section class="m-hero m-reveal" style="padding-top: 2rem;">
+                <img class="mca-hero-logo" src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+                <span class="m-eyebrow"><span class="dot"></span> República Argentina • CNV</span>
+                <h1>Ecosistema del <span class="grad">Mercado de Capitales</span></h1>
+                <p class="lead">Descubrí cómo se conectan emisoras, inversores, agentes, mercados, cámaras compensadoras y el regulador. Explorá el arnés interactivo, escuchá a cada actor y ponete a prueba con el simulador.</p>
+            </section>
+
+            <!-- Arnés Interactivo: Mapa de Flujo e Interacciones -->
+            <section class="m-section">
+                <div class="m-section-head">
+                    <div>
+                        <span class="m-kicker">Mapa interactivo</span>
+                        <h2>Red Interconectada de Participantes</h2>
+                        <p>Seleccioná cada pieza del ecosistema (con clic o teclado Tab + Enter) para inspeccionar su rol normativo, escucharlo y resolver un desafío flash.</p>
+                    </div>
+                </div>
+
+                <section class="m-card mca-panel relative overflow-hidden space-y-5">
+                    <!-- Cabecera del Mapa -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-white leading-tight">Mapa de Flujo e Interacciones</h3>
+                            <span class="text-xs text-slate-400">Arquitectura operativa bajo Ley N° 26.831</span>
+                        </div>
+                    </div>
+
+                    <!-- Split-View: Escenario SVG Isométrico Moderno + Inspector Lateral -->
+                    <div class="harness-grid">
+                        <!-- Columna Izquierda: Diagrama Vectorial Moderno + Selector Rápido -->
+                        <div class="space-y-4">
+                            <div class="harness-stage harness-grid-bg p-2 sm:p-4">
+                                <svg id="harnessSvg" viewBox="0 0 760 520" class="w-full h-auto select-none block" role="img" aria-label="Diagrama interactivo del Mercado de Capitales Argentino">
+                                    <defs>
+                                        <!-- Gradientes de Nodos -->
+                                        <linearGradient id="cardGlass" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#111827" stop-opacity="0.96"/>
+                                            <stop offset="100%" stop-color="#070B14" stop-opacity="0.98"/>
+                                        </linearGradient>
+                                        <linearGradient id="isoPlatform" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#10B981" stop-opacity="0.10"/>
+                                            <stop offset="100%" stop-color="#0F172A" stop-opacity="0.02"/>
+                                        </linearGradient>
+                                        <!-- Marcadores de Flecha -->
+                                        <marker id="arrowFunds" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#00F0FF"/>
+                                        </marker>
+                                        <marker id="arrowTitles" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#F59E0B"/>
+                                        </marker>
+                                    </defs>
+
+                                    <!-- Plataforma Isométrica de Base -->
+                                    <polygon points="380,46 715,245 380,475 45,245" fill="url(#isoPlatform)" stroke="rgba(16, 185, 129, 0.22)" stroke-width="1.2"/>
+                                    <polygon points="380,96 645,250 380,425 115,250" fill="none" stroke="rgba(148, 163, 184, 0.12)" stroke-width="1" stroke-dasharray="4 6"/>
+
+                                    <!-- Líneas de Supervisión Regulatoria (CNV hacia todos los actores) -->
+                                    <g id="regLines">
+                                        <line x1="380" y1="95" x2="155" y2="205" class="flow-line-reg"/>
+                                        <line x1="380" y1="95" x2="605" y2="205" class="flow-line-reg"/>
+                                        <line x1="380" y1="95" x2="380" y2="245" class="flow-line-reg"/>
+                                        <line x1="380" y1="95" x2="235" y2="385" class="flow-line-reg"/>
+                                        <line x1="380" y1="95" x2="525" y2="385" class="flow-line-reg"/>
+                                    </g>
+
+                                    <!-- Flujos Operativos Animados (Fondos en Cyan / Valores en Ámbar) -->
+                                    <g id="flowLines">
+                                        <!-- Inversores <-> Agentes (ALyC) -->
+                                        <path d="M 605 268 Q 595 335 555 375" fill="none" class="flow-line-funds" marker-end="url(#arrowFunds)"/>
+                                        <path d="M 525 368 Q 545 312 580 268" fill="none" class="flow-line-titles" marker-end="url(#arrowTitles)"/>
+
+                                        <!-- Agentes (ALyC) <-> Mercados -->
+                                        <path d="M 455 412 L 308 412" fill="none" class="flow-line-funds" marker-end="url(#arrowFunds)"/>
+                                        <path d="M 308 426 L 455 426" fill="none" class="flow-line-titles" marker-end="url(#arrowTitles)"/>
+
+                                        <!-- Mercados <-> Emisoras -->
+                                        <path d="M 205 375 Q 165 335 155 268" fill="none" class="flow-line-funds" marker-end="url(#arrowFunds)"/>
+                                        <path d="M 180 268 Q 215 312 235 368" fill="none" class="flow-line-titles" marker-end="url(#arrowTitles)"/>
+
+                                        <!-- Conexiones con Cámaras Compensadoras (Nodo Central) -->
+                                        <line x1="285" y1="378" x2="345" y2="305" class="flow-line-titles"/>
+                                        <line x1="475" y1="378" x2="415" y2="305" class="flow-line-funds"/>
+                                        <line x1="225" y1="238" x2="312" y2="265" class="flow-line-titles"/>
+                                        <line x1="535" y1="238" x2="448" y2="265" class="flow-line-funds"/>
+                                    </g>
+
+                                    <!-- NODO 1: Regulador (CNV) - Superior Central -->
+                                    <g id="node-cnv" class="harness-node" data-actor="cnv" tabindex="0" role="button" aria-label="Regulador (CNV)" style="--node-color: #38BDF8;" transform="translate(380, 66)">
+                                        <rect class="node-pulse" x="-84" y="-34" width="168" height="68" rx="16" fill="none" stroke="#38BDF8" stroke-width="2" opacity="0"/>
+                                        <rect class="node-shell" x="-80" y="-30" width="160" height="60" rx="14" fill="url(#cardGlass)" stroke="#38BDF8" stroke-width="1.6"/>
+                                        <g transform="translate(-52, 0)">
+                                            <rect x="-16" y="-16" width="32" height="32" rx="9" fill="rgba(56, 189, 248, 0.16)"/>
+                                            <path d="M0 -9 L0 9 M-8 -4 L8 -4 M-8 -4 L-11 3 L-5 3 Z M8 -4 L5 3 L11 3 Z M-5 9 L5 9" stroke="#38BDF8" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <text x="-26" y="-4" fill="#38BDF8" font-size="9.5" font-weight="700" font-family="Inter, sans-serif" letter-spacing="0.06em">AUTORIDAD</text>
+                                        <text x="-26" y="13" fill="#FFFFFF" font-size="13" font-weight="800" font-family="Inter, sans-serif">Regulador (CNV)</text>
+                                    </g>
+
+                                    <!-- NODO 2: Emisoras - Izquierda Media -->
+                                    <g id="node-emisoras" class="harness-node" data-actor="emisoras" tabindex="0" role="button" aria-label="Emisoras" style="--node-color: #00F0FF;" transform="translate(145, 228)">
+                                        <rect class="node-pulse" x="-82" y="-36" width="164" height="72" rx="16" fill="none" stroke="#00F0FF" stroke-width="2" opacity="0"/>
+                                        <rect class="node-shell" x="-78" y="-32" width="156" height="64" rx="14" fill="url(#cardGlass)" stroke="#00F0FF" stroke-width="1.6"/>
+                                        <g transform="translate(-50, 0)">
+                                            <rect x="-16" y="-16" width="32" height="32" rx="9" fill="rgba(0, 240, 255, 0.15)"/>
+                                            <path d="M-8 10 L-8 -8 L2 -11 L2 10 M2 -3 L9 -1 L9 10 M-11 10 L11 10 M-4 -4 L-2 -4 M-4 0 L-2 0 M-4 4 L-2 4" stroke="#00F0FF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <text x="-24" y="-4" fill="#00F0FF" font-size="9.5" font-weight="700" font-family="Inter, sans-serif" letter-spacing="0.06em">OFERTA PÚBLICA</text>
+                                        <text x="-24" y="13" fill="#FFFFFF" font-size="13.5" font-weight="800" font-family="Inter, sans-serif">Emisoras</text>
+                                    </g>
+
+                                    <!-- NODO 3: Inversores - Derecha Media -->
+                                    <g id="node-inversores" class="harness-node" data-actor="inversores" tabindex="0" role="button" aria-label="Inversores" style="--node-color: #10B981;" transform="translate(615, 228)">
+                                        <rect class="node-pulse" x="-82" y="-36" width="164" height="72" rx="16" fill="none" stroke="#10B981" stroke-width="2" opacity="0"/>
+                                        <rect class="node-shell" x="-78" y="-32" width="156" height="64" rx="14" fill="url(#cardGlass)" stroke="#10B981" stroke-width="1.6"/>
+                                        <g transform="translate(-50, 0)">
+                                            <rect x="-16" y="-16" width="32" height="32" rx="9" fill="rgba(16, 185, 129, 0.16)"/>
+                                            <circle cx="-3" cy="-4" r="4" stroke="#10B981" stroke-width="1.8" fill="none"/>
+                                            <path d="M-10 9 C-10 4, 4 4, 4 9 M5 -6 L11 -6 M8 -9 L8 -3 M5 3 L11 3" stroke="#10B981" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                                        </g>
+                                        <text x="-24" y="-4" fill="#10B981" font-size="9.5" font-weight="700" font-family="Inter, sans-serif" letter-spacing="0.06em">AHORRO Y LIQUIDEZ</text>
+                                        <text x="-24" y="13" fill="#FFFFFF" font-size="13.5" font-weight="800" font-family="Inter, sans-serif">Inversores</text>
+                                    </g>
+
+                                    <!-- NODO 4: Cámaras Compensadoras - Núcleo Central -->
+                                    <g id="node-camaras" class="harness-node" data-actor="camaras" tabindex="0" role="button" aria-label="Cámaras Compensadoras" style="--node-color: #EC4899;" transform="translate(380, 272)">
+                                        <rect class="node-pulse" x="-96" y="-38" width="192" height="76" rx="18" fill="none" stroke="#EC4899" stroke-width="2" opacity="0"/>
+                                        <rect class="node-shell" x="-92" y="-34" width="184" height="68" rx="16" fill="url(#cardGlass)" stroke="#EC4899" stroke-width="1.8"/>
+                                        <g transform="translate(-64, 0)">
+                                            <rect x="-16" y="-16" width="32" height="32" rx="9" fill="rgba(236, 72, 153, 0.16)"/>
+                                            <path d="M0 -10 L9 -6 L9 1 C9 6.5 4.5 10 0 11.5 C-4.5 10 -9 6.5 -9 1 L-9 -6 Z M-3.5 0.5 L-1 3 L4 -2.5" stroke="#EC4899" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <text x="-38" y="-5" fill="#EC4899" font-size="9" font-weight="700" font-family="Inter, sans-serif" letter-spacing="0.05em">CONTRAPARTE CENTRAL</text>
+                                        <text x="-38" y="11" fill="#FFFFFF" font-size="12" font-weight="800" font-family="Inter, sans-serif">Cámaras</text>
+                                        <text x="-38" y="24" fill="#E2E8F0" font-size="11.5" font-weight="700" font-family="Inter, sans-serif">Compensadoras</text>
+                                    </g>
+
+                                    <!-- NODO 5: Mercados - Inferior Izquierda -->
+                                    <g id="node-mercados" class="harness-node" data-actor="mercados" tabindex="0" role="button" aria-label="Mercados" style="--node-color: #F59E0B;" transform="translate(225, 418)">
+                                        <rect class="node-pulse" x="-82" y="-36" width="164" height="72" rx="16" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0"/>
+                                        <rect class="node-shell" x="-78" y="-32" width="156" height="64" rx="14" fill="url(#cardGlass)" stroke="#F59E0B" stroke-width="1.6"/>
+                                        <g transform="translate(-50, 0)">
+                                            <rect x="-16" y="-16" width="32" height="32" rx="9" fill="rgba(245, 158, 11, 0.16)"/>
+                                            <path d="M-9 7 L-3 1 L2 4 L9 -5 M5 -5 L9 -5 L9 -1 M-9 10 L9 10" stroke="#F59E0B" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <text x="-24" y="-4" fill="#F59E0B" font-size="9.5" font-weight="700" font-family="Inter, sans-serif" letter-spacing="0.06em">NEGOCIACIÓN</text>
+                                        <text x="-24" y="13" fill="#FFFFFF" font-size="13.5" font-weight="800" font-family="Inter, sans-serif">Mercados</text>
+                                    </g>
+
+                                    <!-- NODO 6: Agentes (ALyC) - Inferior Derecha -->
+                                    <g id="node-agentes" class="harness-node" data-actor="agentes" tabindex="0" role="button" aria-label="Agentes (ALyC)" style="--node-color: #818CF8;" transform="translate(535, 418)">
+                                        <rect class="node-pulse" x="-84" y="-36" width="168" height="72" rx="16" fill="none" stroke="#818CF8" stroke-width="2" opacity="0"/>
+                                        <rect class="node-shell" x="-80" y="-32" width="160" height="64" rx="14" fill="url(#cardGlass)" stroke="#818CF8" stroke-width="1.6"/>
+                                        <g transform="translate(-52, 0)">
+                                            <rect x="-16" y="-16" width="32" height="32" rx="9" fill="rgba(129, 140, 248, 0.16)"/>
+                                            <path d="M-9 -3 L3 -3 M0 -6 L3 -3 L0 0 M9 4 L-3 4 M0 1 L-3 4 L0 7" stroke="#818CF8" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </g>
+                                        <text x="-26" y="-4" fill="#818CF8" font-size="9.5" font-weight="700" font-family="Inter, sans-serif" letter-spacing="0.06em">INTERMEDIACIÓN</text>
+                                        <text x="-26" y="13" fill="#FFFFFF" font-size="13" font-weight="800" font-family="Inter, sans-serif">Agentes (ALyC)</text>
+                                    </g>
+                                </svg>
+                            </div>
+
+                            <!-- Leyendas de Flujo -->
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-xs font-semibold pt-1">
+                                <span class="flex items-center gap-1.5" style="color: #00F0FF;">
+                                    <span class="w-3 h-0.5 inline-block" style="background-color: #00F0FF; box-shadow: 0 0 6px #00F0FF;"></span>
+                                    Flujo de Fondos
+                                </span>
+                                <span class="flex items-center gap-1.5" style="color: #F59E0B;">
+                                    <span class="w-3 h-0.5 inline-block" style="background-color: #F59E0B; box-shadow: 0 0 6px #F59E0B;"></span>
+                                    Flujo de Valores
+                                </span>
+                                <span class="flex items-center gap-1.5" style="color: #38BDF8;">
+                                    <span class="w-3 h-0.5 inline-block" style="background-color: #38BDF8; box-shadow: 0 0 6px #38BDF8;"></span>
+                                    Supervisión CNV
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Panel Inspector Dinámico -->
+                        <aside id="actorInspector" class="gradient-border bg-slate-900/90 backdrop-blur-xl border border-slate-700/70 rounded-2xl p-5 sm:p-6 space-y-5 shadow-xl" aria-live="polite">
+                            <div class="flex items-start justify-between gap-3 border-b border-slate-800/80 pb-4">
+                                <div class="flex items-center gap-3.5">
+                                    <div id="insp-icon-bg" class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl text-slate-950 font-bold shadow-lg shrink-0" style="background-color: #38BDF8;">
+                                        <i id="insp-icon" class="fa-solid fa-scale-balanced"></i>
+                                    </div>
+                                    <div>
+                                        <span id="insp-category" class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Autoridad Nacional</span>
+                                        <h3 id="insp-title" class="text-xl font-extrabold text-white mt-0.5">Regulador (CNV)</h3>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <button type="button" id="insp-speech-btn" onclick="toggleInspectorSpeech()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-3 py-2 rounded-xl shadow-md shadow-emerald-500/20 transition flex items-center gap-1.5 text-xs" title="Escuchar explicación">
+                                        <i class="fa-solid fa-volume-high"></i>
+                                        <span>Escuchar</span>
+                                    </button>
+                                    <button type="button" onclick="stopSpeech()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700/60 text-slate-300 p-2 rounded-xl transition" title="Detener audio">
+                                        <i class="fa-solid fa-stop"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3.5 text-sm leading-relaxed">
+                                <div>
+                                    <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Definición CNV</h4>
+                                    <p id="insp-description" class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800/80 text-slate-200 text-xs sm:text-sm"></p>
+                                </div>
+                                <div>
+                                    <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Función Clave</h4>
+                                    <p id="insp-function" class="text-slate-300 text-xs sm:text-sm"></p>
+                                </div>
+                                <div>
+                                    <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Ejemplos y Tipos</h4>
+                                    <ul id="insp-examples" class="list-disc list-inside text-slate-400 space-y-1 text-xs"></ul>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-slate-950/85 border border-slate-800/90 rounded-xl space-y-2.5">
+                                <div class="flex items-center gap-2 text-[11px] font-bold text-emerald-400 uppercase tracking-wider">
+                                    <i class="fa-solid fa-bolt"></i> Desafío Flash (Autoevaluación)
+                                </div>
+                                <p id="insp-quiz-question" class="text-xs font-semibold text-white"></p>
+                                <div id="insp-quiz-options" class="grid grid-cols-1 gap-2 pt-1"></div>
+                                <div id="insp-quiz-feedback" class="text-xs font-medium hidden mt-2 p-2.5 rounded-lg"></div>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <!-- Módulo Modelo: "Desarmá el Arnés" (Simulación de Falla Sistémica) -->
+                    <div class="border-t border-slate-800/80 pt-5 space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-sliders text-amber-400"></i>
+                                    Prueba de Estrés: ¿Qué pasa si quitamos un actor del mercado?
+                                </h4>
+                                <p class="text-xs text-slate-400">Desactivá una pieza para observar el impacto sistémico sobre la seguridad y transparencia operativa.</p>
+                            </div>
+                            <button type="button" onclick="resetHarnessPieces()" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Restaurar todos los actores
+                            </button>
+                        </div>
+
+                        <div id="stress-toggles" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2"></div>
+
+                        <div id="stress-status-banner" class="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/35 text-emerald-200 text-xs flex items-center gap-2.5">
+                            <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                            <span><strong>Ecosistema íntegro:</strong> Todos los participantes operan bajo fiscalización de la CNV, garantizando liquidez, formación transparente de precios y liquidación segura.</span>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Simulación Paso a Paso -->
+            <section class="m-section">
+                <section class="m-card mca-panel space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-play text-emerald-400"></i>
+                                Simulador de Operación en Vivo
+                            </h3>
+                            <p class="text-slate-400 text-xs sm:text-sm mt-1">
+                                Experimenta el recorrido completo de una orden desde el inversor hasta la liquidación en la Cámara Compensadora.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Progreso de Pasos de la Simulación -->
+                    <div id="sim-steps-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                        <div id="sim-step-1" class="p-4 bg-slate-950/50 border border-slate-800/80 rounded-2xl">
+                            <div class="text-emerald-400 font-bold text-xs uppercase mb-1">Paso 1</div>
+                            <div class="font-bold text-white text-sm">1. Orden de Inversor</div>
+                            <p class="text-xs text-slate-400 mt-1">El Inversor envía orden de compra al Agente (ALYC).</p>
+                        </div>
+                        <div id="sim-step-2" class="p-4 bg-slate-950/50 border border-slate-800/80 rounded-2xl">
+                            <div class="text-emerald-400 font-bold text-xs uppercase mb-1">Paso 2</div>
+                            <div class="font-bold text-white text-sm">2. Oferta en Mercado</div>
+                            <p class="text-xs text-slate-400 mt-1">El Agente ingresa la oferta al Mercado (BYMA/ROFEX).</p>
+                        </div>
+                        <div id="sim-step-3" class="p-4 bg-slate-950/50 border border-slate-800/80 rounded-2xl">
+                            <div class="text-emerald-400 font-bold text-xs uppercase mb-1">Paso 3</div>
+                            <div class="font-bold text-white text-sm">3. Calce con Emisora</div>
+                            <p class="text-xs text-slate-400 mt-1">Se hace match con la oferta de la Emisora o vendedor.</p>
+                        </div>
+                        <div id="sim-step-4" class="p-4 bg-slate-950/50 border border-slate-800/80 rounded-2xl">
+                            <div class="text-emerald-400 font-bold text-xs uppercase mb-1">Paso 4</div>
+                            <div class="font-bold text-white text-sm">4. Compensación</div>
+                            <p class="text-xs text-slate-400 mt-1">La Cámara Compensadora aprueba la transacción.</p>
+                        </div>
+                        <div id="sim-step-5" class="p-4 bg-slate-950/50 border border-slate-800/80 rounded-2xl">
+                            <div class="text-emerald-400 font-bold text-xs uppercase mb-1">Paso 5</div>
+                            <div class="font-bold text-white text-sm">5. Custodia y Supervisión</div>
+                            <p class="text-xs text-slate-400 mt-1">Títulos acreditados en Caja de Valores bajo control de la CNV.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Accesos -->
+            <section class="m-section">
+                <div class="m-section-head">
+                    <div>
+                        <span class="m-kicker">Explorá</span>
+                        <h2>Todo el material, en un solo lugar</h2>
+                    </div>
+                </div>
+                <div class="m-grid m-grid--4">
+                    <a class="m-card mca-cta m-reveal" style="--i:0" href="NORMAS%20CNV%20T.O..HTML">
+                        <span class="m-icon-tile"><i class="fa-solid fa-scale-balanced"></i></span>
+                        <div>
+                            <h3>Normas CNV T.O.</h3>
+                            <p>El Texto Ordenado completo, con búsqueda y lectura artículo por artículo.</p>
+                        </div>
+                        <span class="go">Explorar normas <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                    <a class="m-card mca-cta m-reveal" style="--i:1" href="NORMATIVA.HTML">
+                        <span class="m-icon-tile"><i class="fa-solid fa-file-lines"></i></span>
+                        <div>
+                            <h3>Normativa</h3>
+                            <p>Los 6 módulos de la guía de idoneidad con temarios y bibliografía oficial.</p>
+                        </div>
+                        <span class="go">Ver los módulos <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                    <a class="m-card mca-cta m-reveal" style="--i:2" href="EXTRAS.HTML">
+                        <span class="m-icon-tile"><i class="fa-solid fa-star"></i></span>
+                        <div>
+                            <h3>Extras</h3>
+                            <p>Podcasts, presentaciones y video para reforzar los conceptos clave.</p>
+                        </div>
+                        <span class="go">Abrir recursos <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                    <a class="m-card mca-cta m-reveal" style="--i:3" href="QUIZ.HTML">
+                        <span class="m-icon-tile"><i class="fa-solid fa-graduation-cap"></i></span>
+                        <div>
+                            <h3>Simulador de examen</h3>
+                            <p>Practicá con preguntas basadas en la normativa y revisá cada error con su fuente.</p>
+                        </div>
+                        <span class="go">Practicar ahora <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Marco Regulatorio Institucional y Credenciales -->
+            <section class="m-section">
+                <section class="m-card mca-panel space-y-6">
+                    <div class="text-center max-w-2xl mx-auto space-y-2">
+                        <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">Marco Legal y Respaldo Institucional</span>
+                        <h3 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Supervisión, Transparencia y Protección al Inversor</h3>
+                        <p class="text-xs sm:text-sm text-slate-400">
+                            Todas las actividades operativas dentro del Mercado de Capitales Argentino se rigen por la Ley de Mercado de Capitales N° 26.831 y sus modificaciones reglamentarias dictadas por la CNV.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="bg-slate-950/60 border border-slate-800/80 p-5 rounded-2xl space-y-2">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-base">
+                                <i class="fa-solid fa-gavel"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Ley N° 26.831</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Regula la oferta pública de valores negociables, el funcionamiento de los mercados regulados y las obligaciones de intermediarios.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-950/60 border border-slate-800/80 p-5 rounded-2xl space-y-2">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-base">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Transparencia y Control</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Garantiza la divulgación oportuna de hechos relevantes y la difusión pública en tiempo real de precios y operaciones.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-950/60 border border-slate-800/80 p-5 rounded-2xl space-y-2">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-base">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-white">Protección del Inversor</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Garantiza la custodia independiente de los valores negociables y la fiscalización constante de los agentes autorizados.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <div class="m-kpis m-reveal" style="--i: 2">
+                <div class="m-kpi"><b>6</b><span>Módulos de idoneidad</span></div>
+                <div class="m-kpi"><b>22</b><span>Títulos de las Normas CNV</span></div>
+                <div class="m-kpi"><b>2.200<em>+</em></b><span>Artículos consultables</span></div>
+                <div class="m-kpi"><b>560</b><span>Preguntas de práctica</span></div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="m-footer">
+        <div class="m-footer-grid">
+            <div class="m-footer-brand">
+                <img src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+                <p>Plataforma educativa interactiva sobre el mercado de capitales argentino: normativa de la CNV, guía de idoneidad y práctica con simulador.</p>
+                <div class="mt-6">
+                    <button type="button" onclick="openLegalModal()" class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-bold tracking-wider uppercase bg-slate-900/90 hover:bg-emerald-500/15 text-emerald-400 hover:text-emerald-300 border border-emerald-500/35 transition shadow-lg cursor-pointer">
+                        <i class="fa-solid fa-scale-balanced text-base"></i>
+                        <span>AVISO LEGAL</span>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <h4>Secciones</h4>
+                <ul>
+                    <li><a href="MCA.HTML">Inicio</a></li>
+                    <li><a href="NORMAS%20CNV%20T.O..HTML">Normas CNV T.O.</a></li>
+                    <li><a href="NORMATIVA.HTML">Normativa</a></li>
+                    <li><a href="EXTRAS.HTML">Extras</a></li>
+                    <li><a href="CALCULOS.HTML">Cálculos</a></li>
+                    <li><a href="QUIZ.HTML">Quiz</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Referencias oficiales</h4>
+                <ul>
+                    <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Comisión Nacional de Valores</a></li>
+                    <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Unidad de Información Financiera</a></li>
+                    <li><a href="https://www.bcra.gob.ar" target="_blank" rel="noopener noreferrer">Banco Central (BCRA)</a></li>
+                    <li><a href="https://www.argentina.gob.ar/superintendencia-de-seguros" target="_blank" rel="noopener noreferrer">Superintendencia de Seguros de la Nación</a></li>
+                    <li><a href="https://www.argentina.gob.ar/servicio/rendir-el-examen-de-idoneidad" target="_blank" rel="noopener noreferrer">Examen Idoneidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="m-footer-bottom">© Mercado de Capitales Argentino — Plataforma Educativa Interactiva · Supervisado bajo normativa de la Comisión Nacional de Valores (CNV)</div>
+    </footer>
+
+    <!-- Modal Aviso Legal (Disponible desde el botón en el pie de página) -->
+    <div id="legal-modal" style="position: fixed; inset: 0; z-index: 2147483647;" class="hidden items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+        <div class="gradient-border glow-card bg-[#0B1120] border border-slate-700/80 rounded-2xl max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
+
+            <!-- Cabecera del Modal -->
+            <div class="flex items-start justify-between gap-4 p-5 sm:p-6 border-b border-slate-800/90 bg-slate-950/60">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/35 flex items-center justify-center text-emerald-400 shrink-0">
+                        <i class="fa-solid fa-file-contract text-base"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-emerald-400">Aviso Legal</span>
+                        <h3 id="legal-modal-title" class="text-base sm:text-lg font-extrabold text-white leading-snug mt-0.5">
+                            Limitación de Responsabilidad, Alcance Educativo y Origen de la Información
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuerpo con scroll interno -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-emerald-400 text-xs"></i>
+                        Carácter exclusivamente educativo
+                    </h4>
+                    <p class="text-slate-300">
+                        Todo el material, las guías, las síntesis y los recursos disponibles en este sitio web han sido elaborados únicamente con fines educativos, académicos y de divulgación general. Este portal no persigue fines de asesoramiento comercial ni constituye una oferta o invitación para operar en el mercado de capitales.
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-landmark text-emerald-400 text-xs"></i>
+                        Origen y fuentes públicas de la normativa
+                    </h4>
+                    <p class="text-slate-300">
+                        La totalidad de la información legal y reglamentaria referenciada en esta plataforma proviene exclusivamente de sitios web, boletines y registros oficiales de acceso público (tales como la Comisión Nacional de Valores [CNV], el Boletín Oficial de la República Argentina, y mercados o cámaras compensadoras autorizadas).
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-ban text-emerald-400 text-xs"></i>
+                        Ausencia de opinión profesional y juicios de valor
+                    </h4>
+                    <p class="text-slate-300">
+                        El contenido se expone de manera estrictamente objetiva y descriptiva. No incorpora juicios de valor, interpretaciones vinculantes ni constituye asesoramiento, recomendación de inversión, dictamen u opinión profesional de índole financiera, legal, contable o impositiva (en los términos de la Ley N° 26.831 y sus normas complementarias).
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-emerald-400 text-xs"></i>
+                        Vigencia normativa y responsabilidad del usuario
+                    </h4>
+                    <p class="text-slate-300">
+                        Debido a la dinámica propia de la regulación bursátil, el titular del sitio no garantiza la actualización en tiempo real ni la vigencia permanente de los textos compilados. Se recomienda a los usuarios verificar siempre la normativa directamente en los digesto y textos ordenados oficiales vigentes, así como consultar con un agente autorizado o profesional matriculado antes de tomar cualquier decisión patrimonial o jurídica.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pie del Modal -->
+            <div class="p-4 sm:px-6 border-t border-slate-800/90 bg-slate-950/60 flex justify-end">
+                <button type="button" data-legal-accept="true" onclick="closeLegalModal(true)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm px-6 py-2.5 rounded-xl transition shadow-md shadow-emerald-500/20 cursor-pointer">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lógica JavaScript Principal -->
+    <script>
+        const glossaryDict = {
+            "valores negociables": "Derechos patrimoniales o de crédito (acciones, bonos, ONs) emitidos en serie que se pueden comprar o vender legalmente.",
+            "oferta pública": "Invitación dirigida al público en general para realizar actos jurídicos con valores negociables, autorizada formalmente por la CNV.",
+            "rentabilidad": "Medida de la ganancia o rendimiento obtenido sobre una inversión bursátil en relación con el capital aportado.",
+            "alyc": "Agentes de Liquidación y Compensación. Sociedades o brokers registrados ante CNV autorizados para procesar órdenes de inversión.",
+            "transparencia": "Principio garantizado de acceso público, equitativo, oportuno y completo a toda la información sobre precios y operaciones.",
+            "contraparte central": "Entidad que se interpone entre compradores y vendedores, garantizando el cumplimiento total de la transacción ante imprevistos.",
+            "liquidación": "Proceso definitivo mediante el cual se transfiere el dinero al vendedor y la titularidad de los títulos al comprador."
+        };
+
+        const actorsData = [
+            {
+                id: "cnv",
+                title: "Regulador (CNV)",
+                category: "Autoridad Nacional",
+                icon: "fa-scale-balanced",
+                color: "#38BDF8",
+                fullDesc: "La Comisión Nacional de Valores (CNV) es el organismo autárquico estatal encargado de regular, fiscalizar y supervisar la <span class='glossary-term' title='" + glossaryDict["oferta pública"] + "'>oferta pública</span> bursátil argentina.",
+                marketRole: "Protege al público inversor, vigila el cumplimiento normativo y otorga matrículas.",
+                examples: ["Comisión Nacional de Valores de la República Argentina", "Ley de Mercado de Capitales N° 26.831 y Normas CNV T.O."],
+                failureImpact: "Sin Regulador (CNV): Desaparece la autorización de oferta pública, no hay control de solvencia sobre intermediarios ni régimen sancionatorio frente a fraude o manipulación de mercado.",
+                quiz: {
+                    question: "¿Qué naturaleza de supervisión posee la CNV?",
+                    options: [
+                        { text: "Organismo estatal autárquico de regulación y fiscalización", correct: true },
+                        { text: "Entidad privada orientada al lucro comercial bursátil", correct: false }
+                    ],
+                    explanation: "¡Correcto! Es el ente gubernamental que vigila la transparencia y protege al inversor."
+                }
+            },
+            {
+                id: "emisoras",
+                title: "Emisoras",
+                category: "Buscadores de Capital",
+                icon: "fa-building",
+                color: "#00F0FF",
+                fullDesc: "Las Emisoras son las sociedades anónimas, Pymes o entidades estatales que emiten <span class='glossary-term' title='" + glossaryDict["valores negociables"] + "'>valores negociables</span> (acciones, obligaciones negociables o bonos) en el mercado para captar recursos financieros destinados a inversión productiva mediante <span class='glossary-term' title='" + glossaryDict["oferta pública"] + "'>oferta pública</span>.",
+                marketRole: "Canalizan sus necesidades de financiamiento mediante oferta pública autorizada por la CNV.",
+                examples: ["YPF S.A., YPF Luz, Pymes industriales", "Estado Nacional (Bonos Soberanos)", "Provincias y Municipios"],
+                failureImpact: "Sin Emisoras: No existen nuevos activos genuinos (acciones, ONs o títulos públicos) para financiar la economía real; el mercado primario se paraliza.",
+                quiz: {
+                    question: "¿Cuál es el principal objetivo de una entidad Emisora?",
+                    options: [
+                        { text: "Obtener financiamiento emitiendo títulos en oferta pública", correct: true },
+                        { text: "Comprar acciones de inversores minoristas en forma privada", correct: false }
+                    ],
+                    explanation: "¡Correcto! Las emisoras acuden al mercado bursátil para captar fondos destinados a inversión productiva o crecimiento."
+                }
+            },
+            {
+                id: "inversores",
+                title: "Inversores",
+                category: "Proveedores de Fondos",
+                icon: "fa-users",
+                color: "#10B981",
+                fullDesc: "Los Inversores son ahorristas individuales o institucionales que destinan capital para obtener una <span class='glossary-term' title='" + glossaryDict["rentabilidad"] + "'>rentabilidad</span> a cambio de asumir un riesgo financiero.",
+                marketRole: "Proporcionan la liquidez y el capital necesario para que la economía productiva funcione.",
+                examples: ["Inversores Minoristas (Ahorristas individuales)", "Fondos Comunes de Inversión (FCI)", "Compañías de Seguros y Bancos"],
+                failureImpact: "Sin Inversores: Se agota la demanda de valores negociables, cae la liquidez del mercado secundario y las emisoras no logran colocar sus instrumentos.",
+                quiz: {
+                    question: "¿Qué aporte clave brindan los Inversores al mercado de capitales?",
+                    options: [
+                        { text: "Proveen liquidez y capital para financiar la economía", correct: true },
+                        { text: "Sancionan a las empresas incumplidoras del mercado", correct: false }
+                    ],
+                    explanation: "¡Exacto! Aportan sus ahorros para darle fluidez al mercado y financiar proyectos productivos."
+                }
+            },
+            {
+                id: "agentes",
+                title: "Agentes (ALyC)",
+                category: "Intermediarios Registrados",
+                icon: "fa-handshake",
+                color: "#818CF8",
+                fullDesc: "Los Agentes (como las <span class='glossary-term' title='" + glossaryDict["alyc"] + "'>ALyC</span>) son intermediarios registrados ante la CNV que ejecutan órdenes bursátiles garantizando la <span class='glossary-term' title='" + glossaryDict["transparencia"] + "'>transparencia</span> operacional.",
+                marketRole: "Ofrecen asesoramiento bursátil y estructuran emisiones garantizando la intermediación legal.",
+                examples: ["ALyCs Integrales y Propias", "Agentes de Negociación", "Agentes de Distribución de FCI"],
+                failureImpact: "Sin Agentes (ALyC): Los inversores minoristas pierden el canal autorizado para cursar órdenes hacia los mercados y se interrumpe el perfilamiento y asesoramiento regulado.",
+                quiz: {
+                    question: "¿Qué función técnica cumple un Agente de Liquidación y Compensación (ALyC)?",
+                    options: [
+                        { text: "Intermediar y ejecutar órdenes de compra/venta enviadas por clientes", correct: true },
+                        { text: "Dictar leyes nacionales de la Constitución Argentina", correct: false }
+                    ],
+                    explanation: "¡Muy bien! Las ALyCs conectan a los inversores con los mercados regulados procesando sus órdenes."
+                }
+            },
+            {
+                id: "mercados",
+                title: "Mercados",
+                category: "Plataformas de Negociación",
+                icon: "fa-chart-line",
+                color: "#F59E0B",
+                fullDesc: "Los Mercados institucionales proveen la plataforma tecnológica para que compradores y vendedores negocien valores negociables de forma equitativa.",
+                marketRole: "Establecen reglas claras, difunden información de precios e índices bursátiles en tiempo real.",
+                examples: ["BYMA (Bolsas y Mercados Argentinos)", "Matba Rofex (Futuros y Opciones)", "MAE (Mercado Abierto Electrónico)"],
+                failureImpact: "Sin Mercados: No hay ámbito centralizado de concertación ni formación pública y transparente de precios (cotizaciones e índices en tiempo real).",
+                quiz: {
+                    question: "¿Cuál es la función principal de los Mercados autorizados por CNV?",
+                    options: [
+                        { text: "Brindar el entorno informático regulado para negociar títulos", correct: true },
+                        { text: "Prestar dinero en efectivo directamente a particulares", correct: false }
+                    ],
+                    explanation: "¡Correcto! Proveen los sistemas de negociación y reglas de concurrencia de la oferta y demanda."
+                }
+            },
+            {
+                id: "camaras",
+                title: "Cámaras Compensadoras",
+                category: "Liquidación y Garantía",
+                icon: "fa-shield-halved",
+                color: "#EC4899",
+                fullDesc: "Las Cámaras Compensadoras actúan como <span class='glossary-term' title='" + glossaryDict["contraparte central"] + "'>contraparte central</span> asegurando que la <span class='glossary-term' title='" + glossaryDict["liquidación"] + "'>liquidación</span> de títulos y dinero se efectúe de forma segura.",
+                marketRole: "Minimizan el riesgo de incumplimiento y garantizan la custodia centralizada.",
+                examples: ["Caja de Valores S.A. (Custodia Centralizada)", "Cámaras de Liquidación de BYMA y Matba Rofex"],
+                failureImpact: "Sin Cámaras Compensadoras: Aumenta el riesgo de incumplimiento (default de contraparte) al no existir garantía de entrega contra pago (DvP) ni custodia centralizada.",
+                quiz: {
+                    question: "¿Cómo elimina el riesgo una Cámara Compensadora?",
+                    options: [
+                        { text: "Interponiéndose como contraparte central garante de la liquidación", correct: true },
+                        { text: "Fijando los precios máximos de venta de las empresas", correct: false }
+                    ],
+                    explanation: "¡Excelente! Asume la posición garante entre las partes para evitar el incumplimiento de operaciones."
+                }
+            }
+        ];
+
+        let activeActorId = "cnv";
+        const disabledActors = new Set();
+        let isLegalModalOpen = false;
+
+        const synth = window.speechSynthesis;
+        let voices = [];
+        let selectedVoice = null;
+
+        function openLegalModal() {
+            const modal = document.getElementById('legal-modal');
+            if (!modal) return;
+            isLegalModalOpen = true;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('legal-locked');
+        }
+
+        function closeLegalModal(confirmedByButton = false) {
+            if (confirmedByButton !== true) return;
+            const modal = document.getElementById('legal-modal');
+            if (!modal) return;
+            isLegalModalOpen = false;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('legal-locked');
+        }
+
+        function loadVoices() {
+            voices = synth.getVoices().filter(v => v.lang.toLowerCase().replace('_', '-').startsWith('es'));
+            if (voices.length > 0) {
+                const FEMALE = /elena|paulina|monica|m[óo]nica|helena|sabina|dalia|salom[ée]|valentina|camila|paloma|marisol|luciana|female|mujer|google espa[ñn]ol/i;
+                const MALE = /tom[áa]s|diego|jorge|juan|raul|raúl|pablo|alvaro|álvaro|carlos|male|hombre|enrique|miguel/i;
+                const accentRank = lang => {
+                    const l = lang.toLowerCase().replace('_', '-');
+                    if (l === 'es-ar') return 0;
+                    if (['es-uy', 'es-cl', 'es-py'].includes(l)) return 1;
+                    if (['es-mx', 'es-co', 'es-us', 'es-419', 'es-pe', 'es-ve'].includes(l)) return 2;
+                    if (l === 'es-es') return 4;
+                    return 3;
+                };
+                const quality = v => /natural|online/i.test(v.name) ? -3 : 0;
+                const femaleScore = v => {
+                    let s = accentRank(v.lang) * 10 + quality(v);
+                    if (MALE.test(v.name)) s += 100;
+                    else if (!FEMALE.test(v.name)) s += 5;
+                    return s;
+                };
+                selectedVoice = voices.slice().sort((a, b) => femaleScore(a) - femaleScore(b))[0];
+            }
+        }
+        loadVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        function selectActor(actorId, autoSpeak = false) {
+            const actor = actorsData.find(a => a.id === actorId);
+            if (!actor) return;
+
+            activeActorId = actorId;
+
+            document.querySelectorAll('.harness-node').forEach(node => {
+                node.classList.toggle('is-active', node.dataset.actor === actorId);
+            });
+
+            document.querySelectorAll('.actor-pill').forEach(pill => {
+                pill.classList.toggle('is-active', pill.dataset.pill === actorId);
+            });
+
+            document.getElementById('insp-icon-bg').style.backgroundColor = actor.color;
+            document.getElementById('insp-icon').className = `fa-solid ${actor.icon}`;
+            document.getElementById('insp-category').textContent = actor.category;
+            document.getElementById('insp-title').textContent = actor.title;
+            document.getElementById('insp-description').innerHTML = actor.fullDesc;
+            document.getElementById('insp-function').textContent = actor.marketRole;
+
+            const examplesList = document.getElementById('insp-examples');
+            examplesList.innerHTML = '';
+            actor.examples.forEach(ex => {
+                const li = document.createElement('li');
+                li.textContent = ex;
+                examplesList.appendChild(li);
+            });
+
+            setupInspectorQuiz(actor.quiz);
+
+            if (autoSpeak) {
+                speakText(buildActorSpeech(actor));
+            }
+        }
+
+        function setupInspectorQuiz(quizData) {
+            document.getElementById('insp-quiz-question').textContent = quizData.question;
+            const optionsContainer = document.getElementById('insp-quiz-options');
+            const feedbackEl = document.getElementById('insp-quiz-feedback');
+            optionsContainer.innerHTML = '';
+            feedbackEl.classList.add('hidden');
+
+            quizData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "w-full text-left p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/70 text-xs text-slate-200 transition font-medium";
+                btn.textContent = opt.text;
+                btn.onclick = () => {
+                    Array.from(optionsContainer.children).forEach(b => b.disabled = true);
+                    if (opt.correct) {
+                        btn.classList.add('bg-emerald-950/80', 'border-emerald-500', 'text-emerald-300');
+                        feedbackEl.textContent = quizData.explanation;
+                        feedbackEl.className = "text-xs font-medium mt-2 p-2.5 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 block";
+                    } else {
+                        btn.classList.add('bg-rose-950/80', 'border-rose-500', 'text-rose-300');
+                        feedbackEl.textContent = "Incorrecto. " + quizData.explanation;
+                        feedbackEl.className = "text-xs font-medium mt-2 p-2.5 rounded-xl bg-rose-950/80 border border-rose-500/50 text-rose-200 block";
+                    }
+                };
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function initStressTest() {
+            const container = document.getElementById('stress-toggles');
+            container.innerHTML = '';
+
+            actorsData.forEach(actor => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'toggle-piece-btn';
+                btn.dataset.toggleActor = actor.id;
+                btn.innerHTML = `
+                    <span class="truncate">${actor.title}</span>
+                    <span class="text-[10px] uppercase px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 status-tag">Activo</span>
+                `;
+                btn.onclick = () => toggleActorPiece(actor.id);
+                container.appendChild(btn);
+            });
+        }
+
+        function toggleActorPiece(actorId) {
+            if (disabledActors.has(actorId)) {
+                disabledActors.delete(actorId);
+            } else {
+                disabledActors.add(actorId);
+                selectActor(actorId, false);
+            }
+            updateStressUI();
+        }
+
+        function resetHarnessPieces() {
+            disabledActors.clear();
+            updateStressUI();
+        }
+
+        function updateStressUI() {
+            actorsData.forEach(actor => {
+                const isOff = disabledActors.has(actor.id);
+                const svgNode = document.getElementById(`node-${actor.id}`);
+                if (svgNode) svgNode.classList.toggle('is-disabled', isOff);
+
+                const btn = document.querySelector(`[data-toggle-actor="${actor.id}"]`);
+                if (btn) {
+                    btn.classList.toggle('is-off', isOff);
+                    const tag = btn.querySelector('.status-tag');
+                    if (tag) {
+                        tag.textContent = isOff ? 'Sin pieza' : 'Activo';
+                        tag.className = isOff
+                            ? 'text-[10px] uppercase px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 status-tag'
+                            : 'text-[10px] uppercase px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 status-tag';
+                    }
+                }
+            });
+
+            const banner = document.getElementById('stress-status-banner');
+            if (disabledActors.size === 0) {
+                banner.className = 'p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/35 text-emerald-200 text-xs flex items-center gap-2.5';
+                banner.innerHTML = `
+                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                    <span><strong>Ecosistema íntegro:</strong> Todos los participantes operan bajo fiscalización de la CNV, garantizando liquidez, formación transparente de precios y liquidación segura.</span>
+                `;
+            } else {
+                const impacts = Array.from(disabledActors)
+                    .map(id => actorsData.find(a => a.id === id)?.failureImpact)
+                    .filter(Boolean)
+                    .join(' ');
+                banner.className = 'p-3.5 rounded-xl bg-rose-950/45 border border-rose-500/45 text-rose-200 text-xs flex items-start gap-2.5';
+                banner.innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation text-rose-400 text-sm mt-0.5"></i>
+                    <span><strong>Falla sistémica detectada (${disabledActors.size} pieza/s desactivada/s):</strong> ${impacts}</span>
+                `;
+            }
+        }
+
+        function speakText(text) {
+            stopSpeech();
+            if (!('speechSynthesis' in window)) return;
+            if (!selectedVoice) loadVoices();
+
+            const parts = Array.isArray(text) ? text : [text];
+            parts.forEach(part => {
+                const utterance = new SpeechSynthesisUtterance(part);
+                utterance.rate = 0.95;
+                utterance.pitch = 1.05;
+                utterance.lang = 'es-AR';
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                    utterance.lang = selectedVoice.lang;
+                }
+                synth.speak(utterance);
+            });
+        }
+
+        function buildActorSpeech(actor) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = actor.fullDesc;
+            const definition = tmp.textContent.replace(/\s+/g, ' ').trim();
+            const endDot = s => /[.!?]$/.test(s) ? s : s + '.';
+            return [
+                'Definición CNV. ' + endDot(definition),
+                'Función clave. ' + endDot(actor.marketRole),
+                'Ejemplos y tipos. ' + actor.examples.map(endDot).join(' ')
+            ];
+        }
+
+        function toggleInspectorSpeech() {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+            } else if (synth.paused) {
+                synth.resume();
+            } else {
+                const actor = actorsData.find(a => a.id === activeActorId);
+                if (actor) speakText(buildActorSpeech(actor));
+            }
+        }
+
+        function stopSpeech() {
+            if (synth.speaking || synth.paused) {
+                synth.cancel();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadVoices();
+            initStressTest();
+            selectActor('cnv', false);
+
+            document.querySelectorAll('.harness-node').forEach(node => {
+                node.addEventListener('click', () => selectActor(node.dataset.actor, false));
+                node.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectActor(node.dataset.actor, false);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

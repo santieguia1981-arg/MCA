@@ -1,0 +1,11 @@
+# Cabeceras de seguridad HTTP (Netlify / Cloudflare Pages).
+# Si se publica en otro hosting (Apache, Nginx, GitHub Pages...) hay que configurar lo mismo allí.
+# Las <meta> de cada página cubren CSP y referrer, pero NO frame-ancestors, HSTS ni X-Frame-Options.
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; media-src 'self' https://res.cloudinary.com; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests

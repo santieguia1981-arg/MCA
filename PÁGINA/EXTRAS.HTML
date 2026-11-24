@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Seguridad: CSP con soporte para recursos multimedia en Cloudinary, sin referrer, forzar HTTPS fuera de localhost -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: https://res.cloudinary.com; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; font-src 'self' data: file:; media-src 'self' file: https://res.cloudinary.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="description" content="Podcasts, presentaciones y video para reforzar el estudio del Mercado de Capitales Argentino.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="Recursos y Contenido Extra | Mercado de Capitales">
+    <meta property="og:description" content="Podcasts, presentaciones y video para reforzar el estudio del Mercado de Capitales Argentino.">
+    <link rel="icon" type="image/png" href="img/logo-mca.png?v=2">
+    <script src="js/tema.js"></script>
+    <script src="js/ui.js" defer></script>
+    <script>if (location.protocol === 'http:' && !/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) location.replace('https:' + location.href.substring(5));</script>
+    <title>Recursos y Contenido Extra | Mercado de Capitales</title>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/mca.css">
+    <style>
+        body { display: flex; flex-direction: column; }
+        .x-card { display: flex; flex-direction: column; gap: 0.9rem; }
+        .x-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+        .x-top-badges { display: inline-flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; justify-content: flex-end; }
+        .x-done {
+            display: none;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.28rem 0.62rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            color: #4ade80;
+            background: rgba(34, 197, 94, 0.14);
+            border: 1px solid rgba(34, 197, 94, 0.38);
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.16);
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+        .x-done i { color: #22c55e; font-size: 0.85rem; }
+        .x-done:hover { background: rgba(34, 197, 94, 0.22); transform: scale(1.03); }
+        .x-card.is-completed .x-done { display: inline-flex; }
+        .x-card h3 { margin: 0.25rem 0 0; }
+        .x-card p { flex: 1; }
+        .x-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 0.75rem; margin-top: 0.35rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
+        .x-action { background: transparent; border: 0; padding: 0; cursor: pointer; font-family: inherit; color: var(--acc-2); font-size: 0.8rem; font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.5rem; transition: color 0.2s ease; }
+        .x-action i { transition: transform 0.2s ease; }
+        .x-action:hover,
+        a.x-card:hover .x-action { color: var(--ink-strong); }
+        .x-action:hover i,
+        a.x-card:hover .x-action i { transform: translateX(4px); }
+        .x-player { display: none; margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px dashed var(--line); }
+        .x-player.is-open { display: block; }
+        .x-player audio { width: 100%; height: 36px; display: block; }
+    
+  /* Botón y Modal AVISO LEGAL (referencia MCA.HTML) */
+  .m-footer-brand .mt-6 { margin-top: 1.5rem; }
+  .m-footer-brand button[onclick*="openLegalModal"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background-color: rgba(15, 23, 42, 0.9);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.35), 0 4px 6px -4px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .m-footer-brand button[onclick*="openLegalModal"]:hover {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+  }
+  #legal-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    pointer-events: auto;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(2, 6, 23, 0.95);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  #legal-modal.hidden { display: none !important; }
+  #legal-modal.flex { display: flex !important; }
+  #legal-modal > div {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01)), #0B1120;
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    border-radius: 1rem;
+    max-width: 42rem;
+    width: 100%;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  #legal-modal > div::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(45, 212, 191, 0.1), rgba(255, 255, 255, 0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  #legal-modal > div > div:first-child {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.9);
+    background-color: rgba(2, 6, 23, 0.6);
+  }
+  #legal-modal > div > div:first-child > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  #legal-modal > div > div:first-child > div:first-child > div:first-child {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background-color: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+    flex-shrink: 0;
+  }
+  #legal-modal > div > div:first-child span {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #34d399;
+  }
+  #legal-modal-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.35;
+    margin: 0.125rem 0 0;
+  }
+  #legal-modal > div > div:nth-child(2) {
+    padding: 1.25rem 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    line-height: 1.625;
+  }
+  #legal-modal > div > div:nth-child(2) > div {
+    background-color: rgba(2, 6, 23, 0.7);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(30, 41, 59, 0.8);
+  }
+  #legal-modal > div > div:nth-child(2) h4 {
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.375rem;
+    font-size: 0.92rem;
+  }
+  #legal-modal > div > div:nth-child(2) h4 i { color: #34d399; font-size: 0.75rem; }
+  #legal-modal > div > div:nth-child(2) p { margin: 0; color: #cbd5e1; }
+  #legal-modal > div > div:last-child {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(30, 41, 59, 0.9);
+    background-color: rgba(2, 6, 23, 0.6);
+    display: flex;
+    justify-content: flex-end;
+  }
+  #legal-modal button[data-legal-accept="true"] {
+    background-color: #10b981;
+    color: #020617;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.625rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 0;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    cursor: pointer;
+  }
+  #legal-modal button[data-legal-accept="true"]:hover {
+    background-color: #34d399;
+  }
+  body.legal-locked {
+    overflow: hidden !important;
+  }
+</style>
+</head>
+<body>
+
+    <header class="m-nav">
+        <div class="m-nav-inner">
+            <a class="m-brand" href="MCA.HTML" aria-label="Inicio · MCA">
+                <img class="m-brand-logo" src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+                <span class="m-brand-text"><small>Mercado de Capitales</small><strong>MCA • Finanzas y Normativa</strong></span>
+            </a>
+            <nav class="m-links" aria-label="Navegación principal">
+            <a href="MCA.HTML">Inicio</a>
+            <a href="NORMAS%20CNV%20T.O..HTML">Normas CNV T.O.</a>
+            <a href="NORMATIVA.HTML">Normativa</a>
+            <a href="EXTRAS.HTML" aria-current="page">Extras</a>
+            <a href="CALCULOS.HTML">Cálculos</a>
+            <a href="QUIZ.HTML" target="_blank" rel="noopener">Quiz</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="m-main">
+        <div class="m-container">
+
+            <section class="m-hero m-reveal">
+                <span class="m-eyebrow"><span class="dot"></span> Biblioteca de estudio</span>
+                <h1>Recursos y <span class="grad">Contenido Extra</span></h1>
+                <p class="lead">Herramientas analíticas avanzadas y conceptos normativos clave para profesionales del mercado de capitales.</p>
+            </section>
+
+            <!-- Tarjetas de Estudio -->
+            <section class="m-section" style="margin-top: 1rem;">
+                <div class="m-section-head">
+                    <div>
+                        <span class="m-kicker">Material</span>
+                        <h2>Podcasts, presentaciones y video</h2>
+                    </div>
+                </div>
+                <div class="m-grid m-grid--cards">
+                <article class="m-card x-card m-reveal" style="--i:0" data-resource-id="opas-pequeno-inversor">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-user-shield"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Cómo protegen las OPAs al pequeño inversor</h3>
+                    <p>Mediante el principio de igualdad de trato, exigiendo que quien adquiere el control societario formule una oferta pública de adquisición extensiva a todos los accionistas minoritarios al mismo precio.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Protección al Inversor</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190930/Como_protegen_las_OPAs_al_peque%C3%B1o_inversor.mp4"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:1" data-resource-id="ley-26831">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-scale-balanced"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Ley 26.831</h3>
+                    <p>Ley de Mercado de Capitales de Argentina, sancionada en 2012, que reformó el marco regulatorio, fortaleciendo el rol de la CNV y modernizando la infraestructura de negociación.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Marco Legal</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190931/Ley_26831.mp4"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:2" data-resource-id="reglas-control-empresas">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-building-flag"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Reglas para tomar el control de empresas</h3>
+                    <p>Normas de la CNV que regulan las tomas de control societario (OPAs obligatorias), garantizando transparencia, información pública oportuna y equidad para todos los inversores.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Gobierno Corporativo</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190939/Reglas_para_tomar_el_control_de_empresas.mp4"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:3" data-resource-id="regulacion-mercado-capitales">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-gavel"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Regulación del mercado de capitales argentino</h3>
+                    <p>Sistema normativo encabezado por la CNV que supervisa la transparencia, la oferta pública de valores negociables y la integridad de los mercados autorizados.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Supervisión CNV</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190918/Regulacion_del_mercado_de_capitales_argentino.mp4"></audio>
+                    </div>
+                </article>
+
+                <a class="m-card x-card m-reveal" style="--i:4" data-resource-id="resol-78-uif" href="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190920/RG_78_UIF.mp4" target="_blank" rel="noopener noreferrer">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-file-contract"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Video visto (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Visto</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-circle-play"></i> Video</span>
+                        </div>
+                    </div>
+                    <h3>Resol. 78 UIF</h3>
+                    <p>Normativa de la Unidad de Información Financiera que detalla los lineamientos y obligaciones específicas en materia de prevención de lavado de activos para los agentes del mercado de capitales.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Normativa UIF</span>
+                        <span class="x-action">Ver video <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <article class="m-card x-card m-reveal" style="--i:5" data-resource-id="valen-los-balances">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-chart-pie"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Valen los balances o manda el mercado</h3>
+                    <p>Dilema de valoración donde los estados contables (balances) reflejan la situación histórica y formal de la empresa, mientras que el precio de mercado incorpora expectativas futuras, flujos y psicología de los inversores.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Análisis Financiero</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190917/Valen_los_balances_o_manda_el_mercado.mp4"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:6" data-resource-id="analisis-renta-fija">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-chart-line"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Análisis de Renta Fija</h3>
+                    <p>Cómo se analizan los bonos y demás instrumentos de renta fija: flujos conocidos, precio, rendimiento y riesgos que debe evaluar el inversor.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Renta Fija</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190874/Renta_Fija.mp3"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:7" data-resource-id="fideicomiso-financiero">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-landmark"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Cómo funciona el fideicomiso financiero</h3>
+                    <p>Estructura del fideicomiso financiero: fiduciante, fiduciario y beneficiarios, patrimonio separado y emisión de valores fiduciarios para el financiamiento.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Fideicomisos</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190893/Como_funciona_el_fideicomiso_financiero.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:8" data-resource-id="opa-en-argentina">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-handshake"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Cómo funciona una OPA en Argentina</h3>
+                    <p>Paso a paso de la oferta pública de adquisición: cuándo es obligatoria, quiénes participan y qué etapas siguen ante la CNV.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Gobierno Corporativo</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190906/Como_funciona_una_OPA_en_Argentina.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:9" data-resource-id="derivados-financieros">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-arrows-left-right"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Cómo funcionan los derivados financieros</h3>
+                    <p>Qué son los contratos de futuros y opciones, cómo derivan su valor de un activo subyacente y para qué se usan en el mercado.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Derivados</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190874/Como_funcionan_los_derivados_financieros.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:10" data-resource-id="derivados-blindan-economia">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-umbrella"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Cómo los derivados blindan la economía</h3>
+                    <p>El rol de los derivados como herramienta de cobertura frente a la volatilidad de precios, tasas y tipos de cambio.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Derivados</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190905/Como_los_derivados_blindan_la_economia.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:11" data-resource-id="analisis-y-psicologia">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-brain"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Análisis financiero y psicología del mercado</h3>
+                    <p>Cómo se combinan el análisis de los números de una empresa con el comportamiento y las expectativas de los inversores.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Análisis Financiero</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190883/Analisis_financiero_y_psicologia_del_mercado.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:12" data-resource-id="matematicas-y-psicologia">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-calculator"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Matemáticas y psicología del mercado bursátil</h3>
+                    <p>Los modelos matemáticos del mercado de valores y los sesgos psicológicos que explican por qué los precios no siempre los siguen.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Mercado Bursátil</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190885/Matematicas_y_psicologia_del_mercado_bursatil.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:13" data-resource-id="podcast-plaft">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-shield-halved"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>PLAFT</h3>
+                    <p>Prevención del lavado de activos y la financiación del terrorismo: obligaciones de los sujetos obligados y controles en el mercado de capitales.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Cumplimiento Normativo</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795187641/PLAFT.mp3"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:14" data-resource-id="rigidez-algoritmica">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-robot"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Rigidez algorítmica o flexibilidad en el mercado</h3>
+                    <p>Debate entre reglas automáticas y criterio flexible en la operatoria del mercado, y sus efectos sobre la estabilidad y la toma de decisiones.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Mercado Bursátil</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795190884/Rigidez_algoritmica_o_flexibilidad_en_el_mercado.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:15" data-resource-id="auditores-balances-falsos">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-magnifying-glass-dollar"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Cómo los auditores detectan balances falsos</h3>
+                    <p>Señales de alerta contables, pruebas sustantivas, inconsistencias entre flujos y resultados, y procedimientos de auditoría para identificar distorsiones en estados financieros.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Auditoría y Contabilidad</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795468296/Como_los_auditores_detectan_balances_falsos.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:16" data-resource-id="psicologia-velas-japonesas">
+                    <div class="x-top">
+                        <span class="m-icon-tile" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <!-- Vela 1 (verde) -->
+                                <line x1="5" y1="3" x2="5" y2="21" stroke="#34d399" stroke-width="1.8" stroke-linecap="round"/>
+                                <rect x="2.8" y="8" width="4.4" height="8" rx="1" fill="#34d399"/>
+                                <!-- Vela 2 (roja) -->
+                                <line x1="12" y1="5" x2="12" y2="20" stroke="#f87171" stroke-width="1.8" stroke-linecap="round"/>
+                                <rect x="9.8" y="9" width="4.4" height="7" rx="1" fill="#f87171"/>
+                                <!-- Vela 3 (verde) -->
+                                <line x1="19" y1="3" x2="19" y2="19" stroke="#34d399" stroke-width="1.8" stroke-linecap="round"/>
+                                <rect x="16.8" y="6.5" width="4.4" height="8.5" rx="1" fill="#34d399"/>
+                            </svg>
+                        </span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>La psicología de las velas japonesas</h3>
+                    <p>Interpretación de apertura, cierre, máximos y mínimos de cada período para leer la puja entre compradores y vendedores, la presión de oferta y demanda y los puntos de inflexión.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Análisis Técnico</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795468337/La_psicologia_de_las_velas_japonesas.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:17" data-resource-id="costo-penal-dinero-sucio">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-handcuffs"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>El costo penal de aceptar dinero sucio</h3>
+                    <p>Consecuencias penales, sanciones regulatorias y responsabilidades legales que enfrentan los sujetos obligados y agentes del mercado frente al lavado de activos.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Cumplimiento Normativo</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795528770/El_costo_penal_de_aceptar_dinero_sucio.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:18" data-resource-id="asi-funcionan-fondos-comunes">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-diagram-project"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Así funcionan por dentro los fondos comunes</h3>
+                    <p>Estructura operativa y legal de los Fondos Comunes de Inversión: separación patrimonial entre la Sociedad Gerente, la Sociedad Depositaria y los cuotapartistas.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Estructura FCI</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795529010/Asi_funcionan_por_dentro_los_fondos_comunes.m4a"></audio>
+                    </div>
+                </article>
+
+                <article class="m-card x-card m-reveal" style="--i:19" data-resource-id="como-funciona-mercado-capitales">
+                    <div class="x-top">
+                        <span class="m-icon-tile"><i class="fa-solid fa-building-columns"></i></span>
+                        <div class="x-top-badges">
+                            <span class="x-done" title="Podcast escuchado (clic para desmarcar)"><i class="fa-solid fa-circle-check"></i> Escuchado</span>
+                            <span class="m-chip m-chip--muted"><i class="fa-solid fa-headphones"></i> Podcast</span>
+                        </div>
+                    </div>
+                    <h3>Cómo funciona el mercado de capitales argentino</h3>
+                    <p>Visión integral de los participantes, mercados autorizados, agentes, instrumentos de financiamiento e inversión y el rol de supervisión de la CNV.</p>
+                    <div class="x-foot">
+                        <span class="m-chip">Mercado de Capitales</span>
+                        <button type="button" class="x-action js-podcast-toggle" aria-expanded="false">Escuchar podcast <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <div class="x-player">
+                        <audio controls preload="metadata" src="https://res.cloudinary.com/bbcp8n6k/video/upload/v1795526732/Como_funciona_el_mercado_de_capitales_argentino.m4a"></audio>
+                    </div>
+                </article>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="m-footer">
+        <div class="m-footer-grid">
+            <div class="m-footer-brand">
+                <img src="img/logo-mca.png?v=2" alt="MCA – Mercado de Capitales Argentino" draggable="false">
+                <p>Plataforma educativa interactiva sobre el mercado de capitales argentino: normativa de la CNV, guía de idoneidad y práctica con simulador.</p>
+            
+                <div class="mt-6">
+                    <button type="button" onclick="openLegalModal()" class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-bold tracking-wider uppercase bg-slate-900/90 hover:bg-emerald-500/15 text-emerald-400 hover:text-emerald-300 border border-emerald-500/35 transition shadow-lg cursor-pointer">
+                        <i class="fa-solid fa-scale-balanced text-base"></i>
+                        <span>AVISO LEGAL</span>
+                    </button>
+                </div>
+        </div>
+            <div>
+                <h4>Secciones</h4>
+                <ul>
+                    <li><a href="MCA.HTML">Inicio</a></li>
+                    <li><a href="NORMAS%20CNV%20T.O..HTML">Normas CNV T.O.</a></li>
+                    <li><a href="NORMATIVA.HTML">Normativa</a></li>
+                    <li><a href="EXTRAS.HTML">Extras</a></li>
+                    <li><a href="CALCULOS.HTML">Cálculos</a></li>
+                    <li><a href="QUIZ.HTML">Quiz</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Referencias oficiales</h4>
+                <ul>
+                    <li><a href="https://www.argentina.gob.ar/cnv" target="_blank" rel="noopener noreferrer">Comisión Nacional de Valores</a></li>
+                    <li><a href="https://www.argentina.gob.ar/uif" target="_blank" rel="noopener noreferrer">Unidad de Información Financiera</a></li>
+                    <li><a href="https://www.bcra.gob.ar" target="_blank" rel="noopener noreferrer">Banco Central (BCRA)</a></li>
+                    <li><a href="https://www.argentina.gob.ar/superintendencia-de-seguros" target="_blank" rel="noopener noreferrer">Superintendencia de Seguros de la Nación</a></li>
+                    <li><a href="https://www.argentina.gob.ar/servicio/rendir-el-examen-de-idoneidad" target="_blank" rel="noopener noreferrer">Examen Idoneidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="m-footer-bottom">&copy; 2026 MCA • Todos los derechos reservados. Estándares normativos y financieros actualizados.</div>
+    </footer>
+
+    <!-- Modal Aviso Legal (Disponible desde el botón en el pie de página) -->
+    <div id="legal-modal" style="position: fixed; inset: 0; z-index: 2147483647;" class="hidden items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+        <div class="gradient-border glow-card bg-[#0B1120] border border-slate-700/80 rounded-2xl max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
+
+            <!-- Cabecera del Modal -->
+            <div class="flex items-start justify-between gap-4 p-5 sm:p-6 border-b border-slate-800/90 bg-slate-950/60">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/35 flex items-center justify-center text-emerald-400 shrink-0">
+                        <i class="fa-solid fa-file-contract text-base"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-emerald-400">Aviso Legal</span>
+                        <h3 id="legal-modal-title" class="text-base sm:text-lg font-extrabold text-white leading-snug mt-0.5">
+                            Limitación de Responsabilidad, Alcance Educativo y Origen de la Información
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuerpo con scroll interno -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-emerald-400 text-xs"></i>
+                        Carácter exclusivamente educativo
+                    </h4>
+                    <p class="text-slate-300">
+                        Todo el material, las guías, las síntesis y los recursos disponibles en este sitio web han sido elaborados únicamente con fines educativos, académicos y de divulgación general. Este portal no persigue fines de asesoramiento comercial ni constituye una oferta o invitación para operar en el mercado de capitales.
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-landmark text-emerald-400 text-xs"></i>
+                        Origen y fuentes públicas de la normativa
+                    </h4>
+                    <p class="text-slate-300">
+                        La totalidad de la información legal y reglamentaria referenciada en esta plataforma proviene exclusivamente de sitios web, boletines y registros oficiales de acceso público (tales como la Comisión Nacional de Valores [CNV], el Boletín Oficial de la República Argentina, y mercados o cámaras compensadoras autorizadas).
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-ban text-emerald-400 text-xs"></i>
+                        Ausencia de opinión profesional y juicios de valor
+                    </h4>
+                    <p class="text-slate-300">
+                        El contenido se expone de manera estrictamente objetiva y descriptiva. No incorpora juicios de valor, interpretaciones vinculantes ni constituye asesoramiento, recomendación de inversión, dictamen u opinión profesional de índole financiera, legal, contable o impositiva (en los términos de la Ley N° 26.831 y sus normas complementarias).
+                    </p>
+                </div>
+
+                <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 space-y-1.5">
+                    <h4 class="font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-emerald-400 text-xs"></i>
+                        Vigencia normativa y responsabilidad del usuario
+                    </h4>
+                    <p class="text-slate-300">
+                        Debido a la dinámica propia de la regulación bursátil, el titular del sitio no garantiza la actualización en tiempo real ni la vigencia permanente de los textos compilados. Se recomienda a los usuarios verificar siempre la normativa directamente en los digesto y textos ordenados oficiales vigentes, así como consultar con un agente autorizado o profesional matriculado antes de tomar cualquier decisión patrimonial o jurídica.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pie del Modal -->
+            <div class="p-4 sm:px-6 border-t border-slate-800/90 bg-slate-950/60 flex justify-end">
+                <button type="button" data-legal-accept="true" onclick="closeLegalModal(true)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm px-6 py-2.5 rounded-xl transition shadow-md shadow-emerald-500/20 cursor-pointer">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const STORAGE_KEY = 'mca_extras_completed_v1';
+            let completedMap = {};
+
+            try {
+                completedMap = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {};
+            } catch (e) {
+                completedMap = {};
+            }
+
+            const saveState = () => {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(completedMap));
+                } catch (e) {}
+            };
+
+            const setCompleted = (card, isDone) => {
+                if (!card) return;
+                const id = card.dataset.resourceId;
+                card.classList.toggle('is-completed', isDone);
+                if (id) {
+                    if (isDone) {
+                        completedMap[id] = true;
+                    } else {
+                        delete completedMap[id];
+                    }
+                    saveState();
+                }
+            };
+
+            // Restaurar estado guardado y configurar eventos por tarjeta
+            document.querySelectorAll('.x-card[data-resource-id]').forEach((card) => {
+                const id = card.dataset.resourceId;
+                if (completedMap[id]) {
+                    card.classList.add('is-completed');
+                }
+
+                // Permitir desmarcar haciendo clic en el tilde verde
+                const doneBadge = card.querySelector('.x-done');
+                if (doneBadge) {
+                    doneBadge.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setCompleted(card, false);
+                    });
+                }
+
+                // Si la tarjeta es un enlace externo (Presentación o Video), marcar como visto al abrir
+                if (card.tagName === 'A') {
+                    card.addEventListener('click', () => {
+                        setCompleted(card, true);
+                    });
+                }
+            });
+
+            // Reproductores de podcast
+            const buttons = document.querySelectorAll('.js-podcast-toggle');
+            const allAudios = document.querySelectorAll('.x-player audio');
+
+            allAudios.forEach((audio) => {
+                const card = audio.closest('.x-card');
+
+                audio.addEventListener('play', () => {
+                    allAudios.forEach((other) => {
+                        if (other !== audio) other.pause();
+                    });
+                });
+
+                // Marcar como escuchado al llegar al 90% del audio o al finalizar
+                audio.addEventListener('timeupdate', () => {
+                    if (audio.duration && (audio.currentTime / audio.duration) >= 0.9) {
+                        setCompleted(card, true);
+                    }
+                });
+
+                audio.addEventListener('ended', () => {
+                    setCompleted(card, true);
+                });
+            });
+
+            buttons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const card = btn.closest('.x-card');
+                    const playerBox = card ? card.querySelector('.x-player') : null;
+                    const audio = playerBox ? playerBox.querySelector('audio') : null;
+                    if (!playerBox || !audio) return;
+
+                    const isOpen = playerBox.classList.toggle('is-open');
+                    btn.setAttribute('aria-expanded', String(isOpen));
+
+                    if (isOpen) {
+                        audio.play().catch(() => {});
+                    } else {
+                        audio.pause();
+                    }
+                });
+            });
+        });
+    
+        let isLegalModalOpen = false;
+
+function openLegalModal() {
+            const modal = document.getElementById('legal-modal');
+            if (!modal) return;
+            isLegalModalOpen = true;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('legal-locked');
+        }
+
+function closeLegalModal(confirmedByButton = false) {
+            if (confirmedByButton !== true) return;
+            const modal = document.getElementById('legal-modal');
+            if (!modal) return;
+            isLegalModalOpen = false;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('legal-locked');
+        }
+
+</script>
+
+</body>
+</html>
