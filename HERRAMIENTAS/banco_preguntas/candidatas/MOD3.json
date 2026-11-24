@@ -1,0 +1,717 @@
+[
+ {
+  "module": "MOD3",
+  "question": "Según el Título XII de las Normas CNV, la enajenación de bienes del activo fijo debe informarse como hecho relevante cuando representa más de un cierto porcentaje de ese rubro según el último balance. ¿Cuál es ese porcentaje?",
+  "correct": "El 15% del rubro activo fijo",
+  "wrong": [
+   "El 5% del rubro activo fijo",
+   "El 10% del rubro activo fijo",
+   "El 25% del rubro activo fijo"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 3°, inc. 2)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Enajenación de bienes del activo fijo que representen más del QUINCE POR CIENTO (15%) de este rubro según el últimobalance."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el Título XII de las Normas CNV, el gravamen de bienes con hipotecas o prendas es un hecho relevante cuando, en conjunto, supera un porcentaje del patrimonio neto. ¿Cuál es?",
+  "correct": "El 10% del patrimonio neto",
+  "wrong": [
+   "El 1% del patrimonio neto",
+   "El 15% del patrimonio neto",
+   "El 20% del patrimonio neto"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 3°, inc. 12)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Gravamen de los bienes con hipotecas o prendas cuando ellas superen en conjunto el DIEZ POR CIENTO (10%) del patrimonioneto."
+ },
+ {
+  "module": "MOD3",
+  "question": "Respecto de los avales y fianzas otorgados por operaciones no vinculadas directamente a su actividad, ¿a partir de qué porcentaje del patrimonio neto deben informarse como hecho relevante según el Título XII de las Normas CNV?",
+  "correct": "Cuando superen el 1% del patrimonio neto",
+  "wrong": [
+   "Cuando superen el 5% del patrimonio neto",
+   "Cuando superen el 10% del patrimonio neto",
+   "Cuando superen el 15% del patrimonio neto"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 3°, inc. 13)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "así como los otorgados por operaciones no vinculadas directamente a su actividad cuando superen el UNO POR CIENTO (1%) de su patrimonio neto."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el Título XII de las Normas CNV, los despidos que representen el 10% del personal de la entidad deben informarse como hecho relevante cuando ocurren dentro de un período de:",
+  "correct": "Seis meses",
+  "wrong": [
+   "Un mes",
+   "Tres meses",
+   "Doce meses"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 3°, inc. 34)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Despidos de trabajadores, con causa o sin ella, que representen un DIEZ POR CIENTO (10%) del número total que prestan servicios en la entidad o en sus plantas industriales, dentro de un período de SEIS (6) meses"
+ },
+ {
+  "module": "MOD3",
+  "question": "Las emisoras que NO tienen valores negociables listados en Mercados, en cuanto a la difusión de los hechos relevantes (Título XII, art. 5° de las Normas CNV), deben:",
+  "correct": "Contratar su publicación en los boletines de los Mercados u otro medio de amplia difusión",
+  "wrong": [
+   "Informarlos únicamente a la CNV, sin otra publicación obligatoria",
+   "Publicarlos solamente en su página web institucional",
+   "Comunicarlos a los accionistas en la próxima asamblea anual"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 5°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Las emisoras que no tengan valores negociables listados en Mercados, deberán contratar su publicación en esos boletines o en otro medio que garantice su amplia difusión."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 6° del Título XII de las Normas CNV, ¿cuántas sociedades emisoras con mayor capitalización al cierre de cada mes deben remitir el listado de accionistas residentes y no residentes cuando el ADCVN o el Agente de Registro y Pago no llevan el registro de accionistas?",
+  "correct": "Las veinticinco (25) con mayor capitalización",
+  "wrong": [
+   "Las diez (10) con mayor capitalización",
+   "Las cincuenta (50) con mayor capitalización",
+   "Las cien (100) con mayor capitalización"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 6°, inc. 2.b)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Las VEINTICINCO (25) sociedades emisoras con mayor capitalización al cierre de cada mes calendario"
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 8° inc. b) del Título XII de las Normas CNV, quienes deben informar sus tenencias accionarias completan la presentación dentro de los diez días hábiles de tomar posesión del cargo y hasta ___ posteriores al efectivo cese:",
+  "correct": "Seis meses",
+  "wrong": [
+   "Tres meses",
+   "Doce meses",
+   "Treinta días corridos"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 8°, inc. b)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Completar la respectiva presentación dentro de los DIEZ (10) días hábiles posteriores a la toma de posesión del cargo y hasta SEIS (6) meses posteriores a la fecha del efectivo cese"
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 12 del Título XII de las Normas CNV, quien adquiere o enajena acciones de una emisora debe informar a la CNV dentro de los diez días hábiles cuando la operación alcance un porcentaje de los votos igual o superior a:",
+  "correct": "El 5% de los votos",
+  "wrong": [
+   "El 1% de los votos",
+   "El 2% de los votos",
+   "El 10% de los votos"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 12",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "alcancen un porcentaje del CINCO POR CIENTO (5%) o más de los votos que puedan emitirse a los fines de la formación de la voluntad social en las asambleas de accionistas"
+ },
+ {
+  "module": "MOD3",
+  "question": "En las emisoras que revisten la calidad de Mercados, ¿a partir de qué porcentaje accionario deben informar a la CNV las variaciones de su tenencia quienes la posean (art. 13 del Título XII)?",
+  "correct": "A partir del 2% del capital",
+  "wrong": [
+   "A partir del 1% del capital",
+   "A partir del 5% del capital",
+   "A partir del 10% del capital"
+  ],
+  "source": "Normas CNV, Título XII, Cap. I, art. 13",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "En el caso de las emisoras que revistan la calidad de Mercados, quienes posean un porcentaje accionario a partir del DOS POR CIENTO (2%), deberán informar a la Comisión"
+ },
+ {
+  "module": "MOD3",
+  "question": "Quienes poseen datos o información reservada en el ámbito de la oferta pública deben, en particular, según el Título XII de las Normas CNV:",
+  "correct": "Denunciar de inmediato ante la CNV todo hecho que haga presumir una violación al deber de reserva",
+  "wrong": [
+   "Informar al Mercado cualquier sospecha al cierre de cada trimestre",
+   "Esperar la resolución de la asamblea antes de formular denuncia alguna",
+   "Comunicar el hecho solo a la emisora dentro de los diez días hábiles"
+  ],
+  "source": "Normas CNV, Título XII, Cap. II, art. 2°, inc. b)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Denunciar de inmediato ante la Comisión cualquier hecho o circunstancia que hubiera llegado a su conocimiento y de los cuales pudiera presumirse una violación al deber de guardar reserva"
+ },
+ {
+  "module": "MOD3",
+  "question": "Entre las acciones que el Título XII de las Normas CNV prohíbe a quien posee información privilegiada se encuentra:",
+  "correct": "Recomendar a un tercero adquirir o ceder valores negociables basándose en esa información",
+  "wrong": [
+   "Abstenerse de negociar hasta que la información sea pública",
+   "Informar a la CNV el hecho no divulgado antes de operar",
+   "Publicar un hecho relevante una vez que es de conocimiento público"
+  ],
+  "source": "Normas CNV, Título XII, Cap. III, art. 1°, inc. b.3)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Recomendar a un tercero que adquiera o ceda valores negociables o que haga que otros los adquieran o cedan, basándose endichainformación."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el Título XII de las Normas CNV, quien difunde a sabiendas noticias falsas o tendenciosas en el ámbito de la oferta pública:",
+  "correct": "Es pasible de sanción aunque no persiga ventajas para sí o para terceros",
+  "wrong": [
+   "Solo es sancionable si obtiene un beneficio económico concreto",
+   "Solo es sancionable si la noticia fue difundida por una emisora",
+   "No es sancionable si la difusión se hizo por medios electrónicos"
+  ],
+  "source": "Normas CNV, Título XII, Cap. II, art. 8°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "difundieren a sabiendas noticias falsas o tendenciosas, por alguno de los medios previstos en el artículo 2 de la Ley Nº 26.831, aun cuando no persiguieren con ello la obtención de ventajas o beneficios para sí o para terceros"
+ },
+ {
+  "module": "MOD3",
+  "question": "La prohibición de publicidad que induzca a error (Título XII, Cap. II, art. 7° de las Normas CNV) NO se aplica a:",
+  "correct": "Editoriales, notas o cualquier otra colaboración periodística",
+  "wrong": [
+   "Avisos encargados por las emisoras sobre sus valores",
+   "Publicidad contratada por agentes de negociación",
+   "Difusión realizada por agentes de colocación y distribución"
+  ],
+  "source": "Normas CNV, Título XII, Cap. II, art. 7°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "El presente artículo no se aplica a editoriales, notas o cualquier otra colaboración periodística."
+ },
+ {
+  "module": "MOD3",
+  "question": "¿Cómo debe remitirse a la CNV el Código de Protección al Inversor o Código de Conducta vigente, según el Título XII de las Normas CNV?",
+  "correct": "Por la Autopista de la Información Financiera, y además publicarse en la web institucional del sujeto obligado",
+  "wrong": [
+   "En soporte papel, presentado en la mesa de entradas de la CNV",
+   "Por correo electrónico a la Oficina de Atención al Inversor",
+   "Mediante nota enviada al Mercado donde opera el sujeto obligado"
+  ],
+  "source": "Normas CNV, Título XII, Cap. II, art. 6°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "deberá ser remitido por la AUTOPISTA DE LA INFORMACIÓN FINANCIERA, por el acceso correspondiente en reemplazo de soporte papel, y asimismo deberá ser publicado en la dirección Web institucional del sujeto obligado."
+ },
+ {
+  "module": "MOD3",
+  "question": "¿Qué característica debe tener la redacción del Código de Protección al Inversor o Código de Conducta según las Normas CNV?",
+  "correct": "Un lenguaje fácilmente comprensible para la generalidad de los lectores",
+  "wrong": [
+   "Un lenguaje estrictamente técnico dirigido a los profesionales del mercado",
+   "Un texto breve que remita a las Normas CNV sin explicarlas",
+   "Un texto reservado al personal del sujeto registrado"
+  ],
+  "source": "Normas CNV, Título XII, Cap. II, art. 6°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Dicho Código deberá estar redactado en un lenguaje fácilmente comprensible para la generalidad de los lectores"
+ },
+ {
+  "module": "MOD3",
+  "question": "Para que la falta o reticencia en el deber de colaboración pueda valorarse en un procedimiento de investigación, la persona investigada debe haber sido previamente:",
+  "correct": "Notificada de modo personal o por nota a su domicilio real o constituido, informándole el efecto de su conducta",
+  "wrong": [
+   "Citada por edictos publicados en el Boletín Oficial durante tres días",
+   "Intimada a designar un abogado apoderado para el procedimiento",
+   "Notificada a través del Mercado donde opera para su resolución"
+  ],
+  "source": "Normas CNV, Título XII, Cap. IV, art. 2°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "la persona objeto de investigación debe haber sido previamente notificada de modo personal o por nota cursada a su domicilio real o constituido"
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el Título XIII de las Normas CNV, la CNV rechaza «in limine» una denuncia cuando:",
+  "correct": "Surge en forma clara y evidente que los hechos denunciados no son materia de su competencia",
+  "wrong": [
+   "El denunciante no acompaña un abogado patrocinante",
+   "La denuncia fue presentada en forma anónima",
+   "El denunciante desiste de la presentación realizada"
+  ],
+  "source": "Normas CNV, Título XIII, Cap. I, art. 7°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "una denuncia en el caso de que surja en forma clara y evidente que los hechos denunciados no son materia bajo su competencia."
+ },
+ {
+  "module": "MOD3",
+  "question": "Si el denunciante desiste de su denuncia, según el Título XIII de las Normas CNV, la CNV:",
+  "correct": "Continúa actuando de oficio hasta finalizar la investigación",
+  "wrong": [
+   "Archiva el trámite de inmediato sin más actuaciones",
+   "Suspende la investigación hasta nueva presentación del denunciante",
+   "Cierra la investigación solo si la denuncia fue anónima"
+  ],
+  "source": "Normas CNV, Título XIII, Cap. I, art. 9°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Frente al desistimiento manifestado por el denunciante, la Comisión continuará actuando de oficio hasta finalizar la investigación."
+ },
+ {
+  "module": "MOD3",
+  "question": "Recibida una denuncia y realizada la investigación preliminar, ¿cuál de las siguientes es una de las formas en que puede culminar según el Título XIII de las Normas CNV?",
+  "correct": "La formulación de una advertencia",
+  "wrong": [
+   "La aplicación directa de una pena de prisión",
+   "La clausura inmediata del Mercado denunciado",
+   "La designación de un interventor en la emisora"
+  ],
+  "source": "Normas CNV, Título XIII, Cap. I, art. 11",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "ii)la formulación de una advertencia; iii)la instrucción de un sumario administrativo de conformidad con lo establecido por el artículo 136 de la Ley Nº 26.831"
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el Título XIII de las Normas CNV, en el trámite de las investigaciones regirán los principios de:",
+  "correct": "Celeridad, economía, sencillez y eficacia",
+  "wrong": [
+   "Oralidad, publicidad, inmediación y concentración",
+   "Bilateralidad, contradicción, publicidad y gratuidad",
+   "Reserva, formalismo, escritura y preclusión"
+  ],
+  "source": "Normas CNV, Título XIII, Cap. I, arts. 13 y 14",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Las investigaciones tendrán carácter de reservadas. ARTÍCULO 14.-En el trámite de las investigaciones regirán los principios de celeridad, economía, sencillez y eficacia."
+ },
+ {
+  "module": "MOD3",
+  "question": "En el procedimiento sumarial abreviado, ¿qué sanciones pueden imponerse según el Título XIII de las Normas CNV?",
+  "correct": "Únicamente apercibimiento y/o multa",
+  "wrong": [
+   "Apercibimiento, multa e inhabilitación temporal",
+   "Multa y suspensión de la autorización para operar",
+   "Únicamente multa, sin posibilidad de apercibimiento"
+  ],
+  "source": "Normas CNV, Título XIII, Cap. II, Sección I, art. 8°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Las sanciones impuestas en el marco del procedimiento abreviado únicamente podrán consistir en APERCIBIMIENTO y/o MULTA."
+ },
+ {
+  "module": "MOD3",
+  "question": "En el procedimiento sumarial abreviado, la resolución conclusiva que ordene sanciones se dicta dentro de un plazo contado desde la audiencia preliminar. ¿Cuál es?",
+  "correct": "Treinta días hábiles",
+  "wrong": [
+   "Diez días hábiles",
+   "Quince días corridos",
+   "Sesenta días hábiles"
+  ],
+  "source": "Normas CNV, Título XIII, Cap. II, Sección I, art. 6°",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "será dictada dentro de los TREINTA (30) días hábiles contados desde la celebración de la audiencia preliminar."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el Título XIII de las Normas CNV, ¿desde qué momento quedan las actuaciones del sumario a disposición de los sumariados para tomar vista?",
+  "correct": "Desde que se corre traslado de los cargos",
+  "wrong": [
+   "Desde que se recibe la denuncia",
+   "Desde la resolución final del Directorio",
+   "Desde que se cierra el período de prueba"
+  ],
+  "source": "Normas CNV, Título XIII, Cap. II, Sección II, art. 13",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Desde el momento de correrse traslado de los cargos, las actuaciones quedarán a disposición de los sumariados y todo otro legitimado a efectos de que tomen vista de ellas."
+ },
+ {
+  "module": "MOD3",
+  "question": "Con la notificación del traslado de los cargos, se intima a los sumariados a constituir domicilio especial en:",
+  "correct": "La Ciudad Autónoma de Buenos Aires",
+  "wrong": [
+   "La ciudad sede de su Mercado de origen",
+   "La ciudad de La Plata",
+   "El domicilio real que denuncien en su primera presentación"
+  ],
+  "source": "Normas CNV, Título XIII, Cap. II, Sección II, art. 12",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "constituyan domicilio especial en la Ciudad Autónoma de Buenos Aires bajo apercibimiento"
+ },
+ {
+  "module": "MOD3",
+  "question": "Para registrar a una persona como Idóneo, el Agente debe presentar un certificado de antecedentes penales con una antigüedad no mayor a:",
+  "correct": "Treinta días",
+  "wrong": [
+   "Quince días",
+   "Sesenta días",
+   "Noventa días"
+  ],
+  "source": "Normas CNV, Título XII, Cap. V, art. 4°, inc. d)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "Certificado de antecedentes penales con una antigüedad no mayor a TREINTA (30) días."
+ },
+ {
+  "module": "MOD3",
+  "question": "Los condenados por delitos cometidos con ánimo de lucro o contra la fe pública no pueden ser Idóneos hasta ___ después de cumplida la condena:",
+  "correct": "Diez años",
+  "wrong": [
+   "Dos años",
+   "Cinco años",
+   "Quince años"
+  ],
+  "source": "Normas CNV, Título XII, Cap. V, art. 2°, inc. b)",
+  "file": "TOC 2013 ACTUALIZADO (16-04-26).md",
+  "evidence": "que tengan pena principal, conjunta o alternativa de inhabilitación, hasta DIEZ (10) añosdespués de cumplida la condena."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 64 de la Ley 26.831, el total de acciones propias que puede adquirir una sociedad, incluidas las que ya tuviera, no puede exceder en ningún caso del:",
+  "correct": "10% del capital social, o un límite menor fijado por la CNV",
+  "wrong": [
+   "5% del capital social, sin posibilidad de otro límite",
+   "15% del capital social",
+   "25% del capital social"
+  ],
+  "source": "Ley 26.831, art. 64, inc. d)",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "Que el total de las acciones que adquiera la sociedad, incluidas las que hubiera adquirido con anterioridad y permanecieran en su poder, en ningún caso excedan del límite del diez por ciento (10%) del capital social"
+ },
+ {
+  "module": "MOD3",
+  "question": "Las acciones propias adquiridas en exceso de los límites legales deben ser enajenadas, según el art. 65 de la Ley 26.831, en el término de:",
+  "correct": "Noventa días hábiles desde la adquisición que originó el exceso",
+  "wrong": [
+   "Treinta días hábiles desde la adquisición que originó el exceso",
+   "Sesenta días corridos desde la próxima asamblea",
+   "Tres años desde la adquisición que originó el exceso"
+  ],
+  "source": "Ley 26.831, art. 65",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "deberán ser enajenadas en el término de noventa (90) días hábiles contados a partir de la fecha de la adquisición"
+ },
+ {
+  "module": "MOD3",
+  "question": "Para solicitar públicamente poderes para una asamblea, la Ley 26.831 (art. 69) exige a quienes promueven la solicitud poseer como mínimo:",
+  "correct": "El 2% del capital con derecho a voto y un año de antigüedad como accionista",
+  "wrong": [
+   "El 5% del capital con derecho a voto y dos años de antigüedad",
+   "El 10% del capital con derecho a voto sin antigüedad mínima",
+   "El 1% del capital con derecho a voto y seis meses de antigüedad"
+  ],
+  "source": "Ley 26.831, art. 69",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "tendrán que poseer como mínimo el dos por ciento (2%) del capital social representado por acciones con derecho a voto y una antigüedad como accionista de por lo menos un (1) año"
+ },
+ {
+  "module": "MOD3",
+  "question": "En las sociedades con oferta pública de acciones, la primera convocatoria a asamblea debe publicarse con una anticipación no menor a veinte días corridos y no mayor a:",
+  "correct": "Cuarenta y cinco días corridos",
+  "wrong": [
+   "Treinta días corridos",
+   "Sesenta días corridos",
+   "Noventa días corridos"
+  ],
+  "source": "Ley 26.831, art. 70",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "anticipación no menor a los veinte (20) días corridos y no mayor a los cuarenta y cinco (45) días corridos de la fecha fijada para su celebración."
+ },
+ {
+  "module": "MOD3",
+  "question": "En las sociedades con oferta pública de acciones, un acto o contrato con una parte relacionada es de «monto relevante» cuando su importe supera, según la Ley 26.831 (art. 72):",
+  "correct": "El 1% del patrimonio social según el último balance aprobado",
+  "wrong": [
+   "El 5% del patrimonio social según el último balance aprobado",
+   "El 10% del patrimonio social según el último balance aprobado",
+   "El 1% del capital social según el estatuto vigente"
+  ],
+  "source": "Ley 26.831, art. 72, inc. b)",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "cuando el importe del mismo supere el uno por ciento (1%) del patrimonio social medido conforme al último balance aprobado."
+ },
+ {
+  "module": "MOD3",
+  "question": "Ante el requerimiento del directorio sobre una operación con parte relacionada, ¿en qué plazo debe pronunciarse el comité de auditoría según la Ley 26.831 (art. 72)?",
+  "correct": "Cinco días hábiles",
+  "wrong": [
+   "Tres días hábiles",
+   "Diez días hábiles",
+   "Treinta días corridos"
+  ],
+  "source": "Ley 26.831, art. 72",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "El comité de auditoría debe pronunciarse en un plazo de cinco (5) días hábiles."
+ },
+ {
+  "module": "MOD3",
+  "question": "A los efectos del art. 72 de la Ley 26.831 sobre contratos con partes relacionadas, ¿cuál de los siguientes sujetos NO es considerado parte relacionada si no se configura ninguno de los otros casos previstos?",
+  "correct": "Una sociedad controlada por la sociedad emisora",
+  "wrong": [
+   "Un director de la sociedad emisora",
+   "Una sociedad bajo el control común del mismo controlante",
+   "El cónyuge de un director de la sociedad emisora"
+  ],
+  "source": "Ley 26.831, art. 72, inc. a)",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "no será considerada “parte relacionada” a los efectos de este artículo una sociedad controlada por la sociedad emisora"
+ },
+ {
+  "module": "MOD3",
+  "question": "Si las condiciones de una operación con parte relacionada no fueron calificadas como razonablemente adecuadas al mercado por el comité de auditoría o por ambas firmas evaluadoras, la Ley 26.831 (art. 73) dispone que la operación:",
+  "correct": "Debe someterse a aprobación previa de la asamblea",
+  "wrong": [
+   "Puede ser aprobada igualmente solo por el directorio",
+   "Debe someterse a la aprobación previa de la CNV",
+   "Queda anulada de pleno derecho sin posibilidad de ratificación"
+  ],
+  "source": "Ley 26.831, art. 73",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "Laoperacióndeberásersometidaaaprobaciónpreviadelaasambleacuandolas condicionesprevistasnohayansidocalificadascomorazonablementeadecuadasal mercado por el comité de auditoría o por ambas firmas evaluadoras."
+ },
+ {
+  "module": "MOD3",
+  "question": "Si un accionista demanda resarcimiento por una infracción al procedimiento de operaciones con partes relacionadas, ¿a quién corresponde la carga de probar que el acto se ajustó a condiciones de mercado (Ley 26.831, art. 74)?",
+  "correct": "A la parte demandada",
+  "wrong": [
+   "Al accionista demandante",
+   "A la Comisión Nacional de Valores",
+   "Al comité de auditoría de la sociedad"
+  ],
+  "source": "Ley 26.831, art. 74",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "corresponderá a la parte demandada probar que el acto o contrato se ajustó a condiciones de mercado o que las condiciones de la operación no causaron perjuicio a la sociedad."
+ },
+ {
+  "module": "MOD3",
+  "question": "En las sociedades con oferta pública de acciones, ante la duda sobre el cumplimiento del deber de lealtad de los directores, la Ley 26.831 (art. 78) dispone que la carga de la prueba corresponde:",
+  "correct": "Al director",
+  "wrong": [
+   "Al accionista que lo cuestiona",
+   "A la Comisión Fiscalizadora",
+   "A la Comisión Nacional de Valores"
+  ],
+  "source": "Ley 26.831, art. 78",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "En caso de duda acerca del cumplimiento del deber de lealtad, la carga de la prueba corresponde al director."
+ },
+ {
+  "module": "MOD3",
+  "question": "La decisión de eliminar la Comisión Fiscalizadora corresponde a la asamblea extraordinaria, que debe contar con la presencia mínima de accionistas que representen ___ de las acciones con derecho a voto (Ley 26.831, art. 79):",
+  "correct": "El 75%",
+  "wrong": [
+   "El 50%",
+   "El 60%",
+   "El 30%"
+  ],
+  "source": "Ley 26.831, art. 79",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "deberá contar con la presencia, como mínimo, de accionistas que representen el setenta y cinco por ciento (75%) de las acciones con derecho a voto."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 109 de la Ley 26.831, el Comité de Auditoría funciona en forma colegiada con un mínimo de:",
+  "correct": "Tres miembros del directorio",
+  "wrong": [
+   "Dos miembros del directorio",
+   "Cinco miembros del directorio",
+   "Tres miembros de la Comisión Fiscalizadora"
+  ],
+  "source": "Ley 26.831, art. 109",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "Comité de Auditoría que funcionará en forma colegiada con tres (3) omásmiembrosdeldirectorio"
+ },
+ {
+  "module": "MOD3",
+  "question": "¿Qué facultad le otorga el art. 110 de la Ley 26.831 a la CNV respecto de las pequeñas y medianas empresas y el comité de auditoría?",
+  "correct": "Exceptuarlas con carácter general de constituir el comité de auditoría",
+  "wrong": [
+   "Obligarlas a constituir un comité de tres directores independientes",
+   "Exigirles un comité de auditoría solo si superan cierto capital",
+   "Autorizarlas a designar auditores sin opinión de ningún órgano"
+  ],
+  "source": "Ley 26.831, art. 110",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "La Comisión Nacional de Valores podrá exceptuar con carácter general a las pequeñas y medianas empresas de constituir el comité de auditoría previsto en este artículo."
+ },
+ {
+  "module": "MOD3",
+  "question": "Entre las funciones del comité de auditoría previstas en el art. 110 de la Ley 26.831 se encuentra:",
+  "correct": "Proporcionar al mercado información completa sobre operaciones con conflicto de intereses",
+  "wrong": [
+   "Designar directamente a los auditores externos de la sociedad",
+   "Fijar la remuneración de los directores y administradores",
+   "Convocar la asamblea ordinaria cuando lo estime conveniente"
+  ],
+  "source": "Ley 26.831, art. 110, inc. d)",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "Proporcionar al mercado información completa respecto de las operaciones en las cuales exista conflicto de intereses con integrantes de los órganos sociales o accionistas controlantes"
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 105 de la Ley 26.831, ¿quién designa a los auditores externos para el nuevo ejercicio?",
+  "correct": "La asamblea ordinaria de accionistas, al aprobar los estados contables",
+  "wrong": [
+   "El directorio, con aprobación posterior de la CNV",
+   "El comité de auditoría, sin intervención de la asamblea",
+   "La Comisión Nacional de Valores, entre contadores inscriptos"
+  ],
+  "source": "Ley 26.831, art. 105",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "La asamblea ordinaria de accionistas, en ocasión de la aprobación de los estados contables, designará para desempeñar las funciones de auditoría externa"
+ },
+ {
+  "module": "MOD3",
+  "question": "Para que la CNV pueda solicitar a la sociedad la designación de un auditor externo propuesto por accionistas minoritarios, estos deben representar como mínimo (Ley 26.831, art. 108):",
+  "correct": "El 5% del capital social",
+  "wrong": [
+   "El 1% del capital social",
+   "El 2% del capital social",
+   "El 10% del capital social"
+  ],
+  "source": "Ley 26.831, art. 108, inc. f)",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "a pedido fundado de accionistas que representen un porcentaje no inferior al cinco por ciento (5%) del capital social de la sociedad que haga oferta pública de sus acciones"
+ },
+ {
+  "module": "MOD3",
+  "question": "En caso de uso indebido de información privilegiada, el diferencial de precio positivo obtenido en operaciones de los últimos seis meses, según el art. 117 de la Ley 26.831, corresponde:",
+  "correct": "Al emisor, que puede recuperarlo",
+  "wrong": [
+   "A la Comisión Nacional de Valores",
+   "Al Mercado donde se realizó la operación",
+   "A los inversores que operaron contra el infractor"
+  ],
+  "source": "Ley 26.831, art. 117, inc. a)",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "corresponderá al emisor y será recuperable por él, sin perjuicio de las sanciones que pudieren corresponder al infractor."
+ },
+ {
+  "module": "MOD3",
+  "question": "Si el emisor omite iniciar la acción para recuperar el diferencial de precio por uso de información privilegiada o no lo hace dentro de cierto plazo desde que es intimado, la acción puede ser ejercida por cualquier accionista. ¿Cuál es ese plazo (Ley 26.831, art. 117)?",
+  "correct": "Sesenta días",
+  "wrong": [
+   "Treinta días",
+   "Noventa días",
+   "Seis meses"
+  ],
+  "source": "Ley 26.831, art. 117, inc. a)",
+  "file": "Ley 26831 - MERCADO DE CAPITALES.md",
+  "evidence": "Si el emisor omitiera incoar la acción correspondiente o no lo hiciera dentro de los sesenta (60) días de ser intimado a ello"
+ },
+ {
+  "module": "MOD3",
+  "question": "Según la Ley 19.550 (art. 255), en las sociedades anónimas del art. 299 (por ejemplo, las que hacen oferta pública de sus acciones), el directorio se integra por lo menos con:",
+  "correct": "Tres directores",
+  "wrong": [
+   "Un director",
+   "Cinco directores",
+   "Siete directores"
+  ],
+  "source": "Ley 19.550, art. 255",
+  "file": "Ley 19.550 ACTUALIZADA.md",
+  "evidence": "En las sociedades anónimas del artículo 299, salvo en las previstas en el inciso 7), el directorio se integrará por lo menos con tres directores."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 261 de la Ley 19.550, el monto máximo de las retribuciones que por todo concepto pueden percibir los miembros del directorio es, en principio, del:",
+  "correct": "25% de las ganancias",
+  "wrong": [
+   "10% de las ganancias",
+   "15% de las ganancias",
+   "50% de las ganancias"
+  ],
+  "source": "Ley 19.550, art. 261",
+  "file": "Ley 19.550 ACTUALIZADA.md",
+  "evidence": "no podrán exceder del veinticinco por ciento (25%) de las ganancias."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 267 de la Ley 19.550, el directorio se reunirá por lo menos una vez cada:",
+  "correct": "Tres meses, salvo que el estatuto exija más reuniones",
+  "wrong": [
+   "Mes, salvo que el estatuto exija menos reuniones",
+   "Seis meses, salvo que el estatuto exija más reuniones",
+   "Año, salvo que el estatuto exija más reuniones"
+  ],
+  "source": "Ley 19.550, art. 267",
+  "file": "Ley 19.550 ACTUALIZADA.md",
+  "evidence": "El directorio se reunirá, por lo menos, una vez cada tres (3) meses, salvo que el estatuto exigiere mayor número de reuniones"
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 273 de la Ley 19.550, un director puede participar en actividades en competencia con la sociedad solo si cuenta con:",
+  "correct": "Autorización expresa de la asamblea",
+  "wrong": [
+   "Autorización del presidente del directorio",
+   "Informe favorable de la sindicatura",
+   "Aprobación de la autoridad de contralor"
+  ],
+  "source": "Ley 19.550, art. 273",
+  "file": "Ley 19.550 ACTUALIZADA.md",
+  "evidence": "El director no puede participar por cuenta propia o de terceros, en actividades en competencia con la sociedad, salvo autorización expresa de la asamblea"
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 234 de la Ley 19.550, la asamblea ordinaria que considera la documentación del ejercicio y la designación de directores y síndicos debe convocarse dentro de los:",
+  "correct": "Cuatro meses del cierre del ejercicio",
+  "wrong": [
+   "Dos meses del cierre del ejercicio",
+   "Seis meses del cierre del ejercicio",
+   "Treinta días del cierre del ejercicio"
+  ],
+  "source": "Ley 19.550, art. 234",
+  "file": "Ley 19.550 ACTUALIZADA.md",
+  "evidence": "Para considerar los puntos 1) y 2) será convocada dentro de los cuatro (4) meses del cierre del ejercicio."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según el art. 244 de la Ley 19.550, la asamblea extraordinaria se reúne en primera convocatoria con la presencia de accionistas que representen, si el estatuto no exige quórum mayor:",
+  "correct": "El 60% de las acciones con derecho a voto",
+  "wrong": [
+   "La mayoría simple de las acciones con derecho a voto",
+   "El 75% de las acciones con derecho a voto",
+   "El 30% de las acciones con derecho a voto"
+  ],
+  "source": "Ley 19.550, art. 244",
+  "file": "Ley 19.550 ACTUALIZADA.md",
+  "evidence": "La asamblea extraordinaria se reúne en primera convocatoria con la presencia de accionistas que representen el sesenta por ciento (60 %) de las acciones con derecho a voto"
+ },
+ {
+  "module": "MOD3",
+  "question": "Los domicilios especiales que los directores de sociedades en el régimen de oferta pública constituyen ante la CNV para recibir notificaciones tienen validez:",
+  "correct": "Hasta dos años después de que los directores cesan en sus cargos",
+  "wrong": [
+   "Hasta seis meses después de que cesan en sus cargos",
+   "Hasta un año después de que cesan en sus cargos",
+   "Solamente mientras ejercen sus cargos"
+  ],
+  "source": "Guía de Idoneidad CNV – Módulo III, domicilios especiales de directores",
+  "file": "guia_de_estudio_v2.md",
+  "evidence": "Hasta DOS (2) años después que dichos directores cesan en sus cargos."
+ },
+ {
+  "module": "MOD3",
+  "question": "Además de promover la educación y atender consultas, la Oficina de Atención al Inversor (OAI) de la CNV pone a disposición:",
+  "correct": "Las recomendaciones y advertencias de la CNV y de organismos como OICV-IOSCO y ESMA",
+  "wrong": [
+   "Las cotizaciones en tiempo real de todos los Mercados autorizados",
+   "El listado de sanciones firmes aplicadas a cada Idóneo",
+   "Los estados contables trimestrales de todas las emisoras"
+  ],
+  "source": "Guía de Idoneidad CNV – Módulo III, Oficina de Atención al Inversor",
+  "file": "guia_de_estudio_v2.md",
+  "evidence": "recomendaciones y advertencias generadas por la Comisión Nacional de Valoresy otros organismos reguladores, como OICV-IOSCO y ESMA."
+ },
+ {
+  "module": "MOD3",
+  "question": "¿Dónde puede un inversor verificar si el Agente con el que planea invertir está autorizado por la CNV?",
+  "correct": "En el Registro Público de Agentes autorizados y registrados, en el sitio web de la CNV",
+  "wrong": [
+   "En el Registro de Idóneos, en la web del Agente de Depósito Colectivo",
+   "En el prospecto del Agente publicado en la Autopista de la Información Financiera",
+   "En el boletín del Mercado donde el Agente declara operar"
+  ],
+  "source": "Guía de Idoneidad CNV – Módulo III, verificación de Agentes",
+  "file": "guia_de_estudio_v2.md",
+  "evidence": "Consultando el Registro Público de Agentes autorizados y registrados ante Comisión Nacional de Valores, en el sitio web de laComisión Nacional de Valores."
+ },
+ {
+  "module": "MOD3",
+  "question": "¿A dónde puede recurrir un inversor para consultar su tenencia de valores negociables?",
+  "correct": "Al Agente de Depósito Colectivo, por los medios que este habilite",
+  "wrong": [
+   "Al Mercado donde se negociaron los valores, mediante su boletín",
+   "A la Oficina de Atención al Inversor de la CNV",
+   "A la sociedad emisora de cada valor negociable"
+  ],
+  "source": "Guía de Idoneidad CNV – Módulo III, consulta de tenencias",
+  "file": "guia_de_estudio_v2.md",
+  "evidence": "Al Agente de Depósito Colectivo, por los medios que éste habilite, debiendo el Agente informar al comitente de los mismos."
+ },
+ {
+  "module": "MOD3",
+  "question": "Según la normativa citada en el Módulo III, ¿con qué frecuencia debe actualizarse el perfil de riesgo del cliente?",
+  "correct": "Al menos una vez al año, o en la primera operación posterior a ese plazo",
+  "wrong": [
+   "Al menos cada seis meses, o ante cada nueva orden",
+   "Al menos cada dos años, o al cambiar de Agente",
+   "Solo al abrir la cuenta, salvo pedido del cliente"
+  ],
+  "source": "Guía de Idoneidad CNV – Módulo III, perfil de riesgo del cliente",
+  "file": "guia_de_estudio_v2.md",
+  "evidence": "El perfil de riesgo debe actualizarse al menos una vez al año, o en la primera oportunidad que el cliente pretenda operar después de dicho plazo."
+ }
+]
