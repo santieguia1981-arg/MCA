@@ -8,7 +8,6 @@
 <h2>Registro</h2>
 <form id="formRegistro" novalidate>
   <input type="text" id="nombre" placeholder="Nombre completo" required><br><br>
-  <input type="text" id="dni" placeholder="DNI" required><br><br>
   <input type="email" id="email" placeholder="Email" required><br><br>
   <button type="submit" id="btnGuardar">Guardar</button>
 </form>
@@ -38,10 +37,6 @@ document.getElementById("formRegistro").addEventListener("submit", async (e) => 
     msg.style.color = "red";
     return;
   }
-  if (!dni || dni.length < 7) {
-    msg.textContent = "El DNI tiene que tener al menos 7 números";
-    msg.style.color = "red";
-    return;
   }
   if (!esEmailValido(email)) {
     msg.textContent = "Ese mail no es válido. Tiene que ser como nombre@dominio.com";
@@ -88,7 +83,6 @@ document.getElementById("formRegistro").addEventListener("submit", async (e) => 
       },
       body: JSON.stringify({
         "Nombre_Completo": nombre,
-        "DNI": dni,
         "email": email
       })
     });
