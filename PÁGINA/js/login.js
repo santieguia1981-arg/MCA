@@ -49,7 +49,7 @@
             body.innerHTML =
                 '<h2 id="m-login-title">Ingresá a MCA</h2>' +
                 '<p class="m-login-sub">Guardá tu progreso del quiz y retomalo desde cualquier dispositivo.</p>' +
-                '<button type="button" class="m-login-social" disabled>Continuar con Google <em>Próximamente</em></button>' +
+                '<button type="button" class="m-login-social" Continuar con Google onclick="loginConGoogle()</button>' +
                 '<button type="button" class="m-login-social" disabled>Continuar con Apple <em>Próximamente</em></button>' +
                 '<div class="m-login-or"><span>o</span></div>' +
                 '<form novalidate>' +
@@ -124,4 +124,24 @@
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();
+   async function loginConGoogle() {
+  try {
+    const supabase = window.supabase || window.MCA_CLOUD?.supabase;
+    if (!supabase) {
+      alert("No se pudo conectar con Supabase. Revisá config.js");
+      return;
+    }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + window.location.pathname
+      }
+    });
+    if (error) throw error;
+  } catch (e) {
+    console.error(e);
+    alert("No se pudo iniciar sesión con Google: " + e.message);
+  }
+}
+window.loginConGoogle = loginConGoogle;
 })();
