@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2>Registro</h2>
-<form id="formRegistro">
+<form id="formRegistro" novalidate>
   <input type="text" id="nombre" placeholder="Nombre completo" required><br><br>
   <input type="text" id="dni" placeholder="DNI" required><br><br>
   <input type="email" id="email" placeholder="Email" required><br><br>
@@ -18,20 +18,66 @@
 const SUPABASE_URL = "https://edszrhzefjzuicsupunt.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkc3pyaHplZmp6dWljc3VwdW50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MzQ1ODEsImV4cCI6MjExMTIxMDU4MX0.8Ilb6NHjwVYulxN10GzHEp9-UA0mfbZR3xbU8azlL-Q";
 
+function esEmailValido(email) {
+  // Validación estricta: nombre@dominio.com
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  return regex.test(email.trim());
+}
+
 document.getElementById("formRegistro").addEventListener("submit", async (e) => {
   e.preventDefault();
   const btn = document.getElementById("btnGuardar");
   const msg = document.getElementById("mensaje");
+  const nombre = document.getElementById("nombre").value.trim();
+  const dni = document.getElementById("dni").value.trim();
+  const email = document.getElementById("email").value.trim().toLowerCase();
+
+  // --- VALIDACIONES ---
+  if (!nombre) {
+    msg.textContent = "Poné tu nombre completo";
+    msg.style.color = "red";
+    return;
+  }
+  if (!dni || dni.length < 7) {
+    msg.textContent = "El DNI tiene que tener al menos 7 números";
+    msg.style.color = "red";
+    return;
+  }
+  if (!esEmailValido(email)) {
+    msg.textContent = "Ese mail no es válido. Tiene que ser como nombre@dominio.com";
+    msg.style.color = "red";
+    return;
+  }
+
   btn.disabled = true;
-  btn.textContent = "Guardando...";
-  msg.textContent = "Guardando...";
+  btn.textContent = "Verificando...";
+  msg.textContent = "Verificando...";
   msg.style.color = "black";
 
-  const nombre = document.getElementById("nombre").value;
-  const dni = document.getElementById("dni").value;
-  const email = document.getElementById("email").value;
-
   try {
+    // --- 1. Verificar si el mail ya existe ---
+    const checkRes = await fetch(
+      SUPABASE_URL + "/rest/v1/perfiles?email=eq." + encodeURIComponent(email) + "&select=email",
+      {
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY
+        }
+      }
+    );
+    const existentes = await checkRes.json();
+    if (existentes.length > 0) {
+      msg.textContent = "Ese mail ya está registrado. Usá otro o iniciá sesión.";
+      msg.style.color = "red";
+      btn.disabled = false;
+      btn.textContent = "Guardar";
+      return;
+    }
+
+    // --- 2. Guardar ---
+    btn.textContent = "Guardando...";
+    msg.textContent = "Guardando...";
+
     const res = await fetch(SUPABASE_URL + "/rest/v1/perfiles", {
       method: "POST",
       headers: {
@@ -52,7 +98,7 @@ document.getElementById("formRegistro").addEventListener("submit", async (e) => 
       throw new Error(txt || res.statusText);
     }
 
-    msg.textContent = "¡Registro guardado!";
+    msg.textContent = "¡Registro guardado! Mail válido ✓";
     msg.style.color = "green";
     document.getElementById("formRegistro").reset();
   } catch (err) {
