@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro - MCA</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; padding: 20px; }
+    input { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; }
+    button { background: #0a4d8c; color: white; padding: 12px; width: 100%; border: none; cursor: pointer; }
+    .error { color: red; font-size: 14px; }
+    .ok { color: green; }
+  </style>
+</head>
+<body>
+  <h2>Registro - Mercado de Capitales Argentino</h2>
+  <form id="formRegistro">
+    <label>Nombre completo</label>
+    <input type="text" id="nombre" required placeholder="Ej: Juan Perez">
+
+    <label>DNI (7 u 8 números, sin puntos ni guiones)</label>
+    <input type="text" id="dni" inputmode="numeric" placeholder="Ej: 30111222" required>
+    <div id="errorDni" class="error"></div>
+
+    <label>Email</label>
+    <input type="email" id="email" required placeholder="Ej: juan@email.com">
+
+    <button type="submit">Guardar</button>
+    <div id="mensaje"></div>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://edszrhzefjzuicsupunt.supabase.co/";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkc3pyaHplZmp6dWljc3VwdW50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MzQ1ODEsImV4cCI6MjExMTIxMDU4MX0.8Ilb6NHjwVYulxN10GzHEp9-UA0mfbZR3xbU8azlL-Q;"
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const dniInput = document.getElementById('dni');
+    const errorDni = document.getElementById('errorDni');
+
+    dniInput.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '');
+      const val = e.target.value;
+      if (val.length > 0 && (val.length < 7 || val.length > 8)) {
+        errorDni.textContent = "El DNI debe tener 7 u 8 números, sin puntos ni guiones";
+      } else {
+        errorDni.textContent = "";
+      }
+    });
+
+    document.getElementById('formRegistro').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById('nombre').value.trim();
+      const dni = dniInput.value.trim();
+      const email = document.getElementById('email').value.trim();
+      const mensaje = document.getElementById('mensaje');
+
+      if (!/^\d{7,8}$/.test(dni)) {
+        errorDni.textContent = "El DNI debe tener 7 u 8 números, sin puntos ni guiones";
+        return;
+      }
+
+      const { error } = await supabase.from('perfiles').insert([
+        { Nombre_Completo: nombre, DNI: dni, email: email }
+      ]);
+
+      if (error) {
+        mensaje.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+      } else {
+        mensaje.innerHTML = `<p class="ok">¡Listo! Perfil guardado correctamente.</p>`;
+        document.getElementById('formRegistro').reset();
+      }
+    });
+  </script>
+</body>
+</html>
