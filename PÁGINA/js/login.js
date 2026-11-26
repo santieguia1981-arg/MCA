@@ -49,8 +49,8 @@
             body.innerHTML =
                 '<h2 id="m-login-title">Ingresá a MCA</h2>' +
                 '<p class="m-login-sub">Guardá tu progreso del quiz y retomalo desde cualquier dispositivo.</p>' +
-                '<button type="button" class="m-login-social" Continuar con Google onclick="loginConGoogle()</button>' +
                 '<button type="button" class="m-login-social" onclick="loginConGoogle()">Continuar con Google</button>' +
+                '<button type="button" class="m-login-social" onclick="loginConApple()">Continuar con Apple</button>' +
                 '<div class="m-login-or"><span>o</span></div>' +
                 '<form novalidate>' +
                 '<input type="email" name="email" placeholder="Ingresá tu correo electrónico" autocomplete="email" aria-label="Correo electrónico" required>' +
