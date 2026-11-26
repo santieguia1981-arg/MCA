@@ -105,5 +105,65 @@ document.getElementById("formRegistro").addEventListener("submit", async (e) => 
   }
 });
 </script>
+  <!-- Modal de login -->
+<div id="modalLogin" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#111; color:#fff; padding:24px; border-radius:16px; width:90%; max-width:380px; font-family:sans-serif;">
+    <h2 style="margin:0 0 8px;">Iniciar sesión</h2>
+    <p style="color:#aaa; font-size:14px; margin:0 0 20px;">Ingresá tu correo para continuar</p>
+
+    <button onclick="loginConGoogle()" style="width:100%; padding:12px; border-radius:10px; border:1px solid #333; background:#fff; color:#000; font-weight:600; cursor:pointer; margin-bottom:12px;">
+      Continuar con Google
+    </button>
+
+    <div style="text-align:center; color:#666; font-size:12px; margin:12px 0;">o</div>
+
+    <input id="emailInput" type="email" placeholder="tu@email.com" style="width:100%; padding:12px; border-radius:10px; border:1px solid #333; background:#222; color:#fff; box-sizing:border-box; margin-bottom:12px;">
+    
+    <button onclick="loginConEmail()" style="width:100%; padding:12px; border-radius:10px; border:none; background:#2563eb; color:#fff; font-weight:600; cursor:pointer;">
+      Continuar con correo
+    </button>
+
+    <button onclick="document.getElementById('modalLogin').style.display='none'" style="width:100%; padding:10px; background:none; border:none; color:#888; cursor:pointer; margin-top:8px;">
+      Cerrar
+    </button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://edszrhzefjzuicsupunt.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkc3pyaHplZmp6dWljc3VwdW50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MzQ1ODEsImV4cCI6MjV4cCI6MjA5MTEyMDU4MX0.8Ilb6NHjwVYulxN10GzHEp9-UA0mfbZR3xbU8azL-Q"
+  )
+
+  async function loginConGoogle() {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: 'https://mercado-de-capitales-argentino.vercel.app' }
+    })
+    if (error) alert(error.message)
+  }
+
+  async function loginConEmail() {
+    const email = document.getElementById('emailInput').value.trim()
+    if (!email) return alert('Poné tu email')
+    const { error } = await supabaseClient.auth.signInWithOtp({
+      email: email,
+      options: { emailRedirectTo: 'https://mercado-de-capitales-argentino.vercel.app' }
+    })
+    if (error) alert(error.message)
+    else alert('¡Listo! Te enviamos un enlace a ' + email + '. Revisá tu mail.')
+  }
+
+  // Cuando se loguea, guardamos el email en la tabla perfiles
+  supabaseClient.auth.onAuthStateChange(async (event, session) => {
+    if (session) {
+      const email = session.user.email
+      await supabaseClient.from('perfiles').upsert({ email }, { onConflict: 'email' })
+      document.getElementById('modalLogin').style.display = 'none'
+      alert('¡Bienvenido! Sesión iniciada con ' + email)
+    }
+  })
+</script>
 </body>
 </html>
