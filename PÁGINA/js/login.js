@@ -124,24 +124,23 @@
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
     else init();
-   async function loginConGoogle() {
-  try {
-    const supabase = window.supabase || window.MCA_CLOUD?.supabase;
-    if (!supabase) {
-      alert("No se pudo conectar con Supabase. Revisá config.js");
-      return;
-    }
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin + window.location.pathname
+     async function loginConGoogle() {
+    try {
+      const cfg = window.MCA_CONFIG || {};
+      if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
+        alert("Falta configurar Supabase en config.js");
+        return;
       }
-    });
-    if (error) throw error;
-  } catch (e) {
-    console.error(e);
-    alert("No se pudo iniciar sesión con Google: " + e.message);
+      const supabase = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin + window.location.pathname }
+      });
+      if (error) throw error;
+    } catch (e) {
+      console.error(e);
+      alert("No se pudo iniciar sesión con Google: " + e.message);
+    }
   }
-}
-window.loginConGoogle = loginConGoogle;
+  window.loginConGoogle = loginConGoogle;
 })();
