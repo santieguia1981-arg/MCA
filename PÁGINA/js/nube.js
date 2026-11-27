@@ -93,7 +93,7 @@
             clearTimeout(timer);
             timer = setTimeout(empujar, 1500);
         },
-        enviarEnlace: ingresarConPassword: async function (email, password) {
+        ingresarConPassword: async function (email, password) {
             if (!configurado) return { error: { message: 'no-configurado' } };
             return client.auth.signInWithPassword({ email: email, password: password });
         },
@@ -110,7 +110,7 @@
         getSession: async function () {
             if (!configurado) return { data: { session: null } };
             return client.auth.getSession();
-        },async function (email) {
+        }, enviarEnlace: async function (email) {
             if (!configurado) return { error: { message: 'no-configurado' } };
             return client.auth.signInWithOtp({
                 email: email,
