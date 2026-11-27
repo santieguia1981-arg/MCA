@@ -122,7 +122,7 @@
             user = null; avisar();
         }
     };
-    window.MCA_CLOUD._client = client;
+    window.MCA_CLOUD = API;
 
     if (!configurado) return;
     client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, {
