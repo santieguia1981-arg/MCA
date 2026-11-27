@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Seguridad: CSP (solo recursos propios, sin conexiones externas), sin referrer, forzar HTTPS fuera de localhost -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net file:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com file:; img-src 'self' data: https: file:; font-src 'self' data: https://fonts.gstatic.com file:; media-src 'self' file:; connect-src 'self' https://*.supabase.co https://accounts.google.com file:; frame-src https://accounts.google.com https://*.supabase.co;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net file:; script-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net file:; connect-src 'self' https://*.supabase.co wss://*.supabase.co file:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com file:; img-src 'self' data: https: file:; font-src 'self' https://fonts.gstatic.com file:;">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="description" content="Ecosistema interactivo del Mercado de Capitales Argentino: mapa de actores, simulador de operación y material de estudio para la idoneidad CNV.">
     <meta property="og:type" content="website">
