@@ -57,7 +57,7 @@
                 '<p class="m-login-err" role="alert" hidden></p>' +
                 '<button type="submit" class="m-login-submit">Continuar con correo electrónico</button>' +
                 '</form>' +
-                '<p class="m-login-note">Te enviamos un enlace para entrar, sin contraseña. Usamos tu correo solo para guardar tu progreso. El quiz funciona igual sin registrarte.</p>';
+                '<p class="m-login-note">Te enviamos un enlace para entrar, sin contraseña. Usamos tu correo solo para guardar tu progreso.</p>';
             var form = body.querySelector('form');
             var input = form.elements.email;
             var err = body.querySelector('.m-login-err');
