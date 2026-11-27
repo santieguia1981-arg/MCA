@@ -1,79 +1,123 @@
-/* Botón "Ingresar" y ventana de acceso. Usa window.MCA_CLOUD (js/nube.js, Supabase). */
-(function () {
-  'use strict';
-  function emailValido(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
-  function init() {
-    var links = document.querySelector('.m-links');
-    var nube = window.MCA_CLOUD;
-    if (!links || !nube) return;
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'm-login-btn';
-    links.appendChild(btn);
-    var overlay = document.createElement('div');
-    overlay.className = 'm-login-overlay';
-    overlay.hidden = true;
-    overlay.innerHTML = '<div class="m-login-card" role="dialog" aria-modal="true" aria-labelledby="m-login-title"><button type="button" class="m-login-close" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button><div class="m-login-body"></div></div>';
-    document.body.appendChild(overlay);
-    var body = overlay.querySelector('.m-login-body');
-    function cerrar() { overlay.hidden = true; document.body.style.overflow = ''; }
-    function mostrarLogin() {
-      body.innerHTML = '<h2 id="m-login-title">Ingresá a MCA</h2><p>Ingresá con tu email y contraseña.</p><form id="m-login-form"><input type="email" id="m-email" placeholder="Email" required><input type="password" id="m-pass" placeholder="Contraseña" required><button type="submit" id="m-btn-login">Ingresar</button></form><button type="button" id="m-btn-reset">Olvidé mi contraseña</button><button type="button" id="m-btn-signup">¿No tenés cuenta? Registrate</button><p id="m-msg"></p>';
-      var form = document.getElementById('m-login-form');
-      var msg = document.getElementById('m-msg');
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        var email = document.getElementById('m-email').value.trim();
-        var pass = document.getElementById('m-pass').value;
-        if (!emailValido(email)) { msg.textContent = 'Email inválido'; return; }
-        msg.textContent = 'Ingresando...';
-        var r = await nube.ingresarConPassword(email, pass);
-        if (r.error) msg.textContent = r.error.message;
-        else { msg.textContent = '¡Bienvenido!'; setTimeout(cerrar, 800); }
-      });
-      document.getElementById('m-btn-reset').addEventListener('click', async function() {
-        var email = document.getElementById('m-email').value.trim();
-        if (!emailValido(email)) { msg.textContent = 'Poné tu email primero'; return; }
-        var r = await nube.recuperarPassword(email);
-        msg.textContent = r.error ? r.error.message : 'Te mandamos un mail para cambiar la contraseña';
-      });
-      document.getElementById('m-btn-signup').addEventListener('click', mostrarRegistro);
-    }
-    function mostrarRegistro() {
-      body.innerHTML = '<h2 id="m-login-title">Crear cuenta</h2><p>Creá tu cuenta con email y contraseña.</p><form id="m-signup-form"><input type="email" id="m-email2" placeholder="Email" required><input type="password" id="m-pass2" placeholder="Contraseña (mínimo 6 caracteres)" required><button type="submit">Crear cuenta</button></form><button type="button" id="m-btn-back">¿Ya tenés cuenta? Ingresá</button><p id="m-msg2"></p>';
-      var form = document.getElementById('m-signup-form');
-      var msg = document.getElementById('m-msg2');
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        var email = document.getElementById('m-email2').value.trim();
-        var pass = document.getElementById('m-pass2').value;
-        if (!emailValido(email)) { msg.textContent = 'Email inválido'; return; }
-        if (pass.length < 6) { msg.textContent = 'La contraseña debe tener al menos 6 caracteres'; return; }
-        msg.textContent = 'Creando cuenta...';
-        var r = await nube.registrarConPassword(email, pass);
-        if (r.error) msg.textContent = r.error.message;
-        else msg.textContent = '¡Cuenta creada! Ya podés ingresar';
-      });
-      document.getElementById('m-btn-back').addEventListener('click', mostrarLogin);
-    }
-    overlay.querySelector('.m-login-close').addEventListener('click', cerrar);
-    overlay.addEventListener('click', function(e) { if (e.target === overlay) cerrar(); });
-    btn.addEventListener('click', function() { overlay.hidden = false; document.body.style.overflow = 'hidden'; mostrarLogin(); });
-    async function actualizarBtn() {
-      try {
-        var r = await nube.getSession();
-        if (r.data && r.data.session) {
-          btn.textContent = 'Mi cuenta';
-          btn.onclick = async function() { await nube.salir(); location.reload(); };
-        } else { btn.textContent = 'Ingresar'; }
-      } catch(e) { btn.textContent = 'Ingresar'; }
-    }
-    actualizarBtn();
-    nube.onChange(function(u) {
-      if (u) { btn.textContent = 'Mi cuenta'; btn.onclick = async function() { await nube.salir(); location.reload(); }; }
-      else { btn.textContent = 'Ingresar'; }
-    });
+// login.js - MCA
+(function() {
+  const client = window.MCA_CLOUD._client;
+  if (!client) {
+    console.error('MCA_CLOUD no cargado');
+    return;
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+
+  // Crear botón en el header
+  let btn = document.getElementById('mca-login-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'mca-login-btn';
+    btn.textContent = 'Ingresar';
+    btn.style.cssText = 'padding:8px 16px; border-radius:999px; border:1px solid #ccc; background:white; cursor:pointer; font-weight:600;';
+    // Buscá dónde ponerlo: al lado de la luna
+    const header = document.querySelector('header') || document.body;
+    header.appendChild(btn);
+  }
+
+  // Crear modal
+  let modal = document.getElementById('mca-login-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'mca-login-modal';
+    modal.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;';
+    modal.innerHTML = `
+      <div style="background:white; border-radius:20px; padding:24px; width:90%; max-width:400px; position:relative;">
+        <button id="mca-close" style="position:absolute; top:12px; right:12px; background:none; border:none; font-size:20px; cursor:pointer;">×</button>
+        <div id="mca-modal-content"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector('#mca-close').onclick = () => modal.style.display = 'none';
+    modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+  }
+
+  const content = modal.querySelector('#mca-modal-content');
+
+  function renderLogin() {
+    content.innerHTML = `
+      <h2 style="text-align:center; margin:0 0 8px;">Ingresá a MCA</h2>
+      <p style="text-align:center; color:#666; margin:0 0 16px;">Ingresá con tu email y contraseña.</p>
+      <input id="mca-email" type="email" placeholder="Email" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ddd; margin-bottom:12px; box-sizing:border-box;">
+      <input id="mca-pass" type="password" placeholder="Contraseña" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ddd; margin-bottom:12px; box-sizing:border-box;">
+      <button id="mca-submit" style="width:100%; padding:12px; border-radius:12px; border:none; background:#111; color:white; font-weight:600; cursor:pointer;">Ingresar</button>
+      <div style="text-align:center; margin-top:12px;">
+        <a href="#" id="mca-forgot" style="color:#666; font-size:14px;">Olvidé mi contraseña</a>
+      </div>
+      <div style="text-align:center; margin-top:8px;">
+        <span style="color:#666; font-size:14px;">¿No tenés cuenta? </span>
+        <a href="#" id="mca-register" style="font-weight:600;">Registrate</a>
+      </div>
+      <p id="mca-msg" style="text-align:center; margin-top:12px; font-size:14px;"></p>
+    `;
+
+    const email = content.querySelector('#mca-email');
+    const pass = content.querySelector('#mca-pass');
+    const submit = content.querySelector('#mca-submit');
+    const msg = content.querySelector('#mca-msg');
+    const reg = content.querySelector('#mca-register');
+    const forgot = content.querySelector('#mca-forgot');
+
+    let modo = 'login'; // login | register
+
+    reg.onclick = (e) => {
+      e.preventDefault();
+      modo = modo === 'login' ? 'register' : 'login';
+      submit.textContent = modo === 'login' ? 'Ingresar' : 'Crear cuenta';
+      reg.textContent = modo === 'login' ? 'Registrate' : 'Ingresá';
+      msg.textContent = '';
+    };
+
+    forgot.onclick = async (e) => {
+      e.preventDefault();
+      if (!email.value) { msg.textContent = 'Poné tu email primero'; msg.style.color = 'red'; return; }
+      const { error } = await client.auth.resetPasswordForEmail(email.value);
+      msg.textContent = error ? error.message : 'Te mandamos un email para recuperar la contraseña';
+      msg.style.color = error ? 'red' : 'green';
+    };
+
+    submit.onclick = async () => {
+      msg.textContent = 'Cargando...';
+      msg.style.color = '#666';
+      if (modo === 'login') {
+        const { error } = await client.auth.signInWithPassword({ email: email.value, password: pass.value });
+        if (error) { msg.textContent = error.message; msg.style.color = 'red'; }
+        else { msg.textContent = '¡Listo!'; msg.style.color = 'green'; setTimeout(() => modal.style.display = 'none', 800); }
+      } else {
+        const { error } = await client.auth.signUp({ email: email.value, password: pass.value });
+        if (error) { msg.textContent = error.message; msg.style.color = 'red'; }
+        else { msg.textContent = '¡Cuenta creada! Ya podés ingresar'; msg.style.color = 'green'; modo = 'login'; submit.textContent = 'Ingresar'; }
+      }
+    };
+  }
+
+  function renderLoggedIn(user) {
+    content.innerHTML = `
+      <h2 style="text-align:center; margin:0 0 8px;">Hola 👋</h2>
+      <p style="text-align:center; color:#666; margin:0 0 16px;">${user.email}</p>
+      <button id="mca-logout" style="width:100%; padding:12px; border-radius:12px; border:none; background:#e11; color:white; font-weight:600; cursor:pointer;">Cerrar sesión</button>
+      <p id="mca-msg" style="text-align:center; margin-top:12px; font-size:14px;"></p>
+    `;
+    content.querySelector('#mca-logout').onclick = async () => {
+      await client.auth.signOut();
+      modal.style.display = 'none';
+    };
+  }
+
+  async function pintar() {
+    const { data: { session } } = await client.auth.getSession();
+    if (session?.user) {
+      btn.textContent = session.user.email.split('@')[0];
+      btn.onclick = () => { renderLoggedIn(session.user); modal.style.display = 'flex'; };
+    } else {
+      btn.textContent = 'Ingresar';
+      btn.onclick = () => { renderLogin(); modal.style.display = 'flex'; };
+    }
+  }
+
+  client.auth.onAuthStateChange(() => pintar());
+  pintar();
 })();
