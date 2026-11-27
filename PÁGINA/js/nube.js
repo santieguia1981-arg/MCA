@@ -93,7 +93,24 @@
             clearTimeout(timer);
             timer = setTimeout(empujar, 1500);
         },
-        enviarEnlace: async function (email) {
+        enviarEnlace: ingresarConPassword: async function (email, password) {
+            if (!configurado) return { error: { message: 'no-configurado' } };
+            return client.auth.signInWithPassword({ email: email, password: password });
+        },
+        registrarConPassword: async function (email, password) {
+            if (!configurado) return { error: { message: 'no-configurado' } };
+            return client.auth.signUp({ email: email, password: password });
+        },
+        recuperarPassword: async function (email) {
+            if (!configurado) return { error: { message: 'no-configurado' } };
+            return client.auth.resetPasswordForEmail(email, {
+                redirectTo: location.origin + '/reset-password.html'
+            });
+        },
+        getSession: async function () {
+            if (!configurado) return { data: { session: null } };
+            return client.auth.getSession();
+        },async function (email) {
             if (!configurado) return { error: { message: 'no-configurado' } };
             return client.auth.signInWithOtp({
                 email: email,
@@ -105,7 +122,7 @@
             user = null; avisar();
         }
     };
-    window.MCA_CLOUD = API;
+    window.MCA_CLOUD._client = client;
 
     if (!configurado) return;
     client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, {
