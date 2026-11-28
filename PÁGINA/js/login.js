@@ -1,24 +1,17 @@
 // login.js - MCA
 (function() {
-  const client = window.MCA_CLOUD._client;
-  if (!client) {
-  if (!window.MCA_CLOUD) { console.error('MCA_CLOUD no cargado'); return; };
-    return;
-  }
+  if (!window.MCA_CLOUD) { console.error('MCA_CLOUD no cargado'); return; }
 
-  // Crear botón en el header
   let btn = document.getElementById('mca-login-btn');
   if (!btn) {
     btn = document.createElement('button');
     btn.id = 'mca-login-btn';
     btn.textContent = 'Ingresar';
     btn.style.cssText = 'padding:8px 16px; border-radius:999px; border:1px solid #ccc; background:white; cursor:pointer; font-weight:600;';
-    // Buscá dónde ponerlo: al lado de la luna
     const header = document.querySelector('header') || document.body;
     header.appendChild(btn);
   }
 
-  // Crear modal
   let modal = document.getElementById('mca-login-modal');
   if (!modal) {
     modal = document.createElement('div');
@@ -60,8 +53,7 @@
     const msg = content.querySelector('#mca-msg');
     const reg = content.querySelector('#mca-register');
     const forgot = content.querySelector('#mca-forgot');
-
-    let modo = 'login'; // login | register
+    let modo = 'login';
 
     reg.onclick = (e) => {
       e.preventDefault();
@@ -74,22 +66,32 @@
     forgot.onclick = async (e) => {
       e.preventDefault();
       if (!email.value) { msg.textContent = 'Poné tu email primero'; msg.style.color = 'red'; return; }
-      const { error } = await client.auth.resetPasswordForEmail(email.value);
-      msg.textContent = error ? error.message : 'Te mandamos un email para recuperar la contraseña';
-      msg.style.color = error ? 'red' : 'green';
+      msg.textContent = 'Enviando...'; msg.style.color = '#666';
+      try {
+        await window.MCA_CLOUD.recuperarPassword(email.value);
+        msg.textContent = 'Te mandamos un email para recuperar la contraseña';
+        msg.style.color = 'green';
+      } catch (err) {
+        msg.textContent = err.message || 'Error al enviar';
+        msg.style.color = 'red';
+      }
     };
 
     submit.onclick = async () => {
-      msg.textContent = 'Cargando...';
-      msg.style.color = '#666';
-      if (modo === 'login') {
-        const { error } = await client.auth.signInWithPassword({ email: email.value, password: pass.value });
-        if (error) { msg.textContent = error.message; msg.style.color = 'red'; }
-        else { msg.textContent = '¡Listo!'; msg.style.color = 'green'; setTimeout(() => modal.style.display = 'none', 800); }
-      } else {
-        const { error } = await client.auth.signUp({ email: email.value, password: pass.value });
-        if (error) { msg.textContent = error.message; msg.style.color = 'red'; }
-        else { msg.textContent = '¡Cuenta creada! Ya podés ingresar'; msg.style.color = 'green'; modo = 'login'; submit.textContent = 'Ingresar'; }
+      msg.textContent = 'Cargando...'; msg.style.color = '#666';
+      try {
+        if (modo === 'login') {
+          await window.MCA_CLOUD.ingresarConPassword(email.value, pass.value);
+          msg.textContent = '¡Listo!'; msg.style.color = 'green';
+          setTimeout(() => modal.style.display = 'none', 800);
+        } else {
+          await window.MCA_CLOUD.registrarConPassword(email.value, pass.value);
+          msg.textContent = '¡Cuenta creada! Ya podés ingresar'; msg.style.color = 'green';
+          modo = 'login'; submit.textContent = 'Ingresar';
+        }
+      } catch (err) {
+        msg.textContent = err.message || 'Error';
+        msg.style.color = 'red';
       }
     };
   }
@@ -102,22 +104,30 @@
       <p id="mca-msg" style="text-align:center; margin-top:12px; font-size:14px;"></p>
     `;
     content.querySelector('#mca-logout').onclick = async () => {
-      await client.auth.signOut();
+      await window.MCA_CLOUD.salir();
       modal.style.display = 'none';
     };
   }
 
   async function pintar() {
-    const { data: { session } } = await client.auth.getSession();
-    if (session?.user) {
-      btn.textContent = session.user.email.split('@')[0];
-      btn.onclick = () => { renderLoggedIn(session.user); modal.style.display = 'flex'; };
-    } else {
+    try {
+      const session = await window.MCA_CLOUD.getSession();
+      const user = session?.user || window.MCA_CLOUD.usuario;
+      if (user) {
+        btn.textContent = user.email.split('@')[0];
+        btn.onclick = () => { renderLoggedIn(user); modal.style.display = 'flex'; };
+      } else {
+        btn.textContent = 'Ingresar';
+        btn.onclick = () => { renderLogin(); modal.style.display = 'flex'; };
+      }
+    } catch (e) {
       btn.textContent = 'Ingresar';
       btn.onclick = () => { renderLogin(); modal.style.display = 'flex'; };
     }
   }
 
-  client.auth.onAuthStateChange(() => pintar());
+  if (window.MCA_CLOUD.onChange) {
+    window.MCA_CLOUD.onChange(() => pintar());
+  }
   pintar();
 })();
