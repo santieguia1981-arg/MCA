@@ -2,7 +2,7 @@
 (function() {
   const client = window.MCA_CLOUD._client;
   if (!client) {
-    console.error('MCA_CLOUD no cargado');
+  if (!window.MCA_CLOUD) { console.error('MCA_CLOUD no cargado'); return; };
     return;
   }
 
